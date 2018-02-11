@@ -1,0 +1,309 @@
+/*
+ *
+ *
+ * Copyright 2018 Symphony Communication Services, LLC.
+ *
+ * Licensed to The Symphony Software Foundation (SSF) under one
+ * or more contributor license agreements.  See the NOTICE file
+ * distributed with this work for additional information
+ * regarding copyright ownership.  The ASF licenses this file
+ * to you under the Apache License, Version 2.0 (the
+ * "License"); you may not use this file except in compliance
+ * with the License.  You may obtain a copy of the License at
+ *
+ *    http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing,
+ * software distributed under the License is distributed on an
+ * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+ * KIND, either express or implied.  See the License for the
+ * specific language governing permissions and limitations
+ * under the License.
+ */
+
+package org.symphonyoss.s2.canon.runtime.http;
+
+import java.io.IOException;
+import java.util.HashMap;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
+
+import javax.annotation.Nullable;
+import javax.servlet.http.Cookie;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
+import org.apache.commons.codec.binary.Base64;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.symphonyoss.s2.canon.runtime.IModelEntity;
+import org.symphonyoss.s2.canon.runtime.IModelObject;
+import org.symphonyoss.s2.canon.runtime.IModelObjectFactory;
+import org.symphonyoss.s2.canon.runtime.ModelRegistry;
+import org.symphonyoss.s2.canon.runtime.ModelTypeBuilder;
+import org.symphonyoss.s2.common.dom.json.ImmutableJsonObject;
+import org.symphonyoss.s2.common.dom.json.JsonValue;
+import org.symphonyoss.s2.common.exception.BadFormatException;
+
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.node.ArrayNode;
+import com.google.protobuf.ByteString;
+
+public class RequestContext
+{
+  public static final String JSON_CONTENT_TYPE = "application/json; charset=utf-8";
+
+  private static Logger log_ = LoggerFactory.getLogger(RequestContext.class);
+  
+  private final HttpMethod          method_;
+  private final HttpServletRequest  request_;
+  private final HttpServletResponse response_;
+  private Map<String, Cookie> cookieMap_;
+  private Map<String, String> pathMap_;
+  private List<String>        errors_           = new LinkedList<>();
+
+  public RequestContext(HttpMethod method, HttpServletRequest request, HttpServletResponse response)
+  {
+    method_ = method;
+    request_ = request;
+    response_ = response;
+  }
+
+  public HttpMethod getMethod()
+  {
+    return method_;
+  }
+
+  public HttpServletRequest getRequest()
+  {
+    return request_;
+  }
+
+  public HttpServletResponse getResponse()
+  {
+    return response_;
+  }
+
+  public @Nullable Long  getParameterAsLong(String name, ParameterLocation location, boolean required)
+  {
+    return asLong(name, getParameterAsString(name, location, required));
+  }
+
+  public Integer  getParameterAsInteger(String name, ParameterLocation location, boolean required)
+  {
+    return asInteger(name, getParameterAsString(name, location, required));
+  }
+
+  public ByteString getParameterAsByteString(String name, ParameterLocation location, boolean required)
+  {
+    return asByteString(name, getParameterAsString(name, location, required));
+  }
+
+  public @Nullable Long asLong(String parameterName, String value)
+  {
+    if(value == null)
+      return null;
+    
+    try
+    {
+      return Long.parseLong(value);
+    }
+    catch(NumberFormatException e)
+    {
+      error("Parameter %s requires a Long value but we found \"%s\"", parameterName, value);
+      return null;
+    }
+  }
+  
+  public @Nullable Integer asInteger(String parameterName, String value)
+  {
+    if(value == null)
+      return null;
+    
+    try
+    {
+      return Integer.parseInt(value);
+    }
+    catch(NumberFormatException e)
+    {
+      error("Parameter %s requires an Integer value but we found \"%s\"", value);
+      return null;
+    }
+  }
+
+  public @Nullable ByteString asByteString(String parameterName, String value)
+  {
+    if(value == null)
+      return null;
+    
+    if(!Base64.isBase64(value))
+    {
+      error("Parameter %s requires a Base64 value but we found \"%s\"", parameterName, value);
+      return null;
+    }
+    
+    return ByteString.copyFrom(Base64.decodeBase64(value));
+  }
+
+  public String  getParameterAsString(String name, ParameterLocation location, boolean required)
+  {
+    String  value = null;
+    
+    switch(location)
+    {
+      case Cookie:
+        if(cookieMap_ == null)
+        {
+          cookieMap_ = new HashMap<>();
+          
+          for(Cookie cookie : request_.getCookies())
+            cookieMap_.put(cookie.getName(), cookie);
+        }
+        value = cookieMap_.get(name).getValue();
+        break;
+        
+      case Header:
+        value = request_.getHeader(name);
+        break;
+        
+      case Path:
+        if(pathMap_ == null)
+        {
+          pathMap_ = new HashMap<>();
+          
+          String pathInfo = request_.getPathInfo();
+          
+          if(pathInfo != null)
+          {
+            String[] parts = pathInfo.split("/");
+            int      i=1;
+            
+            while(parts.length > i)
+            {
+              pathMap_.put(parts[i++], parts[i++]);
+            }
+          }
+          value = pathMap_.get(name);
+        }
+        break;
+      
+      case Query:
+        value = request_.getParameter(name);
+        break;
+    }
+    
+    if(value == null && required)
+    {
+      errors_.add(String.format("Required %s parameter \"%s\" is missing", location, name));
+    }
+    
+    return value;
+  }
+
+  public boolean preConditionsAreMet()
+  {
+    if(errors_.isEmpty())
+      return true;
+    
+    sendErrorResponse(HttpServletResponse.SC_BAD_REQUEST);
+    
+
+    return false;
+  }
+
+  public void sendOKResponse()
+  {
+    response_.setStatus(HttpServletResponse.SC_OK);
+  }
+
+  public void sendOKResponse(IModelEntity response) throws IOException
+  {
+    response_.setStatus(HttpServletResponse.SC_OK);
+    
+    response_.getWriter().println(response.serialize());
+  }
+
+  public void sendErrorResponse(int statusCode)
+  {
+    ObjectMapper mapper = new ObjectMapper();
+    
+    ArrayNode arrayNode = mapper.createArrayNode();
+    
+    for(String error : errors_)
+    {
+      arrayNode.add(error);
+    }
+    
+    try
+    {
+      response_.setContentType(JSON_CONTENT_TYPE);
+      response_.setStatus(statusCode);
+      response_.getWriter().println(arrayNode.toString());
+      
+    }
+    catch (IOException e)
+    {
+      log_.error("Failed to send error response", e);
+    }
+  }
+  
+  public void error(String format, Object ...args)
+  {
+    errors_.add(String.format(format, args));
+  }
+  
+  public void error(Throwable t)
+  {
+    String message = t.getMessage();
+    
+    if(message == null)
+      message = t.toString();
+    
+    errors_.add(String.format(message));
+  }
+  
+  public <M extends IModelObject> M parsePayload(IModelObjectFactory<M,?> factory)
+  {
+    try
+    {
+      ImmutableJsonObject jsonObject = ModelRegistry.parseOneJsonObject(getRequest().getReader());
+      
+      return factory.newInstance(jsonObject);
+    }
+    catch (BadFormatException | IOException e)
+    {
+      log_.error("Failed to parse payload", e);
+      error("Unable to parse payload");
+      
+      String message = e.getMessage();
+      
+      if(message != null)
+        error(message);
+      
+      return null;
+    }
+  }
+
+  public <M,T> M parsePayload(ModelTypeBuilder<M,T> builder)
+  {
+    try
+    {
+      JsonValue<?, ?> jsonObject = ModelRegistry.parseOneJsonValue(getRequest().getReader());
+      
+      return builder.build(jsonObject);
+    }
+    catch (BadFormatException | IOException e)
+    {
+      log_.error("Failed to parse payload", e);
+      error("Unable to parse payload");
+      
+      String message = e.getMessage();
+      
+      if(message != null)
+        error(message);
+      
+      return null;
+    }
+  }
+}

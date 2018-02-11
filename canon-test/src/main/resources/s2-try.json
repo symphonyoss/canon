@@ -1,0 +1,602 @@
+{
+	"openapi": "3.0.0",
+	"info": {
+		"version": "0.0.1",
+		"title": "Symphony 2.0 Object Model",
+		"license": {
+			"name": "Apache2"
+		}
+	},
+	"servers": [
+		{
+			"url": "http://localhost.symphony.com:8443/s2/v1"
+		}
+	],
+	"paths": {
+		"/streams/{streamHash}": {
+			"get": {
+				"summary": "List the contents of a Stream",
+				"operationId": "readStream",
+				"tags": [
+					"streams"
+				],
+				"parameters": [
+					{
+						"name": "streamHash",
+						"in": "path",
+						"description": "ID of the Stream to read",
+						"required": true,
+						"schema": {
+							"type": "string",
+							"format": "Hash"
+						}
+					},
+					{
+						"name": "limit",
+						"in": "query",
+						"description": "How many items to return at one time (max 100)",
+						"required": false,
+						"schema": {
+							"type": "integer",
+							"format": "int32"
+						}
+					}
+				],
+				"responses": {
+					"200": {
+						"description": "An paged array of objects",
+						"headers": {
+							"x-next": {
+								"description": "A link to the next page of responses",
+								"schema": {
+									"type": "string"
+								}
+							}
+						},
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/FundamentalObject"
+								}
+							}
+						}
+					},
+					"default": {
+						"description": "unexpected error",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/Error"
+								}
+							}
+						}
+					}
+				}
+			}
+		},
+		"/objects/{objectHash}": {
+			"get": {
+				"summary": "Read an object",
+				"operationId": "getObject",
+				"tags": [
+					"objects"
+				],
+				"parameters": [
+					{
+						"name": "objectHash",
+						"in": "path",
+						"required": true,
+						"description": "The id of the object to retrieve",
+						"schema": {
+							"type": "string",
+							"format": "Hash"
+						}
+					}
+				],
+				"responses": {
+					"200": {
+						"description": "Expected response to a valid request",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/FundamentalObject"
+								}
+							}
+						}
+					},
+					"default": {
+						"description": "unexpected error",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/Error"
+								}
+							}
+						}
+					}
+				}
+			},
+			"post": {
+				"summary": "Create an object",
+				"operationId": "createObjects",
+				"tags": [
+					"objects"
+				],
+				"responses": {
+					"201": {
+						"description": "Null response"
+					},
+					"default": {
+						"description": "unexpected error",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/Error"
+								}
+							}
+						}
+					}
+				}
+			}
+		}
+	},
+	"components": {
+		"schemas": {
+			"Instant": {
+				"description": "A nanosecond resolution timestamp, compatible with the Java8 definition of Instant.",
+				"type": "object",
+				"required": [
+					"secs"
+				],
+				"properties": {
+					"secs": {
+						"description": "Seconds measured from the standard Java epoch of 1970-01-01T00:00:00Z where instants after the epoch have positive values, and earlier instants have negative values.",
+						"type": "integer",
+						"format": "int64"
+					},
+					"nanos": {
+						"description": "Nanosecond-of-second, which will always be between 0 and 999,999,999",
+						"type": "integer",
+						"format": "int32",
+						"minimum": 0,
+						"maximum": 999999999
+					}
+				}
+			},
+			"HashType": {
+				"description": "A Hash type ID.",
+				"type": "integer",
+				"minimum": 0,
+				"maximum": 2
+			},
+			"Hash": {
+				"description": "A Hash value, encoded as Base64.",
+				"type": "string",
+				"format": "bytes"
+			},
+			"SymmetricCipher": {
+				"description": "An ID of a Symmetric Cipher (shared key encryption method)",
+				"type": "string",
+				"enum": [
+					"AES256_GCM",
+					"AES128_CBC",
+					"AES192_CBC",
+					"AES256_CBC"
+				]
+			},
+			"AsymmetricCipher": {
+				"description": "An ID of an Asymmetric Cipher (public/private key pair encryption method)",
+				"type": "string",
+				"enum": [
+					"RSA2048",
+					"RSA1024",
+					"ECC521"
+				]
+			},
+			"PublicKey": {
+				"description": "A PublicKey encoded in the PEM format",
+				"type": "string",
+				"format": "PemPublicKey"
+			},
+			"PrivateKey": {
+				"description": "A PrivateKey encoded in the PEM format",
+				"type": "string",
+				"format": "PemPrivateKey"
+			},
+			"Encrypted": {
+				"description": "An encrypted payload encoded as Base64",
+				"type": "string",
+				"format": "bytes"
+			},
+			"Signature": {
+				"description": "A signature encoded as Base64",
+				"type": "string",
+				"format": "bytes"
+			},
+			"WrappedKey": {
+				"description": "A wrapped (encrypted) key encoded as Base64",
+				"type": "string",
+				"format": "bytes"
+			},
+			"DisplayName": {
+				"description": "The default display name for an entity",
+				"type": "string"
+			},
+			"FundamentalObject": {
+				"type": "object",
+				"required": [
+					"hashType"
+				],
+				"properties": {
+					"hashType": {
+						"$ref": "#/components/schemas/HashType"
+					},
+					"serverPublicKeyHash": {
+						"$ref": "#/components/schemas/Hash"
+					},
+					"serverSignature": {
+						"$ref": "#/components/schemas/Signature"
+					},
+					"serverCreatedDate": {
+						"$ref": "#/components/schemas/Instant"
+					},
+					"clientPublicKeyHash": {
+						"$ref": "#/components/schemas/Hash"
+					},
+					"clientSignature": {
+						"$ref": "#/components/schemas/Signature"
+					},
+					"clientCreatedDate": {
+						"$ref": "#/components/schemas/Instant"
+					},
+					"sequenceHashes": {
+						"type": "array",
+						"items": {
+							"$ref": "#/components/schemas/Hash"
+						}
+					},
+					"fundamentalPayloadType": {
+						"type": "string"
+					},
+					"fundamentalPayload": {
+						"oneOf": [
+							{
+								"$ref": "#/components/schemas/Tenant"
+							},
+							{
+								"$ref": "#/components/schemas/Principal"
+							},
+							{
+								"$ref": "#/components/schemas/PrincipalPublicKey"
+							},
+							{
+								"$ref": "#/components/schemas/PrincipalPublicKeyStatus"
+							},
+							{
+								"$ref": "#/components/schemas/SecurityContext"
+							},
+							{
+								"$ref": "#/components/schemas/SecurityContextMember"
+							},
+							{
+								"$ref": "#/components/schemas/ApplicationObject"
+							}
+						],
+						"discriminator": {
+							"propertyName": "fundamentalPayloadType"
+						}
+					}
+				}
+			},
+			"SecurityContextUsage": {
+				"type": "string",
+				"enum": [
+					"TENANT_ROOT",
+					"TENANT_PUBLIC",
+					"PRINCIPAL_PRIVATE"
+				]
+			},
+			"SecurityContext": {
+				"type": "object",
+				"required": [
+					"symmetricCipher",
+					"asymmetricCipher",
+					"encodedPublicKey",
+					"encryptedPrivateKey",
+					"principalMembersStreamHash",
+					"securityContextMembersStreamHash"
+				],
+				"properties": {
+					"symmetricCipher": {
+						"$ref": "#/components/schemas/SymmetricCipher"
+					},
+					"asymmetricCipher": {
+						"$ref": "#/components/schemas/AsymmetricCipher"
+					},
+					"encodedPublicKey": {
+						"$ref": "#/components/schemas/PublicKey"
+					},
+					"encryptedPrivateKey": {
+						"$ref": "#/components/schemas/WrappedKey"
+					},
+					"principalMembersStreamHash": {
+						"$ref": "#/components/schemas/Hash"
+					},
+					"securityContextMembersStreamHash": {
+						"$ref": "#/components/schemas/Hash"
+					}
+				}
+			},
+			"MembershipStatus": {
+        "type": "string",
+        "description": "The NONE status is required so that if a member is removed we can revoke their permissions without deleting the previous record which acts as an audi trail.",
+        "enum": [
+          "NONE",
+          "MEMBER",
+          "OWNER"
+        ]
+      },
+      "SecurityContextMember": {
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/VersionedObject"
+          },
+          {
+            "type": "object",
+            "description": "wrappedKey is the SecurityContext SecretKey wrapped by the member's Public KeyExchangeKey. encryptedKey is the SecurityContext SecretKey encrypted with the member's AccountSecretKey. This may be added as an update by the member as a performance optimization.",
+            "required": [
+              "securityContextHash",
+              "memberHash",
+              "memberPublicKeyHash",
+              "wrappedKey",
+              "membershipStatus"
+            ],
+            "properties": {
+              "securityContextHash": {
+                "$ref": "#/components/schemas/Hash"
+              },
+              "memberHash": {
+                "$ref": "#/components/schemas/Hash"
+              },
+              "memberPublicKeyHash": {
+                "$ref": "#/components/schemas/Hash"
+              },
+              "wrappedKey": {
+                "$ref": "#/components/schemas/WrappedKey"
+              },
+              "encryptedKey": {
+                "$ref": "#/components/schemas/WrappedKey"
+              },
+              "membershipStatus": {
+                "$ref": "#/components/schemas/MembershipStatus"
+              }
+            }
+          }
+        ]
+      },
+      "TenantInfo": {
+				"type": "object",
+				"required": [
+					"displayName"
+				],
+				"properties": {
+					"displayName": {
+						"$ref": "#/components/schemas/DisplayName"
+					},
+					"legacyPodUrl": {
+						"type": "string",
+						"format": "url"
+					}
+				}
+			},
+			"Tenant": {
+				"type": "object",
+				"required": [
+					"tenantInfoHash",
+					"publicSecurityContextHash",
+					"principalStreamHash"
+				],
+				"description": "publicKey is the initial public key for the Tenant, including it here introduces entropy and prevents an attacker from making a chosen plaintext attack. We must verify that the requetor has the matching private key by, for example, validating a signed CSR.",
+				"properties": {
+					"tenantInfoHash": {
+						"$ref": "#/components/schemas/Hash"
+					},
+					"publicKey": {
+						"$ref": "#/components/schemas/PublicKey"
+					},
+					"asymmetricCipher": {
+						"$ref": "#/components/schemas/AsymmetricCipher"
+					},
+					"rootSecurityContextHash": {
+						"$ref": "#/components/schemas/Hash"
+					},
+					"publicSecurityContextHash": {
+						"$ref": "#/components/schemas/Hash"
+					},
+					"principalStreamHash": {
+						"$ref": "#/components/schemas/Hash"
+					},
+					"legacyPodId": {
+						"type": "integer",
+						"format": "int64"
+					}
+				}
+			},
+			"StreamUsage": {
+				"type": "string",
+				"enum": [
+					"TENANT_PRINCIPALS",
+					"PRINCIPAL_PUBLIC_KEY",
+					"PRINCIPAL_STREAMS",
+					"CONTEXT_PRINCIPAL_MEMBERS",
+					"CONTEXT_CONTEXT_MEMBERS"
+				]
+			},
+			"Stream": {
+				"type": "object",
+				"required": [
+					"usage"
+				],
+				"properties": {
+					"usage": {
+						"$ref": "#/components/schemas/StreamUsage"
+					},
+					"principalHash": {
+						"$ref": "#/components/schemas/Hash"
+					}
+				}
+			},
+			"PrincipalInfo": {
+				"type": "object",
+				"required": [
+					"displayName"
+				],
+				"properties": {
+					"displayName": {
+						"$ref": "#/components/schemas/DisplayName"
+					},
+					"emailAddress": {
+						"type": "string",
+						"format": "email"
+					}
+				}
+			},
+			"Principal": {
+				"type": "object",
+				"required": [
+					"principalInfoHash",
+					"publicKeyStreamHash",
+					"streamStreamHash",
+					"tenantHash"
+				],
+				"properties": {
+					"principalInfoHash": {
+						"$ref": "#/components/schemas/Hash"
+					},
+					"publicKeyStreamHash": {
+						"$ref": "#/components/schemas/Hash"
+					},
+					"streamStreamHash": {
+						"$ref": "#/components/schemas/Hash"
+					},
+					"tenantHash": {
+						"$ref": "#/components/schemas/Hash"
+					},
+					"legacyUserId": {
+						"description": "The Symphony external userId for legacy users",
+						"type": "integer",
+						"format": "int64"
+					}
+				}
+			},
+			"VersionedObject": {
+				"type": "object",
+				"required": [
+					"prevHash",
+					"baseHash"
+				],
+				"properties": {
+					"prevHash": {
+						"$ref": "#/components/schemas/Hash"
+					},
+					"baseHash": {
+						"$ref": "#/components/schemas/Hash"
+					}
+				}
+			},
+			"PublicKeyUsage": {
+				"type": "string",
+				"enum": [
+					"KEY_EXCHANGE",
+					"SIGNING"
+				]
+			},
+			"PrincipalPublicKey": {
+				"type": "object",
+				"required": [
+					"principalHash",
+					"asymmetricCipher",
+					"publicKey"
+				],
+				"properties": {
+					"principalHash": {
+						"$ref": "#/components/schemas/Hash"
+					},
+					"asymmetricCipher": {
+						"$ref": "#/components/schemas/AsymmetricCipher"
+					},
+					"publicKey": {
+						"$ref": "#/components/schemas/PublicKey"
+					},
+					"usage": {
+						"$ref": "#/components/schemas/PublicKeyUsage"
+					}
+				}
+			},
+			"PrincipalPublicKeyStatus": {
+				"allOf": [
+					{
+						"$ref": "#/components/schemas/VersionedObject"
+					},
+					{
+						"type": "object",
+						"required": [
+							"keyHash"
+						],
+						"properties": {
+							"keyHash": {
+								"$ref": "#/components/schemas/Hash"
+							},
+							"expiredAt": {
+								"$ref": "#/components/schemas/Instant"
+							},
+							"revokedAt": {
+								"$ref": "#/components/schemas/Instant"
+							}
+						}
+					}
+				]
+			},
+			"ApplicationObject": {
+				"allOf": [
+					{
+						"$ref": "#/components/schemas/VersionedObject"
+					},
+					{
+						"type": "object",
+						"required": [
+							"securityContextHash",
+							"encryptedPayload"
+						],
+						"properties": {
+							"securityContextHash": {
+								"$ref": "#/components/schemas/Hash"
+							},
+							"applicationPayloadType": {
+								"type": "string"
+							},
+							"encryptedPayload": {
+								"$ref": "#/components/schemas/Encrypted"
+							}
+						}
+					}
+				]
+			},
+			"Error": {
+				"required": [
+					"code",
+					"message"
+				],
+				"properties": {
+					"code": {
+						"type": "integer",
+						"format": "int32"
+					},
+					"message": {
+						"type": "string"
+					}
+				}
+			}
+		}
+	}
+}

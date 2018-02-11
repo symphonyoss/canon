@@ -1,0 +1,320 @@
+{
+  "openapi": "3.0.0",
+  "info": {
+    "version": "0.0.1",
+    "title": "Canon Template Type Check",
+    "license": {
+      "name": "Apache2"
+    }
+  },
+  "x-canon-id": "https://github.com/bruceskingle/canon/blob/master/canon-test/src/main/resources/test/typeCheck.json",
+  "x-canon-model": {
+    "javaGenPackage":  "org.symphonyoss.s2.canon.test.typeCheck",
+    "javaFacadePackage":  "org.symphonyoss.s2.canon.test.typeCheck.facade"
+  },
+  "paths": {},
+  "components": {
+    "schemas": {
+      "IntTypedef": {
+        "description": "An integer typedef.",
+        "type": "integer"
+      },
+      "Colour": {
+        "description": "An enumeration.",
+        "type": "string",
+        "enum": [
+          "black",
+          "white",
+          "red",
+          "blue",
+          "green"
+        ]
+      },
+      "Hash": {
+        "description": "A Hash value, encoded as Base64, represented by an external class which we cant change so we need a factory generated.",
+        "type": "string",
+        "format": "byte",
+        "x-canon-attributes": {
+          "javaExternalPackage":  "org.symphonyoss.s2.canon.test.oneofeverything",
+          "javaExternalType":     "TestHash"
+        }
+      },
+      "DirectHash": {
+        "description": "A Hash value, encoded as Base64, represented by an external class which has our expected factory methods.",
+        "type": "string",
+        "format": "byte",
+        "x-canon-attributes": {
+          "javaExternalPackage":  "org.symphonyoss.s2.canon.test.oneofeverything",
+          "javaExternalType":     "DirectHash",
+          "isDirectExternal":     "true"
+        }
+      },
+      "SimpleObject": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string"
+          },
+          "value": {
+            "type": "integer"
+          }
+        }
+      },
+      
+      "ListOfInts": {
+        "description": "A list of integers.",
+        "type": "array",
+        "x-canon-cardinality": "LIST",
+        "minItems": 1,
+        "maxItems": 5,
+        "items": {
+          "description": "An integer element.",
+          "type": "integer"
+        }
+      },
+      
+      "SetOfInts": {
+        "description": "A set of integers.",
+        "type": "array",
+        "x-canon-cardinality": "SET",
+        "items": {
+          "description": "An integer element.",
+          "type": "integer"
+        }
+      },
+      
+      "ListOfDirectExternal": {
+        "description": "A list of direct externals.",
+        "type": "array",
+        "x-canon-cardinality": "LIST",
+        "minItems": 1,
+        "maxItems": 5,
+        "items": {
+          "$ref": "#/components/schemas/DirectHash"
+        }
+      },
+      "ListOfIndirectExternal": {
+        "description": "A list of indirect externals.",
+        "type": "array",
+        "x-canon-cardinality": "LIST",
+        "minItems": 1,
+        "maxItems": 5,
+        "items": {
+          "$ref": "#/components/schemas/Hash"
+        }
+      },
+      "ListOfEnums": {
+        "description": "A list of enums.",
+        "type": "array",
+        "x-canon-cardinality": "LIST",
+        "minItems": 1,
+        "maxItems": 5,
+        "items": {
+          "$ref": "#/components/schemas/Colour"
+        }
+      },
+      "ListOfObjects": {
+        "description": "A list of objects.",
+        "type": "array",
+        "x-canon-cardinality": "LIST",
+        "minItems": 1,
+        "maxItems": 5,
+        "items": {
+          "$ref": "#/components/schemas/SimpleObject"
+        }
+      },
+      
+      "ObjectWithInts": {
+        "type": "object",
+        "properties": {
+          "intField": {
+            "type": "integer"
+          },
+          "intListField": {
+            "type": "array",
+            "x-canon-cardinality": "LIST",
+            "minItems": 1,
+            "maxItems": 5,
+            "items": {
+              "description": "An integer element.",
+              "type": "integer"
+            }
+          },
+          "intSetField": {
+            "description": "A set of integers.",
+            "type": "array",
+            "x-canon-cardinality": "SET",
+            "items": {
+              "description": "An integer element.",
+              "type": "integer"
+            }
+          },
+          "intTypedefField": {
+            "$ref": "#/components/schemas/IntTypedef"
+          },
+          "aSetOfTypedefsField": {
+            "$ref": "#/components/schemas/SetOfInts"
+          },
+          "aListofTypedefsField": {
+            "$ref": "#/components/schemas/ListOfInts"
+          }
+        }
+      },
+      
+      "AllTheTypes": {
+        "type": "object",
+        "properties": {
+          "intField": {
+            "type": "integer"
+          },
+          "int64Field": {
+              "type": "integer",
+              "format": "int64"
+          },
+          "int32Field": {
+              "type": "integer",
+              "format": "int32"
+          },
+          "doubleField": {
+              "type": "number"
+          },
+          "floatField": {
+              "type": "number",
+              "format": "float"
+          },
+          "booleanField": {
+              "type": "boolean"
+          },
+          "stringField": {
+              "type": "string"
+          },
+          "byteStringField": {
+              "type": "string",
+              "format": "byte"
+          },
+          "objectField": {
+              "$ref": "#/components/schemas/SimpleObject"
+          },
+          "typeDefField": {
+              "$ref": "#/components/schemas/IntTypedef"
+          },
+          "directExternalField": {
+              "$ref": "#/components/schemas/DirectHash"
+          },
+          "indirectExternalField": {
+              "$ref": "#/components/schemas/Hash"
+          },
+          "enumsField": {
+              "$ref": "#/components/schemas/Colour"
+          }
+        }
+      },
+      
+      "AllTheLists": {
+        "type": "object",
+        "properties": {
+          "intField": {
+            "type": "integer"
+          },
+          "int64ListField": {
+            "type": "array",
+            "x-canon-cardinality": "LIST",
+            "items": {
+              "type": "integer",
+              "format": "int64"
+            }
+          },
+          "int32ListField": {
+            "type": "array",
+            "x-canon-cardinality": "LIST",
+            "items": {
+              "type": "integer",
+              "format": "int32"
+            }
+          },
+          "doubleListField": {
+            "type": "array",
+            "x-canon-cardinality": "LIST",
+            "items": {
+              "type": "number"
+            }
+          },
+          "floatListField": {
+            "type": "array",
+            "x-canon-cardinality": "LIST",
+            "items": {
+              "type": "number",
+              "format": "float"
+            }
+          },
+          "booleanListField": {
+            "type": "array",
+            "x-canon-cardinality": "LIST",
+            "items": {
+              "type": "boolean"
+            }
+          },
+          "stringListField": {
+            "type": "array",
+            "x-canon-cardinality": "LIST",
+            "items": {
+              "type": "string"
+            }
+          },
+          "byteStringListField": {
+            "type": "array",
+            "x-canon-cardinality": "LIST",
+            "items": {
+              "type": "string",
+              "format": "byte"
+            }
+          },
+          "objectListField": {
+            "type": "array",
+            "x-canon-cardinality": "LIST",
+            "items": {
+              "$ref": "#/components/schemas/SimpleObject"
+            }
+          },
+          "typeDefListField": {
+            "type": "array",
+            "x-canon-cardinality": "LIST",
+            "items": {
+              "$ref": "#/components/schemas/IntTypedef"
+            }
+          },
+          "directExternalListField": {
+            "description": "A list of direct externals.",
+            "type": "array",
+            "x-canon-cardinality": "LIST",
+            "minItems": 1,
+            "maxItems": 5,
+            "items": {
+              "$ref": "#/components/schemas/DirectHash"
+            }
+          },
+          "indirectExternalListField": {
+            "description": "A list of indirect externals.",
+            "type": "array",
+            "x-canon-cardinality": "LIST",
+            "minItems": 1,
+            "maxItems": 5,
+            "items": {
+              "$ref": "#/components/schemas/Hash"
+            }
+          },
+          "enumsListField": {
+            "description": "A list of enums.",
+            "type": "array",
+            "x-canon-cardinality": "LIST",
+            "minItems": 1,
+            "maxItems": 5,
+            "items": {
+              "$ref": "#/components/schemas/Colour"
+            }
+          }
+        }
+      }
+    }
+  }
+}

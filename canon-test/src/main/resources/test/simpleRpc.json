@@ -1,0 +1,293 @@
+{
+	"openapi": "3.0.0",
+	"info": {
+		"version": "0.0.1",
+		"title": "Canon Simple RPC Test Case",
+		"license": {
+			"name": "Apache2"
+		}
+	},
+	"x-canon-id": "https://github.com/bruceskingle/canon/blob/master/canon-test/src/main/resources/test/simpleRpc.json",
+	"x-canon-model": {
+		"javaGenPackage": "org.symphonyoss.s2.canon.test.unit",
+		"javaFacadePackage": "org.symphonyoss.s2.canon.test.unit.facade"
+	},
+	"paths": {
+	},
+	"x-canon-methods": {
+		"/invoices": {
+			"summary": "Invoice operations.",
+			"description": "Various operations at the invoice level.",
+			"get": {
+				"summary": "Fetch all invoices.",
+				"description": "Various operations at the invoice collection level.",
+				"tags": [
+					"invoices"
+				],
+				"parameters": {
+					"customerId": {
+						"description": "The ID of the customer of returned invoices",
+						"in": "query",
+						"required": false,
+						"schema": {
+							"$ref": "#/components/schemas/CustomerId"
+						}
+					}
+        },
+        "parameterSets": [
+					"#/components/x-canon-parameter-sets/pagination"
+				],
+				"response": {
+					"schema": {
+						"$ref": "#/components/schemas/DocumentList"
+					}
+				}
+			},
+			"post": {
+				"tags": [
+					"invoices"
+				],
+				"summary": "Create an invoice",
+				"payload": {
+					"required": true,
+					"schema": {
+						"$ref": "#/components/schemas/DocumentContent"
+					}
+				},
+				"response": {
+					"required": true,
+					"schema": {
+						"$ref": "#/components/schemas/Document"
+					}
+				}
+			}
+		},
+		"/invoices/{invoiceId}": {
+			"summary": "Invoice operations.",
+			"description": "Various operations at the invoice level.",
+			"parameters": {
+          "invoiceId": {
+            "description": "The ID of the required invoice",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "$ref": "#/components/schemas/DocumentId"
+            }
+          }
+        },
+      "get": {
+				"tags": [
+					"invoices"
+				],
+				"summary": "Fetch an invoice",
+				"response": {
+					"schema": {
+						"$ref": "#/components/schemas/Document"
+					}
+				}
+			}
+		},
+		"/invoices/{invoiceId}/items/{itemId}": {
+			"summary": "Invoice line item operations.",
+			"description": "Various operations at the invoice line item level.",
+			"parameters": {
+          "invoiceId": {
+            "description": "The ID of the required invoice",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "$ref": "#/components/schemas/DocumentId"
+            }
+          },
+          "itemId": {
+            "description": "The ID of the required item",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "$ref": "#/components/schemas/ItemId"
+            }
+          }
+        },
+      "get": {
+				"tags": [
+					"invoices"
+				],
+				"response": {
+					"schema": {
+						"$ref": "#/components/schemas/Item"
+					}
+				}
+			}
+		},
+		"/invoices/{invoiceId}/items": {
+			"get": {
+				"summary": "Invoice line item operations.",
+				"description": "Various operations at the invoice line item collection level.",
+				"tags": [
+					"invoices"
+				],
+				"parameters": {
+					"invoiceId": {
+						"description": "The ID of the required invoice",
+						"in": "path",
+						"required": true,
+						"schema": {
+							"$ref": "#/components/schemas/DocumentId"
+						}
+					}
+				},
+				"parameterSets": [
+					"#/components/x-canon-parameter-sets/pagination"
+				],
+				"response": {
+					"schema": {
+						"$ref": "#/components/schemas/ItemList"
+					}
+				}
+			}
+		}
+	},
+	"components": {
+		"schemas": {
+			"CustomerId": {
+				"description": "A customer ID.",
+				"type": "integer",
+				"format": "int64"
+			},
+			"ProductId": {
+				"description": "A product ID.",
+				"type": "string"
+			},
+			"DocumentId": {
+				"description": "An invoice ID.",
+				"type": "integer",
+				"format": "int64"
+			},
+			"ItemId": {
+				"description": "An item id on an invoice, statement etc.",
+				"type": "integer",
+				"format": "int32",
+				"minimum": 0,
+				"maximum": 100
+			},
+			"DocumentType": {
+				"type": "string",
+				"description": "The type of this document",
+				"enum": [
+					"Invoice",
+					"Statement"
+				]
+			},
+			"DocumentList": {
+				"type": "array",
+				"items": {
+					"$ref": "#/components/schemas/Document"
+				}
+			},
+			"Document": {
+				"type": "object",
+				"properties": {
+					"id": {
+						"$ref": "#/components/schemas/DocumentId"
+					},
+					"content": {
+						"$ref": "#/components/schemas/DocumentContent"
+					}
+				}
+			},
+			"DocumentContent": {
+				"type": "object",
+				"properties": {
+					"documentType": {
+						"$ref": "#/components/schemas/DocumentType"
+					},
+					"customerId": {
+						"$ref": "#/components/schemas/CustomerId"
+					},
+					"date": {
+						"description": "Document date (also tax point for invoices and credit notes).",
+						"type": "integer",
+						"format": "int64"
+					},
+					"currency": {
+						"type": "string"
+					},
+					"goods": {
+						"type": "integer",
+						"format": "int64"
+					},
+					"tax": {
+						"type": "integer",
+						"format": "int64"
+					},
+					"total": {
+						"type": "integer",
+						"format": "int64"
+					}
+				}
+			},
+			"ItemList": {
+				"type": "array",
+				"items": {
+					"$ref": "#/components/schemas/Item"
+				}
+			},
+			"Item": {
+				"type": "object",
+				"properties": {
+					"id": {
+						"$ref": "#/components/schemas/ItemId"
+					},
+					"documentId": {
+						"$ref": "#/components/schemas/DocumentId"
+					},
+					"productId": {
+						"$ref": "#/components/schemas/ProductId"
+					},
+					"description": {
+						"description": "Description of goods etc.",
+						"type": "string"
+					},
+					"quantity": {
+						"type": "integer",
+						"format": "int32"
+					},
+					"goods": {
+						"type": "integer",
+						"format": "int64"
+					},
+					"tax": {
+						"type": "integer",
+						"format": "int64"
+					},
+					"total": {
+						"type": "integer",
+						"format": "int64"
+					}
+				}
+			}
+		},
+		"x-canon-parameter-sets": {
+			"pagination": {
+				"skip": {
+					"description": "number of items to skip",
+					"in": "query",
+					"required": false,
+					"schema": {
+						"type": "integer",
+						"format": "int32"
+					}
+				},
+				"limit": {
+					"description": "max records to return",
+					"in": "query",
+					"required": false,
+					"schema": {
+						"type": "integer",
+						"format": "int32"
+					}
+				}
+			}
+		}
+	}
+}

@@ -1,0 +1,17 @@
+{
+  "openapi": "3.0.0",
+  "info": {
+    "version": "0.0.1",
+    "title": "Canon Template Type Check",
+    "license": {
+      "name": "Apache2"
+    }
+  },
+  "x-canon-id": "https://github.com/bruceskingle/canon/blob/master/canon-test/src/main/resources/test/minimal.json",
+  "x-canon-model": {
+    "javaGenPackage":  "org.symphonyoss.s2.canon.test.typeCheck",
+    "javaFacadePackage":  "org.symphonyoss.s2.canon.test.typeCheck.facade"
+  },  "paths": {},
+  "components": {
+  }
+}

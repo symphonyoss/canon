@@ -1,0 +1,1 @@
+<#include "../Object/_ModelObject.java.ftl">

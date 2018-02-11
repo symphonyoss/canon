@@ -1,0 +1,130 @@
+{
+	"openapi": "3.0.0",
+	"info": {
+		"version": "1.0.0",
+		"title": "Test Schemas",
+		"license": {
+			"name": "Apache2"
+		}
+	},
+	
+	"components": {
+		"schemas": {
+			"OneOfEveryType": {
+				"type": "object",
+				"required": [
+					"hashType"
+				],
+				"properties": {
+					"hashType": {
+						"type": "integer",
+						"minimum": 0,
+						"maximum": 2
+					},
+					"signingCert": {
+						"type": "string",
+						"format": "Hash"
+					},
+					"signature": {
+						"type": "string",
+						"format": "Signature"
+					},
+					"fundamentalPayloadType": {
+						"type": "string"
+					}
+				}
+			},
+			
+			"ErrorObjectPlusRef": {
+			  "$ref": "#/components/schemas/VersionedObject",
+        "type": "object",
+        "required": [
+          "hashType"
+        ],
+        "properties": {
+          "hashType": {
+            "type": "integer",
+            "minimum": 0,
+            "maximum": 2
+          },
+          "signingCert": {
+            "type": "string",
+            "format": "Hash"
+          },
+          "signature": {
+            "type": "string",
+            "format": "Signature"
+          },
+          "fundamentalPayloadType": {
+            "type": "string"
+          }
+        }
+      },
+			
+			"NestedAllOneOf": {
+          "allOf": [
+          {
+            "$ref": "#/components/schemas/VersionedObject"
+          },
+          {
+            "oneOf": [
+              {
+                "$ref": "#/components/schemas/SecurityContext"
+              },
+              {
+                "$ref": "#/components/schemas/SecurityContextMember"
+              }
+            ],
+            "discriminator": {
+              "propertyName": "fundamentalPayloadType"
+            }
+          }
+        ]
+      },
+      
+      "NestedOneAllOf": {
+          "oneOf": [
+          {
+            "$ref": "#/components/schemas/VersionedObject"
+          },
+          {
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/SecurityContext"
+              },
+              {
+                "$ref": "#/components/schemas/SecurityContextMember"
+              }
+            ],
+            "discriminator": {
+              "propertyName": "fundamentalPayloadType"
+            }
+          }
+        ]
+      },
+
+			
+			"Pets": {
+				"type": "array",
+				"items": {
+					"$ref": "#/components/schemas/Pet"
+				}
+			},
+			"Error": {
+				"required": [
+					"code",
+					"message"
+				],
+				"properties": {
+					"code": {
+						"type": "integer",
+						"format": "int32"
+					},
+					"message": {
+						"type": "string"
+					}
+				}
+			}
+		}
+	}
+}
