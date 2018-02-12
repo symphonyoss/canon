@@ -75,7 +75,6 @@ public class ${model.parent.camelCapitalizedName}${model.camelCapitalizedName}Ht
     ${parameter.camelName}_ = other.get${parameter.camelCapitalizedName}();
     </#list>
     
-    // model = ${model}
     RequestBuilder builder = RequestBuilder.${model.name}()
       .setUri(
         String.format("%s${model.parent.pathFormat}",

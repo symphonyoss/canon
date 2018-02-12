@@ -20,7 +20,6 @@ import ${javaGenPackage}.${model.model.camelCapitalizedName}Model;
 public class ${model.camelCapitalizedName} extends ${model.camelCapitalizedName}ModelObject implements I${model.camelCapitalizedName}
 {
 <#-- Constrictor from fields --> 
-// checkLimitsClassThrows ${model} = <@checkLimitsClassThrows model/> 
   private ${model.camelCapitalizedName}(${modelJavaClassName}.Factory _factory, I${model.camelCapitalizedName} _other)<@checkLimitsClassThrows model/>
   {
     super(_factory, _other);

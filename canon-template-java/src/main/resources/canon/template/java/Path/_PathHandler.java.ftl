@@ -20,7 +20,7 @@ import org.symphonyoss.s2.canon.runtime.exception.ServerErrorException;
 import org.symphonyoss.s2.canon.runtime.http.ParameterLocation;
 import org.symphonyoss.s2.canon.runtime.http.RequestContext;
 
-
+import org.symphonyoss.s2.fugue.di.ComponentDescriptor;
 
 <@importFieldTypes model true/>
 
@@ -30,14 +30,31 @@ import ${javaFacadePackage}.I${model.model.camelCapitalizedName};
 @Immutable
 public abstract class ${modelJavaClassName}PathHandler extends PathHandler<I${model.model.camelCapitalizedName}> implements I${modelJavaClassName}PathHandler
 {
-  public ${modelJavaClassName}PathHandler(I${model.model.camelCapitalizedName} model)
+  private I${model.model.camelCapitalizedName} model_;
+  
+  public ${modelJavaClassName}PathHandler()
   {
-    super(model, ${model.pathParamCnt}, new String[] {
+    super(${model.pathParamCnt}, new String[] {
 <#list model.partList as part>
         "${part}"<#sep>,
 </#list>
       }
     );
+  }
+  
+  @Override
+  public I${model.model.camelCapitalizedName} getModel()
+  {
+    return model_;
+  }
+
+  @Override
+  public ComponentDescriptor getComponentDescriptor()
+  {
+    return super.getComponentDescriptor()
+        .addDependency(I${model.model.camelCapitalizedName}.class, (v) -> model_ = v)
+        .addProvidedInterface(I${modelJavaClassName}PathHandler.class)
+        .addProvidedInterface(I${model.model.camelCapitalizedName}ModelHandler.class);
   }
 
   @Override
@@ -76,9 +93,7 @@ public abstract class ${modelJavaClassName}PathHandler extends PathHandler<I${mo
   <#if operation.payload??>
   
     <@setJavaType operation.payload.schema/>
-    // operation.payload = ${operation.payload.schema}
     <#if operation.payload.schema.isTypeDef>
-      // typedef
     ${javaClassName} _payload = context.parsePayload(${javaClassName}.newBuilder());
     <#else>
     ${javaClassName} _payload = context.parsePayload(getModel().get${javaClassName}Factory());

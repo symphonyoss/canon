@@ -246,12 +246,6 @@
    # first set javaElementClassName which is the basic Java type which stores simple values.
    #
    #-->
-   // model.component = ${model.component}
-   // model.elementComponent = ${model.elementComponent}
-   // model.elementComponent.isTypeDef = ${model.elementComponent.isTypeDef?c}
-   // model.elementComponent.isComponent = ${model.elementComponent.isComponent?c}
-   // ext ${model.attributes['javaExternalType']!"NULL"}
-   // ext ${model.elementComponent.attributes['javaExternalType']!"NULL"}
   <@setType "field" model/> 
 
   <#assign javaElementClassName=getJavaClassName(model.elementComponent, model.elementComponent)/>
@@ -275,17 +269,11 @@
    #-->
    <@decorate model/>
    <@setDescription model/>
-   // model = ${model}
-   // model.baseSchema = ${model.baseSchema}
-   // model.component = ${model.component}
-   // model.elementSchema = ${model.elementSchema}
-   // model.elementComponent = ${model.elementComponent}
 </#macro>
 
 <#macro setType varPrefix model>
   <@setBaseType varPrefix model.elementSchema/>
   <@setElementType varPrefix model.elementComponent/>
-  // model = ${model}
   <#if !model.isComponent && model.isArraySchema>
     <#switch model.baseSchema.cardinality>
       <#case "SET">
@@ -303,7 +291,6 @@
 </#macro>
 
 <#macro setBaseType varPrefix model>
-// setBaseType ${model}
   <#switch model.elementType>
     <#case "Integer">
       <#switch model.format>
@@ -348,7 +335,6 @@
 </#macro>
 
 <#macro setElementType varPrefix model>
-  // setElementType ${model}
   <@"<#assign ${varPrefix}FQType=\"\">"?interpret />
   <@"<#assign ${varPrefix}ElementType=\"\">"?interpret />
   <@"<#assign ${varPrefix}ElementFQBuilder=\"\">"?interpret />
@@ -359,133 +345,43 @@
   <@"<#assign ${varPrefix}ElementFromBaseValuePrefix=\"\">"?interpret />
   <@"<#assign ${varPrefix}ElementFromBaseValueSuffix=\"\">"?interpret />
   <#if model.isTypeDef>
-    // ST1 TypeDef
     <@"<#assign ${varPrefix}ElementFromBaseValueSuffix=\")\">"?interpret />
     <#if model.attributes['javaExternalType']??>
-      // ST2 external
       <@"<#assign ${varPrefix}ElementType=\"${model.attributes['javaExternalType']}\">"?interpret />
       <@"<#assign ${varPrefix}FQType=\"${model.attributes['javaExternalPackage']}.${model.attributes['javaExternalType']}\">"?interpret />
       <#if (model.attributes['isDirectExternal']!"false") != "true">
-        // ST2a indirect external
         <@"<#assign ${varPrefix}ElementFromBaseValuePrefix=\"${model.camelCapitalizedName}Builder.build(\">"?interpret />
         <@"<#assign ${varPrefix}ElementFQBuilder=\"${javaFacadePackage}.${model.camelCapitalizedName}Builder\">"?interpret />
         <@"<#assign ${varPrefix}BaseValueFromElementPrefix=\"${model.camelCapitalizedName}Builder.to\" + ${varPrefix}BaseType + \"(\">"?interpret />
         <@"<#assign ${varPrefix}BaseValueFromElementSuffix=\")\">"?interpret />
       <#else>
-        // ST2b direct external
         <@"<#assign ${varPrefix}ElementFromBaseValuePrefix=\"${model.camelCapitalizedName}.build(\">"?interpret />
         <@"<#assign ${varPrefix}BaseValueFromElementPrefix=${varPrefix}ElementType + \".to\" + ${varPrefix}BaseType + \"(\">"?interpret />
         <@"<#assign ${varPrefix}BaseValueFromElementSuffix=\")\">"?interpret />
       </#if>
       <#return>
     <#else>
-      // ST3 Not external typedef
       <@"<#assign ${varPrefix}ElementType=\"${model.camelCapitalizedName}\">"?interpret />
       <#if model.enum??>
-        // ST3a enum
         <@"<#assign ${varPrefix}BaseValueFromElementSuffix=\".toString()\">"?interpret />
         <@"<#assign ${varPrefix}ElementFromBaseValuePrefix=\"${model.camelCapitalizedName}.valueOf(\">"?interpret />
         <@"<#assign ${varPrefix}FQType=\"${javaGenPackage}.${model.camelCapitalizedName}\">"?interpret />
       <#else>
-        // ST3b
         <@"<#assign ${varPrefix}ElementFromBaseValuePrefix=\"${model.camelCapitalizedName}.newBuilder().build(\">"?interpret />
         <@"<#assign ${varPrefix}BaseValueFromElementSuffix=\".getValue()\">"?interpret />
         <@"<#assign ${varPrefix}FQType=\"${javaFacadePackage}.${model.camelCapitalizedName}\">"?interpret />
       </#if>
     </#if>
     <#else>
-      // ST4 not typedef
       <#if model.isComponent>
-        // ST5 component  
         <@"<#assign ${varPrefix}ElementType=\"${model.camelCapitalizedName}\">"?interpret />
         <@"<#assign ${varPrefix}FQType=\"${javaFacadePackage}.${model.camelCapitalizedName}\">"?interpret />
       <#else>
-        // ST6 not a component
         <@"<#assign ${varPrefix}ElementType=${varPrefix}BaseType>"?interpret />
       </#if>
   </#if>
 
 </#macro>
-
-
-<#--------
-<#macro setTypeName varPrefix model>
-// setTypeName ${varPrefix} ${model}
-  <@"<#assign ${varPrefix}Type=\"\">"?interpret />
-  <@"<#assign ${varPrefix}Builder=\"\">"?interpret />
-  <@"<#assign ${varPrefix}FQBuilder=\"\">"?interpret />
-  <#if model.isTypeDef>
-// ST1 TypeDef
-    <#if model.attributes['javaExternalType']??>
-// ST2 external
-    <#if (model.attributes['isDirectExternal']!"false") != "true">
-// ST2a indirect external
-      <@"<#assign ${varPrefix}Builder=\"${model.camelCapitalizedName}Builder\">"?interpret />
-      <@"<#assign ${varPrefix}FQBuilder=\"${javaFacadePackage}.${model.camelCapitalizedName}Builder\">"?interpret />
-    <#else>
-// ST2b direct external
-      <@"<#assign ${varPrefix}Builder=\"${model.camelCapitalizedName}\">"?interpret />
-    </#if>
-// assign ${varPrefix}Type=${model.attributes['javaExternalType']}
-      <@"<#assign ${varPrefix}Type=\"${model.attributes['javaExternalType']}\">"?interpret />
-      <#return>
-    </#if>
-  </#if>
-  <#if model.isComponent>
-// ST3 component
-// assign ${varPrefix}Type="${model.camelCapitalizedName}"
-    <@"<#assign ${varPrefix}Type=\"${model.camelCapitalizedName}\">"?interpret />
-    <#return>
-  </#if>
-  <#if model.isArraySchema>
-    <#switch model.cardinality>
-      <#case "SET">
-        <#return "Set<${getJavaClassName(element, element)}>">
-        
-      <#default>
-        <#return "List<${getJavaClassName(element, element)}>">
-    </#switch>
-  </#if>
-// ST UNIMPLEMENTED
-<@"<#assign ${varPrefix}Type=\"UNIMPLEMENTED\">"?interpret />
-
-
-  <#switch model.elementType>
-    <#case "Integer">
-      <#switch model.format>
-        <#case "int32">
-          <#return "Integer">
-          
-         <#default>
-          <#return "Long">
-      </#switch>
-      
-    <#case "Double">
-      <#switch model.format>
-        <#case "float">
-          <#return "Float">
-        
-        <#default>
-          <#return "Double">
-      </#switch>
-    
-    <#case "String">
-      <#switch model.format>
-        <#case "byte">
-          <#return "ByteString">
-        
-        <#default>
-          <#return "String">
-      </#switch>
-    
-    <#case "Boolean">
-      <#return "Boolean">
-    
-    <#default>
-      <#return "${model.camelCapitalizedName}">
-  </#switch>
-</#macro>
---------->
 
 
 <#------------------------------------------------------------------------------------------------------
@@ -654,9 +550,7 @@
 </#macro>
 
 <#macro setTypeDefClassName model>
-//E1
   <#if model.attributes['javaExternalType']??>
-  //E2
     <#assign isExternal=true>
     <#assign javaClassName=model.attributes['javaExternalType']>
     <#assign javaFullyQualifiedClassName="${model.attributes['javaExternalPackage']}.${fieldType}">
@@ -669,7 +563,6 @@
       <#assign javaGeneratedBuilderClassName="${model.camelCapitalizedName}">
     </#if>
   <#else>
-  //E3
     <#if model.enum??>
       <#assign javaGeneratedBuilderClassName="${model.camelCapitalizedName}">
       <#assign javaGeneratedBuilderFullyQualifiedClassName="${javaGenPackage}.${javaGeneratedBuilderClassName}">
@@ -691,7 +584,6 @@
  # @param String fieldClassName   Value of ${javaFieldClassName}
  #----------------------------------------------------------------------------------------------------->
 <#macro setClassName model fieldClassName>
-// SC1 model.isComponent=${model.isComponent?c} isExternal = ${isExternal?c}
   <#if model.isComponent>
     <@setTypeDefClassName model.baseSchema/>
   <#else>
@@ -981,55 +873,34 @@ ${indent}}
  #----------------------------------------------------------------------------------------------------->
 <#macro generateCreateJsonDomNodeFromField indent field var>
   <@setJavaType field/>
-  // Start generateCreateJsonDomNodeFromField field=${field}
-// generic
-//${indent}${var}.${addJsonNode}("${field.camelName}", ${javaGetValuePrefix}${field.camelName}__${javaGetValuePostfix});
-
-
-// the real deal
   <#if field.isComponent>
-  // A1 component
     <#if field.enum??>
-  // A2 enum
 ${indent}${var}.addIfNotNull("${field.camelName}", ${field.camelName}__.toString());
     <#else>
-  // A3 not enum
       <#if field.isArraySchema>
-  // A4 array
 ${indent}${var}.addIfNotNull("${field.camelName}", ${field.camelName}__.getJsonArray());
       <#else>
-  // A5 not array
         <#if isExternal>
-  // A6 external
           <#if isDirectExternal>
-  // A6a direct external
 ${indent}${var}.addIfNotNull("${field.camelName}", ${fieldType}.to${javaFieldClassName}(${field.camelName}__${javaGetValuePostfix});
           <#else>
-  // A6b indirect external
 ${indent}${var}.addIfNotNull("${field.camelName}", ${javaGetValuePrefix}${field.camelName}__${javaGetValuePostfix});
           </#if>
         <#else>
-  // A6a not external
           <#if field.isObjectSchema>
-  // A7 object
 ${indent}${var}.addIfNotNull("${field.camelName}", ${field.camelName}__.getJsonObject());
           <#else>
-  // A8 not object
 ${indent}${var}.addIfNotNull("${field.camelName}", ${field.camelName}__.getValue());
           </#if>
         </#if>
       </#if>
     </#if>
   <#else>
-  // A9 not component
     <#if field.isArraySchema>
-  // A10 array
       <#if field.baseSchema.items.baseSchema.isObjectSchema>
-      // A10a array of objects
 ${indent}${var}.addCollectionOfDomNode("${field.camelName}", ${javaGetValuePrefix}${field.camelName}__${javaGetValuePostfix});
 
       <#else>
-  // A11 array of not objects
 ${indent}MutableJsonArray  valueList = new MutableJsonArray();
 
 ${indent}for(${fieldElementType} value : ${field.camelName}__)
@@ -1048,15 +919,9 @@ ${indent}${var}.add("${field.camelName}", valueList);
         </#if>
       </#if>
     <#else>
-  // A14 not array
 ${indent}${var}.addIfNotNull("${field.camelName}", ${field.camelName}__);
     </#if>
   </#if>
-  
-  
-  
-  
-  // End generateCreateJsonDomNodeFromField
 </#macro>
 
 <#------------------------------------------------------------------------------------------------------
@@ -1072,9 +937,7 @@ ${indent}${var}.addIfNotNull("${field.camelName}", ${field.camelName}__);
 <#macro generateCreateFieldFromJsonDomNode indent field var>
   <@setJavaType field/>
   <#if field.isComponent>
-  // T1 component
     <#if field.isObjectSchema>
-  // T2 object
 ${indent}if(node instanceof ImmutableJsonObject)
 ${indent}{
 ${indent}  ${var} = _factory.getModel().get${fieldType}Factory().newInstance((ImmutableJsonObject)node);
@@ -1084,9 +947,7 @@ ${indent}{
 ${indent}  throw new BadFormatException("${field.camelName} must be an Object node not " + node.getClass().getName());
 ${indent}}
     <#else>
-  // T3 not object
       <#if field.isArraySchema>
-  // T4 array
 ${indent}if(node instanceof ImmutableJsonArray)
 ${indent}{
 ${indent}  ${var} = ${fieldType}.newBuilder().with((ImmutableJsonArray)node).build();
@@ -1097,7 +958,6 @@ ${indent}{
 ${indent}  throw new BadFormatException("${field.camelName} must be an Array node not " + node.getClass().getName());
 ${indent}}
       <#else>
-  // T5 not array
 ${indent}if(node instanceof I${javaElementFieldClassName}Provider)
 ${indent}{
 ${indent}  ${javaElementFieldClassName} value = ((I${javaElementFieldClassName}Provider)node).as${javaElementFieldClassName}();
@@ -1118,22 +978,11 @@ ${indent}}
         </#if>
       </#if>
   <#else>
-  // T6 not component
     <#if field.isArraySchema>
 ${indent}if(node instanceof ImmutableJsonArray)
 ${indent}{
-//BRUCE
-// field.baseSchema.items = ${field.baseSchema.items}
-// field.baseSchema.items.baseSchema = ${field.baseSchema.items.baseSchema}
-// field.baseSchema.items.baseSchema.parent = ${field.baseSchema.items.baseSchema.parent}
-// field.baseSchema.items.isComponent = ${field.baseSchema.items.isComponent?c}
-// field.baseSchema.items.isTypeDef = ${field.baseSchema.items.isTypeDef?c}
     <#if field.baseSchema.items.isTypeDef>
-// field.baseSchema.items = ${field.baseSchema.items}
-// field.baseSchema.items.component = ${field.baseSchema.items.component}
-// field.baseSchema.items.baseSchema = ${field.baseSchema.items.baseSchema}
 <#assign elementClassName=field.baseSchema.items.baseSchema.camelCapitalizedName>   
-// elementClassName = ${elementClassName}
     
 ${indent}${javaCardinality}<${javaElementClassName}> list${javaBuilderTypeNew};
     
@@ -1145,7 +994,6 @@ ${indent}    ${javaElementFieldClassName} value = ((I${javaElementFieldClassName
 <@createTypeDefValue indent field.baseSchema.items.baseSchema "list" "value"/>
 ${indent}  }
 ${indent}}
-// TypeDef
 ${indent}    ${var} = ${javaTypeCopyPrefix}list${javaTypeCopyPostfix};
     <#else>
       <#if field.baseSchema.items.isComponent>
@@ -1179,21 +1027,16 @@ ${indent}}
 
 
 <#macro createTypeDefValue indent model var value>
-// model = ${model}
   <#if model.attributes['javaExternalType']??>
     <#if (model.attributes['isDirectExternal']!"false") != "true">
-// NONdirect external
 ${indent}    ${var}.add(${model.camelCapitalizedName}Builder.build(${value}));
     <#else>
-// direct external
 ${indent}    ${var}.add(${model.attributes['javaExternalPackage']}.${model.attributes['javaExternalType']}.build(${value}));
     </#if>
   <#else>
     <#if model.enum??>
-    //Enum
 ${indent}    ${var}.add(${javaGenPackage}.${model.camelCapitalizedName}.valueOf(${value}));
     <#else>
-    // normal generated class
 ${indent}    ${var}.add(${javaFacadePackage}.${model.camelCapitalizedName}.newBuilder().build(${value}));
     </#if>
   </#if>

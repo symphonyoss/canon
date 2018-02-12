@@ -25,15 +25,12 @@ package org.symphonyoss.s2.canon.runtime;
 
 import java.io.IOException;
 import java.io.Reader;
-import java.util.Collection;
 
 import org.symphonyoss.s2.common.dom.json.ImmutableJsonObject;
 import org.symphonyoss.s2.common.exception.BadFormatException;
-import org.symphonyoss.s2.common.http.IServletProvider;
-import org.symphonyoss.s2.common.http.IUrlPathServlet;
 import org.symphonyoss.s2.fugue.di.IComponent;
 
-public interface IModelRegistry extends IServletProvider, IComponent
+public interface IModelRegistry extends IComponent
 {
   IModelRegistry register(IModel factory);
 
@@ -45,11 +42,6 @@ public interface IModelRegistry extends IServletProvider, IComponent
   
   void parseStream(Reader reader, IModelObjectConsumer consumer) throws BadFormatException;
   
-  Collection<IUrlPathServlet> getServlets();
-
-  void start();
-  
-  void stop();
-
-  void register(IUrlPathServlet servlet);
+//  Collection<IUrlPathServlet> getServlets();
+//  void register(IUrlPathServlet servlet);
 }

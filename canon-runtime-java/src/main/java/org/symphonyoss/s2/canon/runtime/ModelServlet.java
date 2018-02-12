@@ -36,12 +36,12 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.symphonyoss.s2.canon.runtime.http.HttpMethod;
 import org.symphonyoss.s2.canon.runtime.http.RequestContext;
+import org.symphonyoss.s2.fugue.di.ComponentDescriptor;
 
 public abstract class ModelServlet<M extends IModel> extends HttpServlet implements IModelServlet
 {
   private static final long serialVersionUID = 1L;
 
-  private final M  model_;
   private TreeMap<Integer, List<IModelHandler>>  handlerMap_ = new TreeMap<>(new Comparator<Integer>()
       {
         /*
@@ -59,11 +59,14 @@ public abstract class ModelServlet<M extends IModel> extends HttpServlet impleme
           return 0;
         }});
 
-  public ModelServlet(M model)
+  @Override
+  public ComponentDescriptor getComponentDescriptor()
   {
-    model_ = model;
+    return new ComponentDescriptor();
   }
-
+  
+  public abstract M getModel();
+  
   public void register(IModelHandler handler)
   {
     List<IModelHandler> list = handlerMap_.get(handler.getPartsLength());

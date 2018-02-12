@@ -91,9 +91,6 @@ public class ${modelJavaClassName}ModelArray extends Model${modelJavaCardinality
     {
       MutableJsonArray jsonArray = new MutableJsonArray();
       
-      <@printModel/>
-      // model.items = ${model.items}
-      // model.items.baseSchema.isObjectSchema = ${model.items.baseSchema.isObjectSchema?c}
       for(${modelJavaElementClassName} value : elements__)
       <#if model.items.baseSchema.isObjectSchema>
         jsonArray.add(value.getJsonObject());

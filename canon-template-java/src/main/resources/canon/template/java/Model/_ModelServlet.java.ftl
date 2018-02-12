@@ -4,6 +4,9 @@
 import javax.annotation.concurrent.Immutable;
 
 import org.symphonyoss.s2.canon.runtime.ModelServlet;
+import org.symphonyoss.s2.common.http.IUrlPathServlet;
+import org.symphonyoss.s2.fugue.di.Cardinality;
+import org.symphonyoss.s2.fugue.di.ComponentDescriptor;
 
 import ${javaFacadePackage}.I${model.model.camelCapitalizedName};
 
@@ -11,15 +14,29 @@ import ${javaFacadePackage}.I${model.model.camelCapitalizedName};
 public class ${modelJavaClassName}ModelServlet extends ModelServlet<I${model.model.camelCapitalizedName}>
 {
   private static final long serialVersionUID = 1L;
+  
+  private I${model.model.camelCapitalizedName} model_;
 
   public ${modelJavaClassName}ModelServlet(
-    I${model.model.camelCapitalizedName} model,
     I${model.model.camelCapitalizedName}ModelHandler ...handlers)
   {
-    super(model);
-    
     for(I${model.model.camelCapitalizedName}ModelHandler handler : handlers)
       register(handler);
+  }
+  
+  @Override
+  public I${model.model.camelCapitalizedName} getModel()
+  {
+    return model_;
+  }
+
+  @Override
+  public ComponentDescriptor getComponentDescriptor()
+  {
+    return super.getComponentDescriptor()
+        .addDependency(I${model.model.camelCapitalizedName}.class, (v) -> model_ = v)
+        .addDependency(I${model.model.camelCapitalizedName}ModelHandler.class, (v) -> register(v), Cardinality.oneOrMore)
+        .addProvidedInterface(IUrlPathServlet.class);
   }
  
   @Override
@@ -35,12 +52,7 @@ public class ${modelJavaClassName}ModelServlet extends ModelServlet<I${model.mod
 	   ${"RequestContext"?right_pad(25)} context = new RequestContext(req, resp);
 
 	<#list operation.parameters as parameter>
-	// parameter.class = ${parameter.class}
-	// parameter.name = ${parameter.name}
-  // parameter.location = ${parameter.location}
-  // parameter.schema.class = ${parameter.schema.class}
 		<@setJavaType parameter.schema/>
-		<@printField/>
 		${javaFieldClassName?right_pad(25)} _${parameter.camelName}Value = context.getParameterAs${javaFieldClassName}("${parameter.name}", ParameterLocation.${parameter.location}, ${parameter.isRequired?c});
 		${javaClassName?right_pad(25)} ${parameter.camelName} = _${parameter.camelName}Value == null ? null :
 		${" "?right_pad(25)}	     ${javaConstructTypePrefix}_${parameter.camelName}Value${javaConstructTypePostfix};

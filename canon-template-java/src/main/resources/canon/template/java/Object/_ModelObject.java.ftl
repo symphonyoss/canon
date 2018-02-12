@@ -191,11 +191,5 @@
       public abstract ${modelJavaClassName} build()<@checkLimitsClassThrows model/>;
     }
   }
-  
-  <#list model.children as field>
-    <#if field.isAnonymousInnerClass>
-      // AnonymousInnerClass ${field.name}
-    </#if>
-  </#list>
 }
 <#include "../canon-template-java-Epilogue.ftl">

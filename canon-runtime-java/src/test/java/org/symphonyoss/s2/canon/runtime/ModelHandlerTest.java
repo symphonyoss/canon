@@ -27,19 +27,16 @@ import static org.junit.Assert.fail;
 
 import java.util.List;
 
-import org.junit.Assert;
 import org.junit.Test;
-import org.symphonyoss.s2.canon.runtime.IModelRegistry;
-import org.symphonyoss.s2.canon.runtime.Model;
-import org.symphonyoss.s2.canon.runtime.PathHandler;
 import org.symphonyoss.s2.canon.runtime.http.RequestContext;
+import org.symphonyoss.s2.fugue.di.ComponentDescriptor;
 
 public class ModelHandlerTest
 {
   @Test
   public void testNoParam()
   {
-    PathHandler handler = testHandler(0, "/users", "/users");
+    PathHandler<TestModel> handler = testHandler(0, "/users", "/users");
     
     test(handler, "/users", true);
     test(handler, "/users/", false);
@@ -50,7 +47,7 @@ public class ModelHandlerTest
   @Test
   public void testOneParam()
   {
-    PathHandler handler = testHandler(1, "/users/{userId}", "/users/");
+    PathHandler<TestModel> handler = testHandler(1, "/users/{userId}", "/users/");
     
     test(handler, "/users", false);
     test(handler, "/users/", false);
@@ -61,7 +58,7 @@ public class ModelHandlerTest
   @Test
   public void testOneParamExtra()
   {
-    PathHandler handler = testHandler(1, "/users/{userId}/extra", "/users/", "/extra");
+    PathHandler<TestModel> handler = testHandler(1, "/users/{userId}/extra", "/users/", "/extra");
     
     test(handler, "/users", false);
     test(handler, "/users/", false);
@@ -69,7 +66,7 @@ public class ModelHandlerTest
     test(handler, "/users/21", false);
   }
 
-  private void test(PathHandler handler, String path, boolean expected)
+  private void test(PathHandler<TestModel> handler, String path, boolean expected)
   {
     if((handler.getVariablesIfCanHandle(path)!=null) != expected)
     {
@@ -85,6 +82,11 @@ public class ModelHandlerTest
   
   class TestModel extends Model
   {
+    @Override
+    public ComponentDescriptor getComponentDescriptor()
+    {
+      return new ComponentDescriptor();
+    }
 
     @Override
     public void registerWith(IModelRegistry registry)
@@ -92,28 +94,35 @@ public class ModelHandlerTest
       // TODO Auto-generated method stub
       
     }
-
-    @Override
-    public void start()
-    {
-      // TODO Auto-generated method stub
-      
-    }
-
-    @Override
-    public void stop()
-    {
-      // TODO Auto-generated method stub
-      
-    }
+//
+//    @Override
+//    public void start()
+//    {
+//      // TODO Auto-generated method stub
+//      
+//    }
+//
+//    @Override
+//    public void stop()
+//    {
+//      // TODO Auto-generated method stub
+//      
+//    }
 
     
   }
 
   private PathHandler<TestModel> testHandler(int varCnt, final String path, String ...parts)
   {
-    return new PathHandler<TestModel>(new TestModel(), varCnt, parts)
+    return new PathHandler<TestModel>(varCnt, parts)
     {
+      TestModel model_ = new TestModel();
+      
+      @Override
+      public TestModel getModel()
+      {
+        return model_;
+      }
 
       @Override
       public String getPath()

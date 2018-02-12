@@ -25,20 +25,26 @@ package org.symphonyoss.s2.canon.test.oneofeverything;
 
 import java.io.IOException;
 
-import org.symphonyoss.s2.canon.runtime.AbstractServer;
-import org.symphonyoss.s2.canon.runtime.IModelRegistry;
-
 import org.symphonyoss.s2.canon.test.oneofeverything.facade.OneOfEverything;
+import org.symphonyoss.s2.fugue.FugueServer;
+import org.symphonyoss.s2.fugue.di.IDIContext;
 
-public class OneOfEverythingServer extends AbstractServer
+public class OneOfEverythingServer extends FugueServer
 {
   private OneOfEverything  model_ = new OneOfEverything();
   
-  @Override
-  public void registerModels(IModelRegistry registry)
+  public OneOfEverythingServer()
   {
-    registry.register(model_);
+    super("OneOfEverythingServer", 8080);
   }
+
+
+  @Override
+  protected void registerComponents(IDIContext diContext)
+  {
+    diContext.register(model_);
+  }
+
 
   public static void main(String[] argv) throws IOException
   {

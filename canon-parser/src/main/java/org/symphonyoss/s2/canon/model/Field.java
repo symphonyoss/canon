@@ -119,8 +119,6 @@ public class Field extends AbstractSchema
   @Override
   public boolean getIsComponent()
   {
-    if("directExternalListField".equals(getName()))
-      System.err.println("HERE");
     return type_.getIsComponent();
   }
   

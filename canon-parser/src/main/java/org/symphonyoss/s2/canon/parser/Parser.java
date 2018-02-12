@@ -60,6 +60,9 @@ public class Parser
           .configure(Feature.ALLOW_BACKSLASH_ESCAPING_ANY_CHARACTER, true);
       JsonNode rootNode = mapper.readTree(rootParserContext.getReader());
       
+      if(rootNode == null)
+        throw new ParsingException("Null input");
+      
       ProcessingReport report = schema_.validate(rootNode);
       
 //      if(report.isSuccess())

@@ -41,7 +41,6 @@ public class ${modelJavaClassName}ModelType<#if isComparable(model)> extends Mod
     if(node == null)
       throw new BadFormatException("value is required.");
 
-  // T1 model.elementType = ${model.elementType}
     if(node instanceof I${javaElementFieldClassName}Provider)
     {
       ${javaElementFieldClassName} value = ((I${javaElementFieldClassName}Provider)node).as${javaElementFieldClassName}();
@@ -95,13 +94,6 @@ public class ${modelJavaClassName}ModelType<#if isComparable(model)> extends Mod
   {
     return value_.compareTo(other.value_);
   }
-  </#if>
-  
-  <#if model.enum??>
-  // ENUM
-    <#list model.enum.values as value>
-    // value ${value}
-    </#list>
   </#if>
   
   public static abstract class Builder extends Model${modelJavaFieldClassName}TypeBuilder<${modelJavaClassName}>

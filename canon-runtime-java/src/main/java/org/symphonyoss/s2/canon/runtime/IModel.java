@@ -23,11 +23,9 @@
 
 package org.symphonyoss.s2.canon.runtime;
 
-public interface IModel
+import org.symphonyoss.s2.fugue.di.IComponent;
+
+public interface IModel extends IComponent
 {
   void registerWith(IModelRegistry registry);
-
-  void start();
-
-  void stop();
 }

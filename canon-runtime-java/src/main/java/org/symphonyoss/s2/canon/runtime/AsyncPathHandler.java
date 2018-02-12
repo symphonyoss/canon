@@ -37,12 +37,12 @@ extends PathHandler<M>
   private final ExecutorService responseExecutor_;
   
 
-  public AsyncPathHandler(M model,
+  public AsyncPathHandler(
       ExecutorService processExecutor,
       ExecutorService responseExecutor,
       int variableCnt, String[] parts)
   {
-    super(model, variableCnt, parts);
+    super(variableCnt, parts);
     
     if(processExecutor == null)
       throw new IllegalArgumentException("processExecutor is required");

@@ -11,6 +11,8 @@ import org.symphonyoss.s2.canon.runtime.CanonRuntime;
 import org.symphonyoss.s2.canon.runtime.ModelObject;
 import org.symphonyoss.s2.canon.runtime.Model;
 
+import org.symphonyoss.s2.fugue.di.ComponentDescriptor;
+
 import ${javaFacadePackage}.I${model.camelCapitalizedName};
 
 <#list model.schemas as object>
@@ -22,10 +24,16 @@ import ${javaFacadePackage}.${object.camelCapitalizedName};
 public abstract class ${model.camelCapitalizedName}Model extends Model implements I${model.camelCapitalizedName}
 {
 <#list model.schemas as object>
-// schema ${object}
   private final ${(object.camelCapitalizedName + ".Factory")?right_pad(35)}  ${(object.camelName + "Factory_")?right_pad(35)} = new ${object.camelCapitalizedName}.Factory(this);
  </#list>
 
+  @Override
+  public ComponentDescriptor getComponentDescriptor()
+  {
+    return super.getComponentDescriptor()
+        .addProvidedInterface(I${model.camelCapitalizedName}.class);
+  }
+  
   @Override
   public void registerWith(IModelRegistry registry)
   {
@@ -35,11 +43,11 @@ public abstract class ${model.camelCapitalizedName}Model extends Model implement
   }
 <#list model.schemas as object>
 
-    @Override
-    public ${object.camelCapitalizedName}.Factory get${object.camelCapitalizedName}Factory()
-    {
-      return ${object.camelName}Factory_;
-    }
+  @Override
+  public ${object.camelCapitalizedName}.Factory get${object.camelCapitalizedName}Factory()
+  {
+    return ${object.camelName}Factory_;
+  }
 </#list>
 }
 <#include "../canon-template-java-Epilogue.ftl">

@@ -34,19 +34,18 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.symphonyoss.s2.canon.runtime.exception.JapiException;
 import org.symphonyoss.s2.canon.runtime.http.RequestContext;
+import org.symphonyoss.s2.fugue.di.ComponentDescriptor;
 
 public abstract class PathHandler<M extends IModel> implements IModelHandler
 {
   private static final Logger log_ = LoggerFactory.getLogger(PathHandler.class);
   
-  private final M        model_;
   private final int      variableCnt_;
   private final String[] parts_;
   private final int      partsLength_;
   
-  public PathHandler(M model, int variableCnt, String[] parts)
+  public PathHandler(int variableCnt, String[] parts)
   {
-    model_ = model;
     parts_ = parts;
     variableCnt_ = variableCnt;
     
@@ -58,9 +57,12 @@ public abstract class PathHandler<M extends IModel> implements IModelHandler
     partsLength_ = cnt;
   }
 
-  public M getModel()
+  public abstract M getModel();
+
+  @Override
+  public ComponentDescriptor getComponentDescriptor()
   {
-    return model_;
+    return new ComponentDescriptor();
   }
 
   @Override

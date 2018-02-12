@@ -48,6 +48,11 @@
       <version>${project.version}</version>
     </dependency>
     
+    <dependency>
+      <groupId>org.symphonyoss.s2.fugue</groupId>
+      <artifactId>fugue-core</artifactId>
+    </dependency>
+    
     <dependency> 
 		  <groupId>ch.qos.logback</groupId>
 		  <artifactId>logback-classic</artifactId>

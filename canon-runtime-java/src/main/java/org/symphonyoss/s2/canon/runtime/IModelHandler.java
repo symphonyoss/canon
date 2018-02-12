@@ -26,8 +26,9 @@ package org.symphonyoss.s2.canon.runtime;
 import java.io.IOException;
 
 import org.symphonyoss.s2.canon.runtime.http.RequestContext;
+import org.symphonyoss.s2.fugue.di.IComponent;
 
-public interface IModelHandler
+public interface IModelHandler extends IComponent
 {
   String  getPath();
 
