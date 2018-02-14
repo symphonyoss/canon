@@ -46,7 +46,7 @@ public class Parser
  
   public Parser() throws ParsingException
   {
-    schema_ = getJsonSchemaFromClasspath("openapiv3.schema.json");
+    schema_ = getJsonSchemaFromClasspath("canon-schema-v1.json");
   }
 
   public Model parse(RootParserContext rootParserContext) throws ParsingException
@@ -65,16 +65,16 @@ public class Parser
       
       ProcessingReport report = schema_.validate(rootNode);
       
-//      if(report.isSuccess())
-//      {
-//        log_.info("Schema validation passed.");
-//      }
-//      else
-//      {
-//        rootParserContext.error("Schema validation FAILED:");
-//        log_.error(report.toString());
-//        throw new SchemaValidationException(report.toString());
-//      }
+      if(report.isSuccess())
+      {
+        log_.info("Schema validation passed.");
+      }
+      else
+      {
+        rootParserContext.error("Schema validation FAILED:");
+        log_.error(report.toString());
+        throw new SchemaValidationException(report.toString());
+      }
       
       Model model = new Model(new ParserContext(rootParserContext, rootNode));
       

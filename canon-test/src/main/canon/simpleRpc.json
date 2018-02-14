@@ -1,5 +1,5 @@
 {
-	"openapi": "3.0.0",
+	"canon": "0.0.1",
 	"info": {
 		"version": "0.0.1",
 		"title": "Canon Simple RPC Test Case",
@@ -7,14 +7,12 @@
 			"name": "Apache2"
 		}
 	},
-	"x-canon-id": "https://github.com/bruceskingle/canon/blob/master/canon-test/src/main/resources/test/simpleRpc.json",
-	"x-canon-model": {
+	"id": "https://github.com/bruceskingle/canon/blob/master/canon-test/src/main/resources/test/simpleRpc.json",
+	"model": {
 		"javaGenPackage": "org.symphonyoss.s2.canon.test.unit",
 		"javaFacadePackage": "org.symphonyoss.s2.canon.test.unit.facade"
 	},
-	"paths": {
-	},
-	"x-canon-methods": {
+	"methods": {
 		"/invoices": {
 			"summary": "Invoice operations.",
 			"description": "Various operations at the invoice level.",

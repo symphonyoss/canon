@@ -42,7 +42,7 @@ public class TestParser extends AbstractParserTest
 //  public void testIncomplete() throws ParsingException
 //  {
 //    test(false, "{\n" + 
-//        "  \"openapi\": \"3.0.0\",\n" + 
+//        "  \"canon\": \"0.0.1\",\n" + 
 //        "  \"info\": {\n" + 
 //        "    \"version\": \"0.0.1\",\n" + 
 //        "    \"title\": \"Canon Template Type Check\",\n" + 
@@ -57,7 +57,7 @@ public class TestParser extends AbstractParserTest
   public void testInvalid() throws ParsingException
   {
     Model model = test(false, "{\n" + 
-        "  \"openapi\": \"3.0.0\",\n" + 
+        "  \"canon\": \"0.0.1\",\n" + 
         "  \"info\": {\n" + 
         "    \"version\": \"0.0.1\",\n" + 
         "    \"title\": \"Canon Template Type Check\",\n" + 
@@ -65,7 +65,6 @@ public class TestParser extends AbstractParserTest
         "      \"name\": \"Apache2\"\n" + 
         "    }\n" + 
         "  },\n" + 
-        "  \"paths\": {},\n" + 
         "  \"components\": {}\n" + 
         "  }\n" + 
         "}");
@@ -77,7 +76,7 @@ public class TestParser extends AbstractParserTest
   public void testMinimal() throws ParsingException
   {
     test(true, "{\n" + 
-        "  \"openapi\": \"3.0.0\",\n" + 
+        "  \"canon\": \"0.0.1\",\n" + 
         "  \"info\": {\n" + 
         "    \"version\": \"0.0.1\",\n" + 
         "    \"title\": \"Canon Template Type Check\",\n" + 
@@ -85,12 +84,11 @@ public class TestParser extends AbstractParserTest
         "      \"name\": \"Apache2\"\n" + 
         "    }\n" + 
         "  },\n" + 
-        "  \"x-canon-id\": \"https://github.com/bruceskingle/canon/blob/master/canon-test/src/main/resources/test/typeCheck.json\",\n" + 
-        "  \"x-canon-model\": {\n" + 
+        "  \"id\": \"https://github.com/bruceskingle/canon/blob/master/canon-test/src/main/resources/test/typeCheck.json\",\n" + 
+        "  \"model\": {\n" + 
         "    \"javaGenPackage\":  \"org.symphonyoss.s2.canon.test.typeCheck\",\n" + 
         "    \"javaFacadePackage\":  \"org.symphonyoss.s2.canon.test.typeCheck.facade\"\n" + 
         "  },\n" + 
-        "  \"paths\": {},\n" + 
         "  \"components\": {}\n" + 
         "  }\n" + 
         "}");
@@ -100,7 +98,7 @@ public class TestParser extends AbstractParserTest
   public void testBadByteFormat() throws ParsingException
   {
     Model model = test(true, "{\n" + 
-        "  \"openapi\": \"3.0.0\",\n" + 
+        "  \"canon\": \"0.0.1\",\n" + 
         "  \"info\": {\n" + 
         "    \"version\": \"0.0.1\",\n" + 
         "    \"title\": \"Symphony 2.0 Typedefs\",\n" + 
@@ -108,12 +106,11 @@ public class TestParser extends AbstractParserTest
         "      \"name\": \"Apache2\"\n" + 
         "    }\n" + 
         "  },\n" + 
-        "  \"x-canon-id\": \"https://github.com/bruceskingle/canon/blob/master/canon-test/src/main/resources/test/typeCheck.json\",\n" + 
-        "  \"x-canon-model\": {\n" + 
+        "  \"id\": \"https://github.com/bruceskingle/canon/blob/master/canon-test/src/main/resources/test/typeCheck.json\",\n" + 
+        "  \"model\": {\n" + 
         "    \"javaGenPackage\":  \"com.symphony.s2.common.types.canon\",\n" + 
         "    \"javaFacadePackage\":  \"com.symphony.s2.common.types.canon.facade\"\n" + 
         "  },\n" + 
-        "  \"paths\": {},\n" + 
         "  \"components\": {\n" + 
         "    \"schemas\": {\n" + 
         "      \"Hash\": {\n" + 

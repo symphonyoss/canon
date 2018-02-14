@@ -118,7 +118,6 @@
  *    javaFieldClassName            ${javaFieldClassName!"NULL"}
  *    javaElementClassName          ${javaElementClassName!"NULL"}
  *    javaElementFieldClassName     ${javaElementFieldClassName!"NULL"}
- 
  *    fieldType                     ${fieldType!"NULL"}
  *    fieldFQType                   ${fieldFQType!"NULL"}
  *    fieldCardinality              ${fieldCardinality!"NULL"}
@@ -128,7 +127,6 @@
  *    fieldBaseValueFromElement     ${fieldBaseValueFromElementPrefix!"NULL"}X${fieldBaseValueFromElementSuffix!"NULL"}
  *    fieldElementFQBuilder         ${fieldElementFQBuilder!"NULL"}  
  *    fieldJsonFromElement          ${fieldJsonFromElementPrefix!"NULL"}X${fieldJsonFromElementSuffix!"NULL"}
-  
  *    isGenerated                   ${isGenerated?c}
  *    isExternal                    ${isExternal?c}
  *    requiresChecks                ${requiresChecks?c}
@@ -151,7 +149,6 @@
 <#macro setPrologueJavaType model>
 <@setModelJavaType model/>
 <#if templateDebug??>
-<@printModel/>
 </#if>
 </#macro>
 
@@ -206,10 +203,6 @@
   <#else>
     <#assign modelJavaCardinality="">
   </#if>
-  
-   
-  <@printModel/>
-  
 </#macro>
 
 <#------------------------------------------------------------------------------------------------------
@@ -247,7 +240,6 @@
    #
    #-->
   <@setType "field" model/> 
-
   <#assign javaElementClassName=getJavaClassName(model.elementComponent, model.elementComponent)/>
   <#assign javaElementFieldClassName=getJavaClassName(model.elementSchema, model.elementSchema)/>
   <#-- 

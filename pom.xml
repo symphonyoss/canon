@@ -43,6 +43,7 @@
 	<module>canon-maven-plugin</module>
 	<module>canon-template-java</module>
 	<module>canon-runtime-java</module>
+	<module>canon-launch</module>
 	</modules>
 
 	<licenses>
@@ -77,7 +78,7 @@
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<maven.compiler.source>1.8</maven.compiler.source>
 		<maven.compiler.target>1.8</maven.compiler.target>
-		<s2.common.version>0.1.11-SNAPSHOT</s2.common.version>
+		<s2.common.version>0.1.12-SNAPSHOT</s2.common.version>
 		<fugue.version>0.0.2-SNAPSHOT</fugue.version>
 	</properties>
 

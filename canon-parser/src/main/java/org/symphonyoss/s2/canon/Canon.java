@@ -41,13 +41,12 @@ public class Canon
   public static final String PROFORMA            = "proforma";
 
   /* JSON Constants */
-  public static final String X_MODEL             = "x-canon-model";
-  public static final String X_ID                = "x-canon-id";
+  public static final String X_MODEL             = "model";
+  public static final String X_ID                = "id";
   public static final String X_ATTRIBUTES        = "x-canon-attributes";
   public static final String X_CARDINALITY       = "x-canon-cardinality";
   public static final String X_CARDINALITY_LIST  = "LIST";
   public static final String X_CARDINALITY_SET   = "SET";
-  public static final String DISCRIMINATOR       = "discriminator";
   public static final String PROPERTY_NAME       = "propertyName";
   public static final String MAPPING             = "mapping";
   public static final String ENUM                = "enum";
@@ -268,7 +267,7 @@ public class Canon
   {
     if(verbose_)
     {
-      System.out.printf("JAPIGEN\n");
+      System.out.printf("Canon\n");
       System.out.printf("verbose:          %s\n", verbose_);
       System.out.printf("dryRun:           %s\n", dryRun_);
       System.out.printf("sourceDir:        %s\n", sourceDir_);

@@ -26,29 +26,15 @@ package org.symphonyoss.s2.canon.model;
 import java.util.Map;
 import java.util.Set;
 
-import org.symphonyoss.s2.canon.Canon;
 import org.symphonyoss.s2.canon.parser.GenerationContext;
 import org.symphonyoss.s2.canon.parser.ParserContext;
 import org.symphonyoss.s2.canon.parser.error.ParserError;
 
 public class OneOfSchema extends AbstractContainerSchema
 {
-  private Discriminator discriminator_;
-
   public OneOfSchema(ModelElement parent, ParserContext context, ParserContext node, String name)
   {
     super(parent, context, node, "OneOfSchema", name);
-    
-    ParserContext d = context.get(Canon.DISCRIMINATOR);
-    
-    if(d == null)
-    {
-      context.raise(new ParserError("oneOf fields require a discriminator"));
-    }
-    else
-    {
-      discriminator_ = new Discriminator(this, d);
-    }
     
     if(!(parent instanceof Schemas))
     {
@@ -82,20 +68,6 @@ public class OneOfSchema extends AbstractContainerSchema
         }
       }
     }
-    
-//    if(getParent() instanceof Schemas)
-//    {
-//      getContext().raise(new ParserInfo("OneOf parent is Schemas for %s", getName()));
-//    }
-//    else
-//    {
-//      getContext().raise(new ParserError("OneOf is only allowed in a top level schema (parent is %s for %s)", getParent().getClass(), getName()));
-//    }
-  }
-
-  public Discriminator getDiscriminator()
-  {
-    return discriminator_;
   }
 
   @Override
