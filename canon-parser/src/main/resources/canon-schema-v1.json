@@ -56,7 +56,10 @@
 		"model": {
 			"type": "object",
 			"additionalProperties": true
-		}
+		},
+    "basePath": {
+      "type": "string"
+    }
 	},
 	"definitions": {
 		"info": {
@@ -222,7 +225,20 @@
 			"properties": {
 				"schemas": {
 					"$ref": "#/definitions/schemasOrReferences"
-				}
+				},
+				"parameterSets" : {
+          "type": "object",
+          "patternProperties": {
+            "^": {
+              "type": "object",
+                "patternProperties": {
+                  "^": {
+                    "$ref": "#/definitions/parameter"
+                  }
+                }
+            }
+          }
+        }
 			}
 		},
 		"schemasOrReferences": {
@@ -297,7 +313,7 @@
 				"parameters": {
           "type": "object",
           "patternProperties": {
-            "x": {
+            "^": {
               "$ref": "#/definitions/parameter"
             }
           }
@@ -305,7 +321,7 @@
 				"parameterSets": {
 					"type": "array",
 					"items": {
-						"$ref": "#/definitions/parameterSet"
+						"type": "string"
 					},
 					"uniqueItems": true
 				}
@@ -615,9 +631,12 @@
 			},
 			"properties": {
 				"required": {
-					"type": "boolean"
-				},
-				"schema": {
+          "type": "boolean"
+        },
+        "multiple": {
+          "type": "boolean"
+        },
+        "schema": {
 					"$ref": "#/definitions/reference"
 				},
 				"example": {

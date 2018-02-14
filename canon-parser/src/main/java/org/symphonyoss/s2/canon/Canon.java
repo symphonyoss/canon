@@ -67,14 +67,13 @@ public class Canon
   public static final String TEMPLATE_NAME       = "templateName";
   public static final String TEMPLATE_DEBUG      = "templateDebug";
   public static final String PATHS               = "paths";
-  public static final String METHODS             = "x-canon-methods";
+  public static final String METHODS             = "methods";
   public static final String DOLLAR_REF          = "$ref";
   public static final String PARAMETER_SETS      = "parameterSets";
-  public static final String X_PARAMETER_SETS    = "x-canon-parameter-sets";
   public static final String SCHEMAS             = "schemas";
   public static final String PARAMETERS          = "parameters";
   public static final String SCHEMA              = "schema";
-  public static final String X_BASE_PATH         = "x-canon-base-path";
+  public static final String X_BASE_PATH         = "basePath";
   
   private boolean            verbose_            = false;
   private boolean            dryRun_             = false;

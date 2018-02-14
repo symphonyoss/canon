@@ -41,11 +41,11 @@ public class Components extends ModelElement
       add(Canon.SCHEMAS, new Schemas(this, schemas));
     }
     
-    ParserContext parameterSets = parserContext.get(Canon.X_PARAMETER_SETS);
+    ParserContext parameterSets = parserContext.get(Canon.PARAMETER_SETS);
     
     if(parameterSets != null)
     {
-      add(Canon.X_PARAMETER_SETS, new ParameterSets(this, parameterSets));
+      add(Canon.PARAMETER_SETS, new ParameterSets(this, parameterSets));
     }
   }
   
