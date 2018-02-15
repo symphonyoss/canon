@@ -6,11 +6,11 @@ import com.google.protobuf.ByteString;
 
 import org.symphonyoss.s2.common.exception.BadFormatException;
 
-import ${javaGenPackage}.${modelJavaClassName}ModelType;
+import ${javaGenPackage}.${modelJavaClassName}TypeDef;
 
 <#include "../../template/java/TypeDefHeader.ftl">
 @Immutable
-public class ${modelJavaClassName} extends ${modelJavaClassName}ModelType
+public class ${modelJavaClassName} extends ${modelJavaClassName}TypeDef
 {
   private static Builder theBuilder = new Builder();
   
@@ -28,7 +28,7 @@ public class ${modelJavaClassName} extends ${modelJavaClassName}ModelType
     return theBuilder;
   }
   
-  public static class Builder extends ${modelJavaClassName}ModelType.Builder
+  public static class Builder extends ${modelJavaClassName}TypeDef.Builder
   {
     private Builder()
     {

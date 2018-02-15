@@ -9,7 +9,7 @@ import org.symphonyoss.s2.canon.runtime.IConsumer;
 <@importFieldTypes model true/>
 
 <#include "Path.ftl">
-public interface I${modelJavaClassName}AsyncPathHandler extends I${model.model.camelCapitalizedName}ModelHandler
+public interface I${modelJavaClassName}AsyncPathHandler extends I${model.model.camelCapitalizedName}EntityHandler
 {
 <#list model.operations as operation>
   <@printMethodJavadoc operation/>

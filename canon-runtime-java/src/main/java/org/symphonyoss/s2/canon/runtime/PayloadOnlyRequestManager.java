@@ -34,7 +34,7 @@ import org.symphonyoss.s2.canon.runtime.exception.JapiException;
 import org.symphonyoss.s2.common.exception.BadFormatException;
 
 public abstract class PayloadOnlyRequestManager<P>
-extends AbstractRequestManager<P,IModelEntity>
+extends AbstractRequestManager<P,IBaseEntity>
 implements ReadListener, IPayloadOnlyRequestManager<P>
 {
 

@@ -34,13 +34,13 @@ public interface IModelRegistry extends IComponent
 {
   IModelRegistry register(IModel factory);
 
-  IModelRegistry register(String name, IModelObjectFactory<?,?> factory);
+  IModelRegistry register(String name, IEntityFactory<?,?> factory);
 
-  IModelObject newInstance(ImmutableJsonObject jsonObject) throws BadFormatException;
+  IEntity newInstance(ImmutableJsonObject jsonObject) throws BadFormatException;
 
-  IModelObject parseOne(Reader reader) throws IOException, BadFormatException;
+  IEntity parseOne(Reader reader) throws IOException, BadFormatException;
   
-  void parseStream(Reader reader, IModelObjectConsumer consumer) throws BadFormatException;
+  void parseStream(Reader reader, IEntityConsumer consumer) throws BadFormatException;
   
 //  Collection<IUrlPathServlet> getServlets();
 //  void register(IUrlPathServlet servlet);

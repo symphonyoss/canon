@@ -71,7 +71,7 @@ public abstract class ${modelJavaClassName}AsyncPathHandler extends AsyncPathHan
     return super.getComponentDescriptor()
         .addDependency(I${model.model.camelCapitalizedName}.class, (v) -> model_ = v)
         .addProvidedInterface(I${modelJavaClassName}AsyncPathHandler.class)
-        .addProvidedInterface(I${model.model.camelCapitalizedName}ModelHandler.class);
+        .addProvidedInterface(I${model.model.camelCapitalizedName}EntityHandler.class);
   }
 
   @Override

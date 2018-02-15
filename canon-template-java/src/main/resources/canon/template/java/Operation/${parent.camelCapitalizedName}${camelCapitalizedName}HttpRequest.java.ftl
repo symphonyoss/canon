@@ -22,7 +22,7 @@ import org.apache.http.impl.client.CloseableHttpClient;
 import org.symphonyoss.s2.common.dom.json.ImmutableJsonArray;
 import org.symphonyoss.s2.common.exception.BadFormatException;
 
-import org.symphonyoss.s2.canon.runtime.IModelObject;
+import org.symphonyoss.s2.canon.runtime.IEntity;
 import org.symphonyoss.s2.canon.runtime.JsonArrayParser;
 import org.symphonyoss.s2.canon.runtime.exception.BadRequestException;
 import org.symphonyoss.s2.canon.runtime.http.ParameterLocation;
@@ -171,7 +171,7 @@ public class ${model.parent.camelCapitalizedName}${model.camelCapitalizedName}Ht
         {
           try
           {
-            IModelObject result = getJapiClient().getRegistry().parseOne(new StringReader(input));
+            IEntity result = getJapiClient().getRegistry().parseOne(new StringReader(input));
             
             if(result instanceof ${methodResponseType})
             {

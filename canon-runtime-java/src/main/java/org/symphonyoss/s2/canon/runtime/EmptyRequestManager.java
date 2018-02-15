@@ -33,7 +33,7 @@ import org.symphonyoss.s2.canon.runtime.exception.JapiException;
 import org.symphonyoss.s2.common.exception.BadFormatException;
 
 public abstract class EmptyRequestManager
-extends AbstractRequestManager<Void,IModelEntity>
+extends AbstractRequestManager<Void,IBaseEntity>
 implements IEmptyRequestManager
 {
 

@@ -33,7 +33,7 @@
 					}
         },
         "parameterSets": [
-					"#/components/x-canon-parameter-sets/pagination"
+					"#/components/parameterSets/pagination"
 				],
 				"response": {
 					"schema": {
@@ -135,7 +135,7 @@
 					}
 				},
 				"parameterSets": [
-					"#/components/x-canon-parameter-sets/pagination"
+					"#/components/parameterSets/pagination"
 				],
 				"response": {
 					"schema": {
@@ -265,7 +265,7 @@
 				}
 			}
 		},
-		"x-canon-parameter-sets": {
+		"parameterSets": {
 			"pagination": {
 				"skip": {
 					"description": "number of items to skip",

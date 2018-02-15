@@ -28,6 +28,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import org.symphonyoss.s2.canon.Canon;
 import org.symphonyoss.s2.canon.parser.GenerationContext;
 import org.symphonyoss.s2.canon.parser.GenerationException;
 import org.symphonyoss.s2.canon.parser.ParserContext;
@@ -43,6 +44,7 @@ import org.symphonyoss.s2.canon.parser.error.ParserInfo;
 public class ObjectSchema extends Schema
 {
   private Set<String>  requiredButUndefinedSet_ = new HashSet<>();
+  private boolean abstract_;
     
   public ObjectSchema(ModelElement parent, ParserContext context, String name)
   {
@@ -86,6 +88,11 @@ public class ObjectSchema extends Schema
       {
         context.raise(new ParserError("Required field \"%s\" is not defined!", requiredField));
       }
+      
+      ParserContext isAbstract = context.get(Canon.X_ABSTRACT);
+      
+      abstract_ = isAbstract != null && isAbstract.isBoolean() && isAbstract.asBoolean();
+      System.err.println("BRUCE " + getName() + " isAbstract=" + abstract_);
     }
     else
     {
@@ -169,6 +176,11 @@ public class ObjectSchema extends Schema
   public boolean getIsObjectType()
   {
     return true;
+  }
+  
+  public boolean getIsAbstract()
+  {
+    return abstract_;
   }
   
   @Override

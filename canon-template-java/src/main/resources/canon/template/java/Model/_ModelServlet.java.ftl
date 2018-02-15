@@ -18,9 +18,9 @@ public class ${modelJavaClassName}ModelServlet extends ModelServlet<I${model.mod
   private I${model.model.camelCapitalizedName} model_;
 
   public ${modelJavaClassName}ModelServlet(
-    I${model.model.camelCapitalizedName}ModelHandler ...handlers)
+    I${model.model.camelCapitalizedName}EntityHandler ...handlers)
   {
-    for(I${model.model.camelCapitalizedName}ModelHandler handler : handlers)
+    for(I${model.model.camelCapitalizedName}EntityHandler handler : handlers)
       register(handler);
   }
   
@@ -35,7 +35,7 @@ public class ${modelJavaClassName}ModelServlet extends ModelServlet<I${model.mod
   {
     return super.getComponentDescriptor()
         .addDependency(I${model.model.camelCapitalizedName}.class, (v) -> model_ = v)
-        .addDependency(I${model.model.camelCapitalizedName}ModelHandler.class, (v) -> register(v), Cardinality.oneOrMore)
+        .addDependency(I${model.model.camelCapitalizedName}EntityHandler.class, (v) -> register(v), Cardinality.oneOrMore)
         .addProvidedInterface(IUrlPathServlet.class);
   }
  

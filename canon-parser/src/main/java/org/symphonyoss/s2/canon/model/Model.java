@@ -72,7 +72,7 @@ public class Model extends ModelElement
       
       switch(subContext.getName())
       {
-        case "openapi":
+        case "canon":
           openapi_ = new Version(this, subContext);
           add(openapi_);
           break;

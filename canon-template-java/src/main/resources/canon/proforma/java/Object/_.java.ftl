@@ -11,28 +11,29 @@ import org.symphonyoss.s2.common.exception.BadFormatException;
 
 <@importFieldTypes model false/>
 
-import ${javaGenPackage}.${model.camelCapitalizedName}ModelObject;
+import ${javaGenPackage}.${model.camelCapitalizedName}Entity;
+import ${javaGenPackage}.I${model.camelCapitalizedName}Entity;
 import ${javaGenPackage}.${model.model.camelCapitalizedName}Model;
 
 <@setJavaType model/>
 <#include "../../../template/java/Object/Object.ftl">
 @Immutable
-public class ${model.camelCapitalizedName} extends ${model.camelCapitalizedName}ModelObject implements I${model.camelCapitalizedName}
+public class ${model.camelCapitalizedName} extends ${model.camelCapitalizedName}Entity implements I${model.camelCapitalizedName}
 {
 <#-- Constrictor from fields --> 
-  private ${model.camelCapitalizedName}(${modelJavaClassName}.Factory _factory, I${model.camelCapitalizedName} _other)<@checkLimitsClassThrows model/>
+  private ${model.camelCapitalizedName}(${modelJavaClassName}.Factory canonFactory, I${model.camelCapitalizedName}Entity canonOther)<@checkLimitsClassThrows model/>
   {
-    super(_factory, _other);
+    super(canonFactory, canonOther);
   }
   
 <#-- Constrictor from Json   -->
 
-  private ${model.camelCapitalizedName}(${modelJavaClassName}.Factory _factory, ImmutableJsonObject _jsonObject) throws BadFormatException
+  private ${model.camelCapitalizedName}(${modelJavaClassName}.Factory canonFactory, ImmutableJsonObject canonJsonObject) throws BadFormatException
   {
-    super(_factory, _jsonObject);
+    super(canonFactory, canonJsonObject);
   }
   
-  public static class Factory extends ${model.camelCapitalizedName}ModelObject.Factory
+  public static class Factory extends ${model.camelCapitalizedName}Entity.Factory
   {
     public Factory(I${model.model.camelCapitalizedName} model)
     {
@@ -70,7 +71,7 @@ public class ${model.camelCapitalizedName} extends ${model.camelCapitalizedName}
     }
   
   
-    public static class Builder extends ${model.camelCapitalizedName}ModelObject.Factory.Builder
+    public static class Builder extends ${model.camelCapitalizedName}Entity.Factory.Builder
     {
       Factory factory_;
       

@@ -534,7 +534,7 @@ public class ModelElement
     
       if(copyPath.exists())
       {
-        log_.info("Proforma " + copyPath + " exists, not copying");
+        log_.info("Proforma " + copyPath.getAbsolutePath() + " exists, not copying");
       }
       else
       {

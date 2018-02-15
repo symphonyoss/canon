@@ -1,0 +1,1 @@
+<#include "../Object/I_Entity.java.ftl">

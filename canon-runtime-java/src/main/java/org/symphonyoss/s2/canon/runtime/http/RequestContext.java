@@ -37,11 +37,11 @@ import javax.servlet.http.HttpServletResponse;
 import org.apache.commons.codec.binary.Base64;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.symphonyoss.s2.canon.runtime.IModelEntity;
-import org.symphonyoss.s2.canon.runtime.IModelObject;
-import org.symphonyoss.s2.canon.runtime.IModelObjectFactory;
+import org.symphonyoss.s2.canon.runtime.IBaseEntity;
+import org.symphonyoss.s2.canon.runtime.IEntity;
+import org.symphonyoss.s2.canon.runtime.IEntityFactory;
 import org.symphonyoss.s2.canon.runtime.ModelRegistry;
-import org.symphonyoss.s2.canon.runtime.ModelTypeBuilder;
+import org.symphonyoss.s2.canon.runtime.TypeDefBuilder;
 import org.symphonyoss.s2.common.dom.json.ImmutableJsonObject;
 import org.symphonyoss.s2.common.dom.json.JsonValue;
 import org.symphonyoss.s2.common.exception.BadFormatException;
@@ -217,7 +217,7 @@ public class RequestContext
     response_.setStatus(HttpServletResponse.SC_OK);
   }
 
-  public void sendOKResponse(IModelEntity response) throws IOException
+  public void sendOKResponse(IBaseEntity response) throws IOException
   {
     response_.setStatus(HttpServletResponse.SC_OK);
     
@@ -263,7 +263,7 @@ public class RequestContext
     errors_.add(String.format(message));
   }
   
-  public <M extends IModelObject> M parsePayload(IModelObjectFactory<M,?> factory)
+  public <M extends IEntity> M parsePayload(IEntityFactory<M,?> factory)
   {
     try
     {
@@ -285,7 +285,7 @@ public class RequestContext
     }
   }
 
-  public <M,T> M parsePayload(ModelTypeBuilder<M,T> builder)
+  public <M,T> M parsePayload(TypeDefBuilder<M,T> builder)
   {
     try
     {

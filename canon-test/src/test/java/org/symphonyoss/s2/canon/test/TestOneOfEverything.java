@@ -31,8 +31,8 @@ import java.io.StringReader;
 
 import org.junit.Assert;
 import org.junit.Test;
-import org.symphonyoss.s2.canon.runtime.IModelObject;
-import org.symphonyoss.s2.canon.runtime.IModelObjectConsumer;
+import org.symphonyoss.s2.canon.runtime.IEntity;
+import org.symphonyoss.s2.canon.runtime.IEntityConsumer;
 import org.symphonyoss.s2.canon.runtime.IModelRegistry;
 import org.symphonyoss.s2.canon.runtime.ModelRegistry;
 import org.symphonyoss.s2.common.dom.DomSerializer;
@@ -152,7 +152,7 @@ public class TestOneOfEverything extends AbstractModelObjectTest
     ASimpleObject source = createTestObject3();
     String serial = source.serialize();
     Reader reader = new StringReader(serial);
-    IModelObject deserialized = modelRegistry_.parseOne(reader);
+    IEntity deserialized = modelRegistry_.parseOne(reader);
     
     assertEquals(source, deserialized);
   }
@@ -161,7 +161,7 @@ public class TestOneOfEverything extends AbstractModelObjectTest
   public void testMultipleSchemas() throws BadFormatException, IOException
   {
     CharArrayWriter writer = new CharArrayWriter();
-    IModelObject[] source = new IModelObject[3];
+    IEntity[] source = new IEntity[3];
     
     source[0] = createTestObject3();
     writer.write(source[0].serialize());
@@ -185,18 +185,18 @@ public class TestOneOfEverything extends AbstractModelObjectTest
     Assert.assertEquals(3, consumer.count_);
   }
   
-  class Consumer implements IModelObjectConsumer
+  class Consumer implements IEntityConsumer
   {
     int count_;
-    IModelObject[] source_;
+    IEntity[] source_;
     
-    public Consumer(IModelObject[] source)
+    public Consumer(IEntity[] source)
     {
       source_ = source;
     }
 
     @Override
-    public void consume(IModelObject modelObject)
+    public void consume(IEntity modelObject)
     {
       assertEquals(source_[count_++], modelObject);
     }

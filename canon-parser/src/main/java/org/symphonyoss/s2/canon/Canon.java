@@ -47,6 +47,7 @@ public class Canon
   public static final String X_CARDINALITY       = "x-canon-cardinality";
   public static final String X_CARDINALITY_LIST  = "LIST";
   public static final String X_CARDINALITY_SET   = "SET";
+  public static final String X_ABSTRACT          = "x-canon-abstract";
   public static final String PROPERTY_NAME       = "propertyName";
   public static final String MAPPING             = "mapping";
   public static final String ENUM                = "enum";
@@ -80,6 +81,7 @@ public class Canon
   private String             sourceDir_          = "src/main/canon";
   private String             generationTarget_   = "target/generated-sources";
   private String             proformaTarget_     = "target/proforma-sources";
+  private String             outputDir_          = ".";
   private String             proformaCopy_       = null;
   private List<String>       fileNames_          = new ArrayList<>();
   private List<String>       errors_             = new ArrayList<>();
@@ -114,21 +116,29 @@ public class Canon
             dryRun_ = true;
             break;
             
-            case "templateDir":
-              i++;
-              if(i<argv.length)
-                templateDirs_.add(new File(argv[i]));
-              else
-                error("--templateDir requires a directory name to follow.");
-              break;
-            
-            case "sourceDir":
-              i++;
-              if(i<argv.length)
-                sourceDir_ = argv[i];
-              else
-                error("--sourceDir requires a directory name to follow.");
-              break;
+          case "templateDir":
+            i++;
+            if(i<argv.length)
+              templateDirs_.add(new File(argv[i]));
+            else
+              error("--templateDir requires a directory name to follow.");
+            break;
+          
+          case "sourceDir":
+            i++;
+            if(i<argv.length)
+              sourceDir_ = argv[i];
+            else
+              error("--sourceDir requires a directory name to follow.");
+            break;
+          
+          case "outputDir":
+            i++;
+            if(i<argv.length)
+              outputDir_ = argv[i];
+            else
+              error("--outputDir requires a directory name to follow.");
+            break;
             
           default:
             error("Unrecognized flag \"%s\".", argv[i]);
@@ -162,6 +172,14 @@ public class Canon
               error("-s requires a directory name to follow.");
             break;
             
+          case "o":
+            i++;
+            if(i<argv.length)
+              outputDir_ = argv[i];
+            else
+              error("-o requires a directory name to follow.");
+            break;
+          
           default:
             error("Unrecognized flag \"%s\".", argv[i]);
         }
@@ -188,7 +206,10 @@ public class Canon
       else
       {
         for(File f : fileList)
-          files.add(f);
+        {
+          if(f.getName().endsWith(".json"))
+            files.add(f);
+        }
         
         if(files.isEmpty())
         {
@@ -303,7 +324,7 @@ public class Canon
       
       out.flush();
       
-      GenerationContext generationContext = new GenerationContext("target/generated-sources", "target/proforma-sources", "target/proforma-copy");
+      GenerationContext generationContext = new GenerationContext(outputDir_ + "/target/generated-sources", outputDir_ + "/target/proforma-sources", outputDir_ + "/target/proforma-copy");
       
       for(File d : templateDirs_)
         generationContext.addTemplateDirectory(d);

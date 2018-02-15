@@ -11,7 +11,7 @@ import javax.servlet.http.HttpServletResponse;
 import org.symphonyoss.s2.canon.runtime.exception.JapiException;
 import org.symphonyoss.s2.common.exception.BadFormatException;
 
-public abstract class AbstractRequestManager<P,R extends IModelEntity>
+public abstract class AbstractRequestManager<P,R extends IBaseEntity>
 {
   private final ServletInputStream  in_;
   private final ServletOutputStream out_;

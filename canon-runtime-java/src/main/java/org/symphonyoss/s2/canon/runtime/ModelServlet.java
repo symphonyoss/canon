@@ -42,7 +42,7 @@ public abstract class ModelServlet<M extends IModel> extends HttpServlet impleme
 {
   private static final long serialVersionUID = 1L;
 
-  private TreeMap<Integer, List<IModelHandler>>  handlerMap_ = new TreeMap<>(new Comparator<Integer>()
+  private TreeMap<Integer, List<IEntityHandler>>  handlerMap_ = new TreeMap<>(new Comparator<Integer>()
       {
         /*
          * We want the map in descending order.
@@ -67,9 +67,9 @@ public abstract class ModelServlet<M extends IModel> extends HttpServlet impleme
   
   public abstract M getModel();
   
-  public void register(IModelHandler handler)
+  public void register(IEntityHandler handler)
   {
-    List<IModelHandler> list = handlerMap_.get(handler.getPartsLength());
+    List<IEntityHandler> list = handlerMap_.get(handler.getPartsLength());
     
     if(list == null)
     {
@@ -84,9 +84,9 @@ public abstract class ModelServlet<M extends IModel> extends HttpServlet impleme
   {
     RequestContext context = new RequestContext(method, req, resp);
     
-    for(List<IModelHandler> list : handlerMap_.values())
+    for(List<IEntityHandler> list : handlerMap_.values())
     {
-      for(IModelHandler handler : list)
+      for(IEntityHandler handler : list)
       {
         if(handler.handle(context))
           return;

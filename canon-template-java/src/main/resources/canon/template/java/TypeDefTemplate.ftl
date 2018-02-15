@@ -15,18 +15,18 @@ import org.symphonyoss.s2.common.dom.json.IJsonDomNode;
 
 import org.symphonyoss.s2.common.exception.BadFormatException;
 
-import org.symphonyoss.s2.canon.runtime.ModelType;
-import org.symphonyoss.s2.canon.runtime.Model${modelJavaFieldClassName}TypeBuilder;
+import org.symphonyoss.s2.canon.runtime.TypeDef;
+import org.symphonyoss.s2.canon.runtime.${modelJavaFieldClassName}TypeDefBuilder;
 import ${javaFacadePackage}.${modelJavaClassName};
 
 <#include "TypeDefHeader.ftl">
 <@setJavaType model/>
 @Immutable
-public class ${modelJavaClassName}ModelType<#if isComparable(model)> extends ModelType implements I${modelJavaFieldClassName}Provider, Comparable<${modelJavaClassName}ModelType></#if>
+public class ${modelJavaClassName}TypeDef<#if isComparable(model)> extends TypeDef implements I${modelJavaFieldClassName}Provider, Comparable<${modelJavaClassName}TypeDef></#if>
 {
   private @Nonnull ${modelJavaFieldClassName} value_;
 
-  protected ${modelJavaClassName}ModelType(@Nonnull ${modelJavaFieldClassName} value) throws BadFormatException
+  protected ${modelJavaClassName}TypeDef(@Nonnull ${modelJavaFieldClassName} value) throws BadFormatException
   {
     if(value == null)
       throw new BadFormatException("value is required.");
@@ -36,7 +36,7 @@ public class ${modelJavaClassName}ModelType<#if isComparable(model)> extends Mod
   }
 
   <#-- Constructor from Json   -->  
-  protected ${modelJavaClassName}ModelType(@Nonnull IJsonDomNode node) throws BadFormatException
+  protected ${modelJavaClassName}TypeDef(@Nonnull IJsonDomNode node) throws BadFormatException
   {
     if(node == null)
       throw new BadFormatException("value is required.");
@@ -80,9 +80,9 @@ public class ${modelJavaClassName}ModelType<#if isComparable(model)> extends Mod
   @Override
   public boolean equals(Object obj)
   {
-    if(obj instanceof ${modelJavaClassName}ModelType)
+    if(obj instanceof ${modelJavaClassName}TypeDef)
     {
-      return value_.equals(((${modelJavaClassName}ModelType)obj).value_);
+      return value_.equals(((${modelJavaClassName}TypeDef)obj).value_);
     }
     
     return false;
@@ -90,13 +90,13 @@ public class ${modelJavaClassName}ModelType<#if isComparable(model)> extends Mod
 
   <#if isComparable(model)>  
   @Override
-  public int compareTo(${modelJavaClassName}ModelType other)
+  public int compareTo(${modelJavaClassName}TypeDef other)
   {
     return value_.compareTo(other.value_);
   }
   </#if>
   
-  public static abstract class Builder extends Model${modelJavaFieldClassName}TypeBuilder<${modelJavaClassName}>
+  public static abstract class Builder extends ${modelJavaFieldClassName}TypeDefBuilder<${modelJavaClassName}>
   {
   }
 <#assign subTemplateName="${.current_template_name!''}"><#include "canon-template-java-SubEpilogue.ftl">

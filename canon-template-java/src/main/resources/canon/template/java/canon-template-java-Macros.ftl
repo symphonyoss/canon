@@ -932,7 +932,7 @@ ${indent}${var}.addIfNotNull("${field.camelName}", ${field.camelName}__);
     <#if field.isObjectSchema>
 ${indent}if(node instanceof ImmutableJsonObject)
 ${indent}{
-${indent}  ${var} = _factory.getModel().get${fieldType}Factory().newInstance((ImmutableJsonObject)node);
+${indent}  ${var} = canonFactory.getModel().get${fieldType}Factory().newInstance((ImmutableJsonObject)node);
 ${indent}}
 ${indent}else
 ${indent}{
@@ -989,7 +989,7 @@ ${indent}}
 ${indent}    ${var} = ${javaTypeCopyPrefix}list${javaTypeCopyPostfix};
     <#else>
       <#if field.baseSchema.items.isComponent>
-${indent}  ${var} = _factory_.getModel().get${javaElementFieldClassName}Factory().newInstance${javaCardinality}((ImmutableJsonArray)node);
+${indent}  ${var} = canonFactory_.getModel().get${javaElementFieldClassName}Factory().newInstance${javaCardinality}((ImmutableJsonArray)node);
       <#else>
 ${indent}  ${var} = ((ImmutableJsonArray)node).asImmutable${javaCardinality}Of(${javaElementFieldClassName}.class);
       </#if>

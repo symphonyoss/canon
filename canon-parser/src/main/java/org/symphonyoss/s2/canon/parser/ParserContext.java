@@ -113,6 +113,16 @@ public class ParserContext extends BaseParserContext implements Iterable<ParserC
     return jsonNode_.isTextual();
   }
 
+  public final boolean isBoolean()
+  {
+    return jsonNode_.isBoolean();
+  }
+
+  public boolean asBoolean()
+  {
+    return jsonNode_.asBoolean();
+  }
+
   @Override
   public Iterator<ParserContext> iterator()
   {

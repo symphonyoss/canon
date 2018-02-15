@@ -2,19 +2,19 @@
 <@setPrologueJavaType model/>
 import javax.annotation.concurrent.Immutable;
 
-import org.symphonyoss.s2.canon.runtime.IModel${modelJavaCardinality};
+import org.symphonyoss.s2.canon.runtime.IEntity${modelJavaCardinality};
 import org.symphonyoss.s2.common.dom.json.ImmutableJsonArray;
 import org.symphonyoss.s2.common.exception.BadFormatException;
 
 <@importFieldTypes model false/>
 
-import ${javaGenPackage}.${modelJavaClassName}ModelArray;
+import ${javaGenPackage}.${modelJavaClassName}EntityArray;
 
 <#include "../../../template/java/Array/Array.ftl">
 @Immutable
-public class ${model.camelCapitalizedName} extends ${model.camelCapitalizedName}ModelArray
+public class ${model.camelCapitalizedName} extends ${model.camelCapitalizedName}EntityArray
 {
-  private ${modelJavaClassName}(IModel${modelJavaCardinality}<${modelJavaElementClassName}> other)<#if model.canFailValidation> throws BadFormatException</#if>
+  private ${modelJavaClassName}(IEntity${modelJavaCardinality}<${modelJavaElementClassName}> other)<#if model.canFailValidation> throws BadFormatException</#if>
   {
     super(other);
   }
@@ -49,7 +49,7 @@ public class ${model.camelCapitalizedName} extends ${model.camelCapitalizedName}
   }
 
 
-  public static class Builder extends ${model.camelCapitalizedName}ModelArray.Builder
+  public static class Builder extends ${model.camelCapitalizedName}EntityArray.Builder
   {
     private Builder()
     {

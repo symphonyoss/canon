@@ -49,8 +49,8 @@ public class Version extends ModelElement
         minor_ = Integer.parseInt(parts[1]);
         patch_ = Integer.parseInt(parts[2]);
         
-        if(major_ < 3)
-          log_.error("OpenApi Version 3.x.x is required");
+//        if(major_ < 3)
+//          log_.error("OpenApi Version 3.x.x is required");
       }
       catch(NumberFormatException e)
       {

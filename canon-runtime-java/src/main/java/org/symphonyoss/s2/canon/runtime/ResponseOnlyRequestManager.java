@@ -9,7 +9,7 @@ import javax.servlet.WriteListener;
 
 import org.symphonyoss.s2.canon.runtime.exception.JapiException;
 
-public abstract class ResponseOnlyRequestManager<R extends IModelEntity>
+public abstract class ResponseOnlyRequestManager<R extends IBaseEntity>
 extends AbstractRequestManager<Void,R>
 implements WriteListener, IResponseOnlyRequestManager<R>
 {

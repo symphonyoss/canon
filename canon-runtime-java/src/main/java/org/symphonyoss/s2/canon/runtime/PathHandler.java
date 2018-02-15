@@ -36,7 +36,7 @@ import org.symphonyoss.s2.canon.runtime.exception.JapiException;
 import org.symphonyoss.s2.canon.runtime.http.RequestContext;
 import org.symphonyoss.s2.fugue.di.ComponentDescriptor;
 
-public abstract class PathHandler<M extends IModel> implements IModelHandler
+public abstract class PathHandler<M extends IModel> implements IEntityHandler
 {
   private static final Logger log_ = LoggerFactory.getLogger(PathHandler.class);
   

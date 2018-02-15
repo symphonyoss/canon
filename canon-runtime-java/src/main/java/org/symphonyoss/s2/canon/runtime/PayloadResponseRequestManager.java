@@ -11,7 +11,7 @@ import javax.servlet.WriteListener;
 import org.symphonyoss.s2.canon.runtime.exception.JapiException;
 import org.symphonyoss.s2.common.exception.BadFormatException;
 
-public abstract class PayloadResponseRequestManager<P,R extends IModelEntity>
+public abstract class PayloadResponseRequestManager<P,R extends IBaseEntity>
 extends AbstractRequestManager<P,R>
 implements ReadListener, WriteListener, IPayloadResponseRequestManager<P,R>
 {

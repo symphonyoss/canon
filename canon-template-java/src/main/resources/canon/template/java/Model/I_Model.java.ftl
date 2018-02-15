@@ -4,7 +4,7 @@ import org.symphonyoss.s2.common.exception.BadFormatException;
 import org.symphonyoss.s2.common.dom.json.ImmutableJsonObject;
 
 import org.symphonyoss.s2.canon.runtime.IModel;
-import org.symphonyoss.s2.canon.runtime.ModelObject;
+import org.symphonyoss.s2.canon.runtime.Entity;
 
 <#list model.schemas as object>
 import ${javaFacadePackage}.${object.camelCapitalizedName};

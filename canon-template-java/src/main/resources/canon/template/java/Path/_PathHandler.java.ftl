@@ -54,7 +54,7 @@ public abstract class ${modelJavaClassName}PathHandler extends PathHandler<I${mo
     return super.getComponentDescriptor()
         .addDependency(I${model.model.camelCapitalizedName}.class, (v) -> model_ = v)
         .addProvidedInterface(I${modelJavaClassName}PathHandler.class)
-        .addProvidedInterface(I${model.model.camelCapitalizedName}ModelHandler.class);
+        .addProvidedInterface(I${model.model.camelCapitalizedName}EntityHandler.class);
   }
 
   @Override

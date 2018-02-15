@@ -33,7 +33,7 @@ import javax.annotation.Nullable;
 public class HandlerMapper
 {
   private Map<String, HandlerMapper>  mappers_ = new HashMap<>();
-  private List<IModelHandler>         handlers_ = new LinkedList<>();
+  private List<IEntityHandler>         handlers_ = new LinkedList<>();
   
   public HandlerMapper()
   {
@@ -44,7 +44,7 @@ public class HandlerMapper
     return mappers_.get(name);
   }
 
-  public boolean add(IModelHandler handler)
+  public boolean add(IEntityHandler handler)
   {
     return handlers_.add(handler);
   }

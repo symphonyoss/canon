@@ -5,10 +5,10 @@ import javax.annotation.concurrent.Immutable;
 
 import com.google.protobuf.ByteString;
 
-import org.symphonyoss.s2.canon.runtime.IModelObject;
+import org.symphonyoss.s2.canon.runtime.IEntity;
 import org.symphonyoss.s2.canon.runtime.CanonRuntime;
-import org.symphonyoss.s2.canon.runtime.ModelObject;
-import org.symphonyoss.s2.canon.runtime.ModelObjectFactory;
+import org.symphonyoss.s2.canon.runtime.Entity;
+import org.symphonyoss.s2.canon.runtime.EntityFactory;
 
 import org.symphonyoss.s2.common.dom.IBooleanProvider;
 import org.symphonyoss.s2.common.dom.IStringProvider;
@@ -29,6 +29,7 @@ import org.symphonyoss.s2.common.exception.BadFormatException;
 <@importFieldTypes model true/>
 
 import ${javaFacadePackage}.I${model.model.camelCapitalizedName};
+import ${javaFacadePackage}.I${model.model.camelCapitalizedName}ModelEntity;
 import ${javaFacadePackage}.I${modelJavaClassName};
 import ${javaFacadePackage}.${modelJavaClassName};
 <#list model.superClasses as s>
@@ -40,8 +41,8 @@ import ${javaFacadePackage}.I${s.camelCapitalizedName};
 <#include "Object.ftl">
 @Immutable
 @SuppressWarnings("unused")
-public abstract class ${modelJavaClassName}ModelObject extends ModelObject implements I${modelJavaClassName}<#list model.superClasses as s><#if s.isComponent>, I${s.camelCapitalizedName}</#if></#list>
+public abstract class ${modelJavaClassName}Entity extends Entity implements I${modelJavaClassName}, I${model.model.camelCapitalizedName}ModelEntity<#list model.superClasses as s><#if s.isComponent>, I${s.camelCapitalizedName}</#if></#list>
 {
   public static final String TYPE_ID = "${model.model.canonId}#/components/schemas/${model.name}";
 
-  private final ${(modelJavaClassName + ".Factory")?right_pad(25)} _factory_;
+  private final ${(modelJavaClassName + ".Factory")?right_pad(25)} canonFactory_;

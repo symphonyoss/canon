@@ -52,7 +52,7 @@ public class ModelRegistry implements IModelRegistry
 {
   private static final Logger LOG = LoggerFactory.getLogger(ModelRegistry.class);
   
-  private Map<String, IModelObjectFactory<?,?>>  factoryMap_ = new HashMap<>();
+  private Map<String, IEntityFactory<?,?>>  factoryMap_ = new HashMap<>();
 //  private Map<String, IUrlPathServlet> servlets_ = new HashMap<>();
   private List<IModel>   models_ = new LinkedList<>();
 
@@ -80,7 +80,7 @@ public class ModelRegistry implements IModelRegistry
   }
   
   @Override
-  public IModelRegistry register(String name, IModelObjectFactory<?,?> factory)
+  public IModelRegistry register(String name, IEntityFactory<?,?> factory)
   {
     factoryMap_.put(name, factory);
     return this;
@@ -103,10 +103,10 @@ public class ModelRegistry implements IModelRegistry
 //  }
 
   @Override
-  public IModelObject newInstance(ImmutableJsonObject jsonObject) throws BadFormatException
+  public IEntity newInstance(ImmutableJsonObject jsonObject) throws BadFormatException
   {
     String typeId = jsonObject.getString(CanonRuntime.JSON_TYPE);
-    IModelObjectFactory<?,?> factory = factoryMap_.get(typeId);
+    IEntityFactory<?,?> factory = factoryMap_.get(typeId);
     
     if(factory == null)
       throw new BadFormatException("Unknown type \"" + typeId + "\"");
@@ -163,13 +163,13 @@ public class ModelRegistry implements IModelRegistry
   }
   
   @Override
-  public IModelObject parseOne(Reader reader) throws IOException, BadFormatException
+  public IEntity parseOne(Reader reader) throws IOException, BadFormatException
   {
     return newInstance(parseOneJsonObject(reader));
   }
 
   @Override
-  public void parseStream(Reader reader, IModelObjectConsumer consumer) throws BadFormatException
+  public void parseStream(Reader reader, IEntityConsumer consumer) throws BadFormatException
   {
     try(Factory readerFactory = new LinePartialReader.Factory(reader))
     {
