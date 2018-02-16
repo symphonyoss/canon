@@ -32,11 +32,11 @@ import org.symphonyoss.s2.canon.parser.error.ParserError;
 /**
  * A schema defined as
  * 
- * <code><pre>
+ * <code>
   {
     "$ref": "#/some/URI"
   }
- * </pre></code>
+ * </code>
  * 
  * In order to allow forward references these objects need to be first created and then
  * resolved in a second pass of the model.
