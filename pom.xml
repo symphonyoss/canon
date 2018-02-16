@@ -32,7 +32,7 @@
 	
 	<groupId>org.symphonyoss.s2.canon</groupId>
 	<artifactId>canon</artifactId>
-	<version>0.0.2</version>
+	<version>0.0.3-SNAPSHOT</version>
 	<description>JSON API Generation Tooling</description>
 	<url>https://github.com/bruceskingle/canon</url>
 	<packaging>pom</packaging>
@@ -57,7 +57,7 @@
 		<connection>scm:git:git://github.com/symphonyoss/canon.git</connection>
 		<developerConnection>scm:git:git@github.com:symphonyoss/canon.git</developerConnection>
 		<url>https://github.com/symphonyoss/canon</url>
-	  <tag>canon-0.0.2</tag>
+	  <tag>HEAD</tag>
   </scm>
 	
 	<developers>
