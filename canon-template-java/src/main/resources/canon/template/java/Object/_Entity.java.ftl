@@ -9,7 +9,11 @@
 <#-- Constructor from fields -->
   protected ${modelJavaClassName}Entity(${modelJavaClassName}.Factory canonFactory, I${model.camelCapitalizedName}Entity canonOther)<@checkLimitsClassThrows model/>
   {
+<#if model.extendsSchema??>
+    super(canonFactory.getModel().get${model.extendsSchema.baseSchema.camelCapitalizedName}Factory(), canonOther.getJsonObject());
+<#else>
     super(canonOther.getJsonObject());
+</#if>
     
     canonFactory_ = canonFactory;
 <#list model.fields as field>
@@ -26,7 +30,11 @@
 <#-- Constructor from Json   -->  
   protected ${modelJavaClassName}Entity(${modelJavaClassName}.Factory canonFactory, ImmutableJsonObject canonJsonObject) throws BadFormatException
   {
+  <#if model.extendsSchema??>
+    super(canonFactory.getModel().get${model.extendsSchema.baseSchema.camelCapitalizedName}Factory(), canonJsonObject);
+<#else>
     super(canonJsonObject);
+</#if>
     
     if(canonJsonObject == null)
       throw new BadFormatException("canonJsonObject is required");

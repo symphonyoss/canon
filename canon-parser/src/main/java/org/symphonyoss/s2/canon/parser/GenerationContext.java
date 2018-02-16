@@ -114,7 +114,7 @@ public class GenerationContext
    * This is analogous to copying the templates into a working directory so later additions
    * take precedence over earlier ones.
    * 
-   * @param file A template directory.
+   * @param dir A template directory.
    */
   public void addTemplateDirectory(File dir)
   {

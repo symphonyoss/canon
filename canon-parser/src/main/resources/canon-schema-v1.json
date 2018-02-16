@@ -467,10 +467,16 @@
 				}
 			},
 			"properties": {
-				"nullable": {
-					"type": "boolean"
-				},
-				"readOnly": {
+				"extends": {
+          "$ref": "#/definitions/reference"
+        },
+        "abstract": {
+          "type": "boolean"
+        },
+        "nullable": {
+          "type": "boolean"
+        },
+        "readOnly": {
 					"type": "boolean"
 				},
 				"writeOnly": {

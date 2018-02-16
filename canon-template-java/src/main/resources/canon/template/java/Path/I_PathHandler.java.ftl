@@ -12,7 +12,7 @@ import org.symphonyoss.s2.canon.runtime.IEntityHandler;
 public interface I${modelJavaClassName}PathHandler extends I${model.model.camelCapitalizedName}EntityHandler
 {
 <#list model.operations as operation>
-  <@printMethodJavadoc operation/>
+  <@printMethodJavadoc operation false/>
   ${methodResponseDecl} handle${operation.camelCapitalizedName}(
   <#if operation.payload??>
   <@setJavaType operation.payload.schema/>

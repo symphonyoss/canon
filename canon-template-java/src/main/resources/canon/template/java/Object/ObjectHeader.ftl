@@ -41,7 +41,12 @@ import ${javaFacadePackage}.I${s.camelCapitalizedName};
 <#include "Object.ftl">
 @Immutable
 @SuppressWarnings("unused")
-public abstract class ${modelJavaClassName}Entity extends Entity implements I${modelJavaClassName}, I${model.model.camelCapitalizedName}ModelEntity<#list model.superClasses as s><#if s.isComponent>, I${s.camelCapitalizedName}</#if></#list>
+<#if model.extendsSchema??>
+public abstract class ${modelJavaClassName}Entity extends ${model.extendsSchema.baseSchema.camelCapitalizedName}
+<#else>
+public abstract class ${modelJavaClassName}Entity extends Entity
+</#if>
+ implements I${modelJavaClassName}, I${model.model.camelCapitalizedName}ModelEntity<#list model.superClasses as s><#if s.isComponent>, I${s.camelCapitalizedName}</#if></#list>
 {
   public static final String TYPE_ID = "${model.model.canonId}#/components/schemas/${model.name}";
 

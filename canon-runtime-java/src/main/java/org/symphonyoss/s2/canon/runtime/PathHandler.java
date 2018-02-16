@@ -185,9 +185,7 @@ public abstract class PathHandler<M extends IModel> implements IEntityHandler
   /**
    * Called by generated servlets for unsupported methods.
    * 
-   * @param req           Servlet request
-   * @param resp          Servlet response
-   * @param methodName    Name of method called.
+   * @param context    The request context which contains servlet request, response etc.
    * @throws IOException  If the response cannot be sent.
    */
   public void unsupportedMethod(RequestContext context) throws IOException

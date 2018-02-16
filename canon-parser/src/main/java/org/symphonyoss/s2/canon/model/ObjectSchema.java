@@ -24,7 +24,6 @@
 package org.symphonyoss.s2.canon.model;
 
 import java.util.HashSet;
-import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
@@ -34,6 +33,7 @@ import org.symphonyoss.s2.canon.parser.GenerationException;
 import org.symphonyoss.s2.canon.parser.ParserContext;
 import org.symphonyoss.s2.canon.parser.error.ParserError;
 import org.symphonyoss.s2.canon.parser.error.ParserInfo;
+import org.symphonyoss.s2.canon.parser.error.UnexpectedTypeError;
 
 /**
  * Schema for an object.
@@ -43,8 +43,9 @@ import org.symphonyoss.s2.canon.parser.error.ParserInfo;
  */
 public class ObjectSchema extends Schema
 {
-  private Set<String>  requiredButUndefinedSet_ = new HashSet<>();
-  private boolean abstract_;
+  private Set<String>     requiredButUndefinedSet_ = new HashSet<>();
+  private boolean         abstract_;
+  private ReferenceSchema extendsSchema_;
     
   public ObjectSchema(ModelElement parent, ParserContext context, String name)
   {
@@ -89,10 +90,25 @@ public class ObjectSchema extends Schema
         context.raise(new ParserError("Required field \"%s\" is not defined!", requiredField));
       }
       
-      ParserContext isAbstract = context.get(Canon.X_ABSTRACT);
+      ParserContext isAbstract = context.get(Canon.ABSTRACT);
       
       abstract_ = isAbstract != null && isAbstract.isBoolean() && isAbstract.asBoolean();
       System.err.println("BRUCE " + getName() + " isAbstract=" + abstract_);
+      
+      ParserContext extendsContext = context.get(Canon.EXTENDS);
+      
+      if(extendsContext != null)
+      {
+        AbstractSchema extendsSchema = createSchema(extendsContext);
+        
+        if(extendsSchema instanceof ReferenceSchema)
+        {
+          extendsSchema_ = (ReferenceSchema) extendsSchema;
+          add(extendsSchema);
+        }
+        else
+          extendsContext.raise(new UnexpectedTypeError(ReferenceSchema.class, extendsSchema));
+      }
     }
     else
     {
@@ -100,6 +116,31 @@ public class ObjectSchema extends Schema
     }
   }
   
+  @Override
+  public void validate()
+  {
+    super.validate();
+    
+    if(extendsSchema_ != null)
+    {
+      if(extendsSchema_.isResolved())
+      {
+        Schema referent = extendsSchema_.getReference().getBaseSchema();
+        
+        if(!(referent instanceof ObjectSchema))
+        {
+          getContext().raise(new ParserError("Extends must refer to an Object Schema not a %s",
+              referent.getClass().getSimpleName()));
+        }
+      }
+    }
+  }
+
+  public ReferenceSchema getExtendsSchema()
+  {
+    return extendsSchema_;
+  }
+
   @Override
   public Schema getElementSchema()
   {

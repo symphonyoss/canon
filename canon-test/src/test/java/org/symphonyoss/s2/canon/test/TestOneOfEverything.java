@@ -23,11 +23,12 @@
 
 package org.symphonyoss.s2.canon.test;
 
-import java.io.CharArrayReader;
-import java.io.CharArrayWriter;
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.Reader;
 import java.io.StringReader;
+import java.nio.charset.StandardCharsets;
 
 import org.junit.Assert;
 import org.junit.Test;
@@ -35,6 +36,11 @@ import org.symphonyoss.s2.canon.runtime.IEntity;
 import org.symphonyoss.s2.canon.runtime.IEntityConsumer;
 import org.symphonyoss.s2.canon.runtime.IModelRegistry;
 import org.symphonyoss.s2.canon.runtime.ModelRegistry;
+import org.symphonyoss.s2.canon.test.oneofeverything.facade.ASimpleObject;
+import org.symphonyoss.s2.canon.test.oneofeverything.facade.DoubleMinMax;
+import org.symphonyoss.s2.canon.test.oneofeverything.facade.ListOfByteString;
+import org.symphonyoss.s2.canon.test.oneofeverything.facade.ObjectWithOneOfEverything;
+import org.symphonyoss.s2.canon.test.oneofeverything.facade.OneOfEverything;
 import org.symphonyoss.s2.common.dom.DomSerializer;
 import org.symphonyoss.s2.common.dom.DomWriter;
 import org.symphonyoss.s2.common.dom.json.IJsonDomNode;
@@ -48,11 +54,6 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableSet;
 import com.google.protobuf.ByteString;
-import org.symphonyoss.s2.canon.test.oneofeverything.facade.ASimpleObject;
-import org.symphonyoss.s2.canon.test.oneofeverything.facade.DoubleMinMax;
-import org.symphonyoss.s2.canon.test.oneofeverything.facade.ListOfByteString;
-import org.symphonyoss.s2.canon.test.oneofeverything.facade.ObjectWithOneOfEverything;
-import org.symphonyoss.s2.canon.test.oneofeverything.facade.OneOfEverything;
 
 public class TestOneOfEverything extends AbstractModelObjectTest
 {
@@ -69,7 +70,19 @@ public class TestOneOfEverything extends AbstractModelObjectTest
         .withCanonicalMode(true)
         .build();
     
-    assertEquals("{\"_type\":\"https://github.com/bruceskingle/canon/blob/master/canon-test/src/main/resources/test/oneOfEverything.json#/components/schemas/ObjectWithOneOfEverything\",\"aBoolean\":true,\"aDouble\":7.0,\"aDoubleMinMax\":5.0,\"aListOfObjects\":[],\"aListOfString\":[\"Hello\",\"World\"],\"aSetOfString\":[],\"secs\":10}",
+    assertEquals("{\n" + 
+        "  \"_type\":\"https://github.com/bruceskingle/canon/blob/master/canon-test/src/main/resources/test/oneOfEverything.json#/components/schemas/ObjectWithOneOfEverything\",\n" + 
+        "  \"aBoolean\":true,\n" + 
+        "  \"aDouble\":7.0,\n" + 
+        "  \"aDoubleMinMax\":5.0,\n" + 
+        "  \"aListOfObjects\":[],\n" + 
+        "  \"aListOfString\":[\n" + 
+        "    \"Hello\",\n" + 
+        "    \"World\"\n" + 
+        "  ],\n" + 
+        "  \"aSetOfString\":[],\n" + 
+        "  \"secs\":10\n" + 
+        "}\n",
         serializer.serialize(objectFactory_.newBuilder()
           .withABoolean(true)
           .withADouble(7.0)
@@ -160,24 +173,27 @@ public class TestOneOfEverything extends AbstractModelObjectTest
   @Test
   public void testMultipleSchemas() throws BadFormatException, IOException
   {
-    CharArrayWriter writer = new CharArrayWriter();
+    ByteArrayOutputStream writer = new ByteArrayOutputStream();
     IEntity[] source = new IEntity[3];
     
+    writer.write('[');
     source[0] = createTestObject3();
-    writer.write(source[0].serialize());
-    writer.write('\n');
+    writer.write(source[0].serialize().getBytes(StandardCharsets.UTF_8));
+    writer.write(',');
     
     source[1] = createTestObject2();
-    writer.write(source[1].serialize());
-    writer.write('\n');
+    writer.write(source[1].serialize().getBytes(StandardCharsets.UTF_8));
+    writer.write(',');
     
     source[2] = createTestObject1();
-    writer.write(source[2].serialize());
-    writer.write('\n');
+    writer.write(source[2].serialize().getBytes(StandardCharsets.UTF_8));
+    writer.write(']');
     
     writer.close();
     
-    Reader  reader = new CharArrayReader(writer.toCharArray());
+    String s = new String(writer.toByteArray());
+    
+    ByteArrayInputStream  reader = new ByteArrayInputStream(writer.toByteArray());
     Consumer consumer = new Consumer(source);
     
     modelRegistry_.parseStream(reader, consumer);

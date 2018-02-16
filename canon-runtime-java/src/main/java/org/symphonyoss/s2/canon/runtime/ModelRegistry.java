@@ -24,7 +24,9 @@
 package org.symphonyoss.s2.canon.runtime;
 
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.Reader;
+import java.io.StringReader;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
@@ -38,8 +40,7 @@ import org.symphonyoss.s2.common.dom.json.ImmutableJsonObject;
 import org.symphonyoss.s2.common.dom.json.JsonValue;
 import org.symphonyoss.s2.common.dom.json.jackson.JacksonAdaptor;
 import org.symphonyoss.s2.common.exception.BadFormatException;
-import org.symphonyoss.s2.common.reader.LinePartialReader;
-import org.symphonyoss.s2.common.reader.LinePartialReader.Factory;
+import org.symphonyoss.s2.common.fault.TransactionFault;
 import org.symphonyoss.s2.fugue.di.Cardinality;
 import org.symphonyoss.s2.fugue.di.ComponentDescriptor;
 import org.symphonyoss.s2.fugue.di.IBinder;
@@ -169,27 +170,42 @@ public class ModelRegistry implements IModelRegistry
   }
 
   @Override
-  public void parseStream(Reader reader, IEntityConsumer consumer) throws BadFormatException
+  public void parseStream(InputStream in, IEntityConsumer consumer) throws BadFormatException, IOException
   {
-    try(Factory readerFactory = new LinePartialReader.Factory(reader))
+    JsonArrayParser arrayParser = new JsonArrayParser()
     {
-      LinePartialReader partialReader;
       
-      while((partialReader = readerFactory.getNextReader())!=null)
+      @Override
+      protected void handle(String input)
       {
         try
         {
-          consumer.consume(parseOne(partialReader));
+          IEntity result = parseOne(new StringReader(input));
+          
+          consumer.consume(result);
         }
-        finally
+        catch (BadFormatException | IOException e)
         {
-          partialReader.close();
+          // TODO I think handle needs to throw BadFormatException
+          throw new TransactionFault(e);
         }
       }
-    }
-    catch (IOException e)
+    };
+    
+    byte[]      buf = new byte[1024];
+    
+    try
     {
-      LOG.error("Failed to close LinePartialReader.Factory", e);
+      int nbytes;
+      
+      while((nbytes= in.read(buf)) != -1)
+      {
+        arrayParser.process(buf, nbytes);
+      }
+    }
+    finally
+    {
+      arrayParser.close();
     }
   }
 

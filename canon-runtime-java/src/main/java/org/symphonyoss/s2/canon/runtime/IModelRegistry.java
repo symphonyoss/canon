@@ -24,6 +24,7 @@
 package org.symphonyoss.s2.canon.runtime;
 
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.Reader;
 
 import org.symphonyoss.s2.common.dom.json.ImmutableJsonObject;
@@ -40,7 +41,7 @@ public interface IModelRegistry extends IComponent
 
   IEntity parseOne(Reader reader) throws IOException, BadFormatException;
   
-  void parseStream(Reader reader, IEntityConsumer consumer) throws BadFormatException;
+  void parseStream(InputStream in, IEntityConsumer consumer) throws BadFormatException, IOException;
   
 //  Collection<IUrlPathServlet> getServlets();
 //  void register(IUrlPathServlet servlet);

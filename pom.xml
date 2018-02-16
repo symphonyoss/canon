@@ -27,7 +27,7 @@
 	<parent>
 		<groupId>org.symphonyoss.s2</groupId>
 		<artifactId>S2-super-pom</artifactId>
-		<version>0.1.5-SNAPSHOT</version>
+		<version>0.1.5</version>
 	</parent>
 	
 	<groupId>org.symphonyoss.s2.canon</groupId>
@@ -54,9 +54,9 @@
 	</licenses>
 
 	<scm>
-		<connection>scm:git:git://github.com/bruceskingle/canon.git</connection>
-		<developerConnection>scm:git:git@github.com:bruceskingle/canon.git</developerConnection>
-		<url>https://github.com/bruceskingle/canon</url>
+		<connection>scm:git:git://github.com/symphonyoss/canon.git</connection>
+		<developerConnection>scm:git:git@github.com:symphonyoss/canon.git</developerConnection>
+		<url>https://github.com/symphonyoss/canon</url>
 	  <tag>HEAD</tag>
   </scm>
 	
@@ -78,8 +78,8 @@
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<maven.compiler.source>1.8</maven.compiler.source>
 		<maven.compiler.target>1.8</maven.compiler.target>
-		<s2.common.version>0.1.12-SNAPSHOT</s2.common.version>
-		<fugue.version>0.0.2-SNAPSHOT</fugue.version>
+		<s2.common.version>0.1.12</s2.common.version>
+		<fugue.version>0.0.3</fugue.version>
 	</properties>
 
 	<repositories>

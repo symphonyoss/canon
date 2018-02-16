@@ -12,7 +12,7 @@ import org.symphonyoss.s2.canon.runtime.IConsumer;
 public interface I${modelJavaClassName}AsyncPathHandler extends I${model.model.camelCapitalizedName}EntityHandler
 {
 <#list model.operations as operation>
-  <@printMethodJavadoc operation/>
+  <@printMethodJavadoc operation true/>
   void handle${operation.camelCapitalizedName}(
   <#if operation.payload??>
   <@setJavaType operation.payload.schema/>

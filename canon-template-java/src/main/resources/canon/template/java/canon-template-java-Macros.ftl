@@ -271,7 +271,6 @@
       <#case "SET">
         <@"<#assign ${varPrefix}Cardinality=\"Set\">"?interpret />
         <#break>
-        
       <#default>
         <@"<#assign ${varPrefix}Cardinality=\"List\">"?interpret />
     </#switch>
@@ -372,7 +371,6 @@
         <@"<#assign ${varPrefix}ElementType=${varPrefix}BaseType>"?interpret />
       </#if>
   </#if>
-
 </#macro>
 
 
@@ -1091,19 +1089,26 @@ ${indent}    ${var}.add(${javaFacadePackage}.${model.camelCapitalizedName}.newBu
  # NB this macro calls setJavaMethod and setJavaType
  # @param operation   An operation object 
  #----------------------------------------------------------------------------------------------------->
-<#macro printMethodJavadoc operation>
+<#macro printMethodJavadoc operation isAsync>
 <@setJavaMethod operation/>
   /**
    * ${operation.name} ${operation.pathItem.path}
    * ${summary}
    * ${description}
+  <#if operation.payload??>
+  <@setJavaType operation.payload.schema/>
+   * @param _payload The request payload
+  </#if>
+  <#if isAsync && operation.response??>
+  <@setJavaType operation.response.schema/>
+  * @param _consumer A consumer into which responses may be passed.
+  </#if>
   <#list operation.parameters as parameter>
     <@setJavaType parameter.schema/>
-   * ${parameter.camelName?right_pad(25)} ${summary}
+   * @param ${parameter.camelName?right_pad(25)} ${summary}
   </#list>
-  <#if operation.response??>
+  <#if ! isAsync && operation.response??>
     <@setJavaType operation.response.schema/>
-    <#assign methodReturnPlaceholder="return null;">
     <#if operation.response.schema.description??>
    * @return ${operation.response.schema.description}
     <#else>
@@ -1112,10 +1117,8 @@ ${indent}    ${var}.add(${javaFacadePackage}.${model.camelCapitalizedName}.newBu
     <#if operation.response.isRequired>
     <#else>
    * or <code>null</code>
-   * @throws NoSuchRecordException            If there is no data to return
     </#if>
   </#if>
-   * @throws PermissionDeniedException        If the caller lacks necessary entitlements for the action
-   * @throws ServerErrorException             If an unexpected error occurred
+   * @throws JapiException                    If the method cannot be called
    */
 </#macro>

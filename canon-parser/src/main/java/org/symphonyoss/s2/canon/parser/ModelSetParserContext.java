@@ -58,11 +58,11 @@ public class ModelSetParserContext
   }
   
   /**
-   * Create a ModelSetParserContext with thegiven LoggerFactory.
+   * Create a ModelSetParserContext with the given LoggerFactory.
    * This is provided so that the maven plugin (mojo) can receive log entries in the 
    * maven logger.
    * 
-   * @param logFactory
+   * @param logFactory ALoggerFactory to use for logging.
    */
   public ModelSetParserContext(LoggerFactory logFactory)
   {
