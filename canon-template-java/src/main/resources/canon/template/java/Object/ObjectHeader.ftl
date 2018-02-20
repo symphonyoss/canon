@@ -52,4 +52,4 @@ public abstract class ${modelJavaClassName}Entity extends Entity
 {
   public static final String TYPE_ID = "${model.model.canonId}#/components/schemas/${model.name}";
 
-  private final ${(modelJavaClassName + ".AbstractFactory")?right_pad(25)} factory_;
+  private final ${(modelJavaClassName + ".AbstractFactory")?right_pad(25)} canonFactory_;

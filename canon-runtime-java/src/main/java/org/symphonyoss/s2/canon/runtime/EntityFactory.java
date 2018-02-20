@@ -28,9 +28,7 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Set;
 
-import org.symphonyoss.s2.common.dom.DomSerializer;
 import org.symphonyoss.s2.common.dom.json.IImmutableJsonDomNode;
-import org.symphonyoss.s2.common.dom.json.IJsonDomNodeProvider;
 import org.symphonyoss.s2.common.dom.json.ImmutableJsonArray;
 import org.symphonyoss.s2.common.dom.json.ImmutableJsonObject;
 import org.symphonyoss.s2.common.exception.BadFormatException;
@@ -50,8 +48,6 @@ import com.google.common.collect.ImmutableSet;
 public abstract class EntityFactory<E extends IEntity, B extends IEntity, M extends IModel>
 implements IEntityFactory<E,B,M>
 {
-  protected static final DomSerializer SERIALIZER = DomSerializer.newBuilder().withCanonicalMode(true).build();
-
   private final M model_;
   
   /**
@@ -105,56 +101,5 @@ implements IEntityFactory<E,B,M>
     }
     
     return ImmutableSet.copyOf(list);
-  }
-  
-  /**
-   * A builder for the enclosing entity type.
-   * 
-   * Essentially this is a mutable version of the enclosing entity type.
-   * 
-   * @author Bruce Skingle
-   */
-  public abstract class Builder implements IJsonDomNodeProvider, IBaseEntity
-  {
-//    private final IEntityFactory<E,B,M> factory_;
-//    
-//    /**
-//     * Constructor.
-//     * 
-//     * @param factory The factory to which this builder belongs.
-//     */
-//    public Builder(IEntityFactory<E,B,M> factory)
-//    {
-//      factory_ = factory;
-//    }
-//
-//    /**
-//     * Return the factory to which this builder belongs.
-//     * 
-//     * @return the factory to which this builder belongs.
-//     */
-//    public IEntityFactory<E,B,M> getFactory()
-//    {
-//      return factory_;
-//    }
-
-    /**
-     * Return the JSON representation of the current state of this builder.
-     * 
-     * @return the JSON representation of the current state of this builder.
-     */
-    public abstract ImmutableJsonObject getJsonObject();
-    
-    @Override
-    public IImmutableJsonDomNode getJsonDomNode()
-    {
-      return getJsonObject();
-    }
-
-    @Override
-    public String serialize()
-    {
-      return SERIALIZER.serialize(getJsonObject());
-    }
   }
 }

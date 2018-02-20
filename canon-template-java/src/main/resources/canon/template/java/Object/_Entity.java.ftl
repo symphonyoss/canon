@@ -3,6 +3,7 @@
 
 <#list model.fields as field>
   <@setJavaType field/>
+  <@printField/>
   private final ${fieldType?right_pad(25)}  ${field.camelName}_;
 </#list>
 
@@ -15,7 +16,7 @@
     super(canonOther.getJsonObject());
 </#if>
     
-    factory_ = factory;
+    canonFactory_ = factory;
 <#list model.fields as field>
     <@setJavaType field/>
 
@@ -39,7 +40,7 @@
     if(jsonObject == null)
       throw new BadFormatException("jsonObject is required");
   
-    factory_ = factory;
+    canonFactory_ = factory;
 
     IImmutableJsonDomNode typeNode = jsonObject.get(CanonRuntime.JSON_TYPE);
     if(!(typeNode instanceof IStringProvider && TYPE_ID.equals(((IStringProvider)typeNode).asString())))
@@ -148,6 +149,20 @@
     {
       return new ${modelJavaClassName}Builder(this, initial);
     }
+    
+      
+    /**
+     * Return a new entity instance created from the given other instance.
+     * This is used to construct an entity from its builder as the builder also
+     * implements the interface of the entity.
+     * 
+     * @param other a source of all fields for the required entity.
+     * 
+     * @return An instance of the entity represented by the given values.
+     * 
+     * @throws BadFormatException If the given values are not valid.
+     */
+    public abstract I${model.camelCapitalizedName} newInstance(I${model.camelCapitalizedName}Entity other)<@checkLimitsClassThrows model/>;
   }
 }
 <#include "../canon-template-java-Epilogue.ftl">

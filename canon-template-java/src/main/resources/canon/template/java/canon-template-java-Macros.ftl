@@ -159,9 +159,7 @@
  #----------------------------------------------------------------------------------------------------->
 <#macro setModelJavaType model>
   <#assign javaModel=model>
-  
   <@setType "model" model/>
-  
   <#assign modelJavaFieldClassName="">
   <#assign modelJavaElementClassName="">
   <#assign modelJavaCardinality="">
@@ -321,7 +319,7 @@
       <#return>
     
     <#default>
-      <@"<#assign ${varPrefix}BaseType=\"${model.camelCapitalizedName}\">"?interpret />
+      <@"<#assign ${varPrefix}BaseType=\"I${model.camelCapitalizedName}\">"?interpret />
   </#switch>
 </#macro>
 
@@ -364,11 +362,16 @@
       </#if>
     </#if>
     <#else>
-      <#if model.isComponent>
-        <@"<#assign ${varPrefix}ElementType=\"${model.camelCapitalizedName}\">"?interpret />
-        <@"<#assign ${varPrefix}FQType=\"${javaFacadePackage}.${model.camelCapitalizedName}\">"?interpret />
+      <#if model.baseSchema.isObjectSchema>
+        <@"<#assign ${varPrefix}ElementType=\"I${model.camelCapitalizedName}\">"?interpret />
+        <@"<#assign ${varPrefix}FQType=\"${javaFacadePackage}.I${model.camelCapitalizedName}\">"?interpret />
       <#else>
-        <@"<#assign ${varPrefix}ElementType=${varPrefix}BaseType>"?interpret />
+        <#if model.isComponent>
+          <@"<#assign ${varPrefix}ElementType=\"${model.camelCapitalizedName}\">"?interpret />
+          <@"<#assign ${varPrefix}FQType=\"${javaFacadePackage}.${model.camelCapitalizedName}\">"?interpret />
+        <#else>
+          <@"<#assign ${varPrefix}ElementType=${varPrefix}BaseType>"?interpret />
+        </#if>
       </#if>
   </#if>
 </#macro>
@@ -429,7 +432,7 @@
       <#return "Boolean">
     
     <#default>
-      <#return "${model.camelCapitalizedName}">
+      <#return "I${model.camelCapitalizedName}">
   </#switch>
 </#function>
 
@@ -930,7 +933,7 @@ ${indent}${var}.addIfNotNull("${field.camelName}", ${field.camelName}__);
     <#if field.isObjectSchema>
 ${indent}if(node instanceof ImmutableJsonObject)
 ${indent}{
-${indent}  ${var} = canonFactory.getModel().get${fieldType}Factory().newInstance((ImmutableJsonObject)node);
+${indent}  ${var} = factory.getModel().get${field.elementSchema.camelCapitalizedName}Factory().newInstance((ImmutableJsonObject)node);
 ${indent}}
 ${indent}else
 ${indent}{
@@ -987,7 +990,8 @@ ${indent}}
 ${indent}    ${var} = ${javaTypeCopyPrefix}list${javaTypeCopyPostfix};
     <#else>
       <#if field.baseSchema.items.isComponent>
-${indent}  ${var} = canonFactory_.getModel().get${javaElementFieldClassName}Factory().newInstance${javaCardinality}((ImmutableJsonArray)node);
+${indent}  ${var} = canonFactory_.getModel().get${field.elementSchema.camelCapitalizedName}Factory().newInstance${javaCardinality}((ImmutableJsonArray)node);
+
       <#else>
 ${indent}  ${var} = ((ImmutableJsonArray)node).asImmutable${javaCardinality}Of(${javaElementFieldClassName}.class);
       </#if>

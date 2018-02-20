@@ -36,7 +36,7 @@ import com.google.common.collect.ImmutableSet;
  * @author Bruce Skingle
  *
  * @param <E> The type of the entity produced by this factory.
- * @param <sB> The base type of the entity.
+ * @param <B> The base type of the entity.
  * @param <M> The type of the model to which the enclosing entity type belongs.
  */
 public interface IEntityFactory<E extends IEntity, B extends IEntity, M extends IModel>
@@ -58,19 +58,7 @@ public interface IEntityFactory<E extends IEntity, B extends IEntity, M extends 
    * @throws BadFormatException If the given JSON is not valid.
    */
   E  newInstance(ImmutableJsonObject jsonObject) throws BadFormatException;
-  
-  /**
-   * Return a new entity instance created from the given other instance.
-   * This is used to construct an entity from its builder as the builder also
-   * implements the interface of the entity.
-   * 
-   * @param other a source of all fields for the required entity.
-   * 
-   * @return An instance of the entity represented by the given values.
-   * 
-   * @throws BadFormatException If the given values are not valid.
-   */
-  E  newInstance(B other) throws BadFormatException;
+
 
   /**
    * Return a list of new entity instances created from the given JSON array.
