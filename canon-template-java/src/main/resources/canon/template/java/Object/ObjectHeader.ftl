@@ -8,6 +8,7 @@ import com.google.protobuf.ByteString;
 import org.symphonyoss.s2.canon.runtime.IEntity;
 import org.symphonyoss.s2.canon.runtime.CanonRuntime;
 import org.symphonyoss.s2.canon.runtime.Entity;
+import org.symphonyoss.s2.canon.runtime.EntityBuilder;
 import org.symphonyoss.s2.canon.runtime.EntityFactory;
 
 import org.symphonyoss.s2.common.dom.IBooleanProvider;
@@ -30,6 +31,7 @@ import org.symphonyoss.s2.common.exception.BadFormatException;
 
 import ${javaFacadePackage}.I${model.model.camelCapitalizedName};
 import ${javaFacadePackage}.I${model.model.camelCapitalizedName}ModelEntity;
+import ${javaFacadePackage}.I${model.model.camelCapitalizedName}ModelEntityFactory;
 import ${javaFacadePackage}.I${modelJavaClassName};
 import ${javaFacadePackage}.${modelJavaClassName};
 <#list model.superClasses as s>
@@ -41,8 +43,8 @@ import ${javaFacadePackage}.I${s.camelCapitalizedName};
 <#include "Object.ftl">
 @Immutable
 @SuppressWarnings("unused")
-<#if model.extendsSchema??>
-public abstract class ${modelJavaClassName}Entity extends ${model.extendsSchema.baseSchema.camelCapitalizedName}
+<#if model.superSchema??>
+public abstract class ${modelJavaClassName}Entity extends ${model.superSchema.baseSchema.camelCapitalizedName}
 <#else>
 public abstract class ${modelJavaClassName}Entity extends Entity
 </#if>
@@ -50,4 +52,4 @@ public abstract class ${modelJavaClassName}Entity extends Entity
 {
   public static final String TYPE_ID = "${model.model.canonId}#/components/schemas/${model.name}";
 
-  private final ${(modelJavaClassName + ".Factory")?right_pad(25)} canonFactory_;
+  private final ${(modelJavaClassName + ".AbstractFactory")?right_pad(25)} factory_;

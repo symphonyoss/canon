@@ -313,6 +313,43 @@
             }
           }
         }
+      },
+      
+      "FundamentalObject": {
+        "type": "object",
+        "required": [
+          "absoluteHash"
+        ],
+        "properties": {
+          "absoluteHash": {
+            "$ref": "#/components/schemas/DirectHash"
+          },
+          "sequenceHashes": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/DirectHash"
+            }
+          }
+        }
+      },
+      
+      "VersionedObject": {
+        "type": "object",
+        "extends": {
+          "$ref": "#/components/schemas/FundamentalObject"
+        },
+        "required": [
+          "prevHash",
+          "baseHash"
+        ],
+        "properties": {
+          "prevHash": {
+            "$ref": "#/components/schemas/DirectHash"
+          },
+          "baseHash": {
+            "$ref": "#/components/schemas/DirectHash"
+          }
+        }
       }
     }
   }

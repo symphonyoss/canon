@@ -23,7 +23,9 @@
 
 package org.symphonyoss.s2.canon.model;
 
+import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
@@ -43,9 +45,10 @@ import org.symphonyoss.s2.canon.parser.error.UnexpectedTypeError;
  */
 public class ObjectSchema extends Schema
 {
-  private Set<String>     requiredButUndefinedSet_ = new HashSet<>();
-  private boolean         abstract_;
-  private ReferenceSchema extendsSchema_;
+  private Set<String>          requiredButUndefinedSet_ = new HashSet<>();
+  private List<ModelElement>   fields_                  = new ArrayList<>();
+  private boolean              abstract_;
+  private ReferenceSchema      superSchema_;
     
   public ObjectSchema(ModelElement parent, ParserContext context, String name)
   {
@@ -81,7 +84,10 @@ public class ObjectSchema extends Schema
           AbstractSchema field = Field.create(this, child, required);
           
           if(field != null)
+          {
             add(field);
+            fields_.add(field);
+          }
         }
       }
       
@@ -99,15 +105,15 @@ public class ObjectSchema extends Schema
       
       if(extendsContext != null)
       {
-        AbstractSchema extendsSchema = createSchema(extendsContext);
+        AbstractSchema superSchema = createSchema(extendsContext);
         
-        if(extendsSchema instanceof ReferenceSchema)
+        if(superSchema instanceof ReferenceSchema)
         {
-          extendsSchema_ = (ReferenceSchema) extendsSchema;
-          add(extendsSchema);
+          superSchema_ = (ReferenceSchema) superSchema;
+          add(superSchema);
         }
         else
-          extendsContext.raise(new UnexpectedTypeError(ReferenceSchema.class, extendsSchema));
+          extendsContext.raise(new UnexpectedTypeError(ReferenceSchema.class, superSchema));
       }
     }
     else
@@ -121,11 +127,11 @@ public class ObjectSchema extends Schema
   {
     super.validate();
     
-    if(extendsSchema_ != null)
+    if(superSchema_ != null)
     {
-      if(extendsSchema_.isResolved())
+      if(superSchema_.isResolved())
       {
-        Schema referent = extendsSchema_.getReference().getBaseSchema();
+        Schema referent = superSchema_.getReference().getBaseSchema();
         
         if(!(referent instanceof ObjectSchema))
         {
@@ -136,9 +142,19 @@ public class ObjectSchema extends Schema
     }
   }
 
-  public ReferenceSchema getExtendsSchema()
+  /**
+   * 
+   * @return The super schema if any.
+   */
+  public ReferenceSchema getSuperSchema()
   {
-    return extendsSchema_;
+    return superSchema_;
+  }
+
+  @Override
+  public List<ModelElement> getFields()
+  {
+    return fields_;
   }
 
   @Override

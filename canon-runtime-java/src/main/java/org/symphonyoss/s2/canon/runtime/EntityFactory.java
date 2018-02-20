@@ -38,14 +38,42 @@ import org.symphonyoss.s2.common.exception.BadFormatException;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableSet;
 
-public abstract class EntityFactory<M extends IEntity, F extends IModel>
-implements IEntityFactory<M,F>
+/**
+ * A factory for an enclosing entity type.
+ * 
+ * @author Bruce Skingle
+ *
+ * @param <E> The type of the entity produced by this factory.
+ * @param <B> The interface type of the entity.
+ * @param <M> The type of the model to which the enclosing entity type belongs.
+ */
+public abstract class EntityFactory<E extends IEntity, B extends IEntity, M extends IModel>
+implements IEntityFactory<E,B,M>
 {
   protected static final DomSerializer SERIALIZER = DomSerializer.newBuilder().withCanonicalMode(true).build();
 
-  public ImmutableList<M> newInstanceList(ImmutableJsonArray jsonArray) throws BadFormatException
+  private final M model_;
+  
+  /**
+   * Constructor.
+   * 
+   * @param model the model to which this factory belongs.
+   */
+  public EntityFactory(M model)
   {
-    List<M> list = new LinkedList<>();
+    model_ = model;
+  }
+  
+  @Override
+  public M getModel()
+  {
+    return model_;
+  }
+
+  @Override
+  public ImmutableList<E> newInstanceList(ImmutableJsonArray jsonArray) throws BadFormatException
+  {
+    List<E> list = new LinkedList<>();
     
     for(IImmutableJsonDomNode node : jsonArray)
     {
@@ -58,9 +86,10 @@ implements IEntityFactory<M,F>
     return ImmutableList.copyOf(list);
   }
   
-  public ImmutableSet<M> newInstanceSet(ImmutableJsonArray jsonArray) throws BadFormatException
+  @Override
+  public ImmutableSet<E> newInstanceSet(ImmutableJsonArray jsonArray) throws BadFormatException
   {
-    Set<M> list = new HashSet<>();
+    Set<E> list = new HashSet<>();
     
     for(IImmutableJsonDomNode node : jsonArray)
     {
@@ -78,8 +107,42 @@ implements IEntityFactory<M,F>
     return ImmutableSet.copyOf(list);
   }
   
-  public abstract static class Builder implements IJsonDomNodeProvider, IBaseEntity
+  /**
+   * A builder for the enclosing entity type.
+   * 
+   * Essentially this is a mutable version of the enclosing entity type.
+   * 
+   * @author Bruce Skingle
+   */
+  public abstract class Builder implements IJsonDomNodeProvider, IBaseEntity
   {
+//    private final IEntityFactory<E,B,M> factory_;
+//    
+//    /**
+//     * Constructor.
+//     * 
+//     * @param factory The factory to which this builder belongs.
+//     */
+//    public Builder(IEntityFactory<E,B,M> factory)
+//    {
+//      factory_ = factory;
+//    }
+//
+//    /**
+//     * Return the factory to which this builder belongs.
+//     * 
+//     * @return the factory to which this builder belongs.
+//     */
+//    public IEntityFactory<E,B,M> getFactory()
+//    {
+//      return factory_;
+//    }
+
+    /**
+     * Return the JSON representation of the current state of this builder.
+     * 
+     * @return the JSON representation of the current state of this builder.
+     */
     public abstract ImmutableJsonObject getJsonObject();
     
     @Override
