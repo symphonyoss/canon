@@ -468,7 +468,7 @@
 			},
 			"properties": {
 				"extends": {
-          "$ref": "#/definitions/reference"
+          "type": "string"
         },
         "abstract": {
           "type": "boolean"

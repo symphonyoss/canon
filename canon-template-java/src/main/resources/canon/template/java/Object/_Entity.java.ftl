@@ -3,7 +3,6 @@
 
 <#list model.fields as field>
   <@setJavaType field/>
-  <@printField/>
   private final ${fieldType?right_pad(25)}  ${field.camelName}_;
 </#list>
 

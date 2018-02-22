@@ -99,21 +99,32 @@ public class ObjectSchema extends Schema
       ParserContext isAbstract = context.get(Canon.ABSTRACT);
       
       abstract_ = isAbstract != null && isAbstract.isBoolean() && isAbstract.asBoolean();
-      System.err.println("BRUCE " + getName() + " isAbstract=" + abstract_);
       
       ParserContext extendsContext = context.get(Canon.EXTENDS);
       
       if(extendsContext != null)
       {
-        AbstractSchema superSchema = createSchema(extendsContext);
-        
-        if(superSchema instanceof ReferenceSchema)
-        {
-          superSchema_ = (ReferenceSchema) superSchema;
-          add(superSchema);
-        }
-        else
-          extendsContext.raise(new UnexpectedTypeError(ReferenceSchema.class, superSchema));
+        superSchema_ =  new ReferenceSchema(this, extendsContext, extendsContext, "extends");
+        add(superSchema_);
+//        ReferenceSchema ss = null;
+//        
+//        ParserContext r = extendsContext.get(Canon.DOLLAR_REF);
+//        if(r.isTextual())
+//        {
+//          String s = r.asText();
+//          
+//          ss = new ReferenceSchema(this, extendsContext, r, "extends");
+//        }
+//        
+//        AbstractSchema superSchema = createSchema(extendsContext);
+//        
+//        if(superSchema instanceof ReferenceSchema)
+//        {
+//          superSchema_ = (ReferenceSchema) superSchema;
+//          add(superSchema);
+//        }
+//        else
+//          extendsContext.raise(new UnexpectedTypeError(ReferenceSchema.class, superSchema));
       }
     }
     else

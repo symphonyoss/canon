@@ -13,8 +13,7 @@ import org.symphonyoss.s2.canon.runtime.http.ParameterLocation;
 import org.symphonyoss.s2.canon.runtime.http.client.HttpParameter;
 
 <#list model.parameters as parameter>
-  <@setJavaType parameter.schema/>  
-  <@printField/>
+  <@setJavaType parameter.schema/>
   <#if javaFullyQualifiedClassName?has_content>
 import ${javaFullyQualifiedClassName};
   </#if>
@@ -57,7 +56,6 @@ public class ${javaModelClassName} extends ${model.parent.camelCapitalizedName}$
     return japiPayload_;
   }
   
-  <@printField/>
   public ${javaModelClassName} withJapiPayload(${methodPayloadType} japiPayload)
   {
     japiPayload_.add(${javaGetValuePrefix}japiPayload${javaGetValuePostfix});

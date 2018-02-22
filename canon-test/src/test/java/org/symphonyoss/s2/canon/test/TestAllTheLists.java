@@ -27,6 +27,7 @@ import java.io.IOException;
 
 import org.junit.Test;
 import org.symphonyoss.s2.canon.test.typeCheck.facade.AllTheLists;
+import org.symphonyoss.s2.canon.test.typeCheck.facade.IAllTheLists;
 import org.symphonyoss.s2.canon.test.typeCheck.facade.SimpleObject;
 import org.symphonyoss.s2.canon.test.typeCheck.facade.TypeCheck;
 import org.symphonyoss.s2.common.dom.DomSerializer;
@@ -51,7 +52,7 @@ public class TestAllTheLists extends AbstractModelObjectTest
   @Test
   public void testRoundTrip() throws IOException, BadFormatException
   {
-    AllTheLists obj;
+    IAllTheLists obj;
     
     
     DomWriter writer = new DomWriter(System.out);
@@ -91,7 +92,7 @@ public class TestAllTheLists extends AbstractModelObjectTest
       //((MutableJsonObject)adapted).addIfNotNull("_type", "foo");
       try
       {
-        AllTheLists obj2 = objectFactory_.newInstance((ImmutableJsonObject) adapted.immutify());
+        IAllTheLists obj2 = objectFactory_.newInstance((ImmutableJsonObject) adapted.immutify());
         
         System.out.println("Reconstructed object:");
         writer.write(obj2.getJsonObject());
@@ -117,7 +118,7 @@ public class TestAllTheLists extends AbstractModelObjectTest
 
   
 
-  private AllTheLists createTestObject1() throws BadFormatException
+  private IAllTheLists createTestObject1() throws BadFormatException
   {
     return objectFactory_.newBuilder()
           .withBooleanListField(ImmutableList.of(true, false))

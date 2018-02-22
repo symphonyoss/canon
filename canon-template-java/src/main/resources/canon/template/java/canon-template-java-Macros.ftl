@@ -719,7 +719,6 @@ import com.google.protobuf.ByteString;
   
   <#list model.referencedTypes as field>
     <@setJavaType field/>
-    <@printField/>
     <#list field.attributes as name, value>
     </#list>
     <#if fieldFQType?has_content>

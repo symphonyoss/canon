@@ -30,8 +30,7 @@ import org.symphonyoss.s2.canon.runtime.http.RequestContext;
 import org.symphonyoss.s2.canon.runtime.http.client.HttpParameter;
 
 <#list model.parameters as parameter>
-  <@setJavaType parameter.schema/>  
-  <@printField/>
+  <@setJavaType parameter.schema/> 
   <#if javaFullyQualifiedClassName?has_content>
 import ${javaFullyQualifiedClassName};
   </#if>
@@ -115,7 +114,6 @@ public class ${model.parent.camelCapitalizedName}${model.camelCapitalizedName}Ht
           <#break>
         
         <#case "Query">
-          <@printField/>
       builder.addParameter("${parameter.name}", asString(${javaGetValuePrefix}${parameter.camelName}_${javaGetValuePostfix}));
           <#break>
         

@@ -96,7 +96,7 @@ public abstract class ${modelJavaClassName}PathHandler extends PathHandler<I${mo
     <#if operation.payload.schema.isTypeDef>
     ${fieldType} _payload = context.parsePayload(${javaClassName}.newBuilder());
     <#else>
-    ${javaClassName} _payload = context.parsePayload(getModel().get${javaClassName}Factory());
+    ${fieldType} _payload = context.parsePayload(getModel().get${javaClassName}Factory());
     </#if>
   </#if>
   

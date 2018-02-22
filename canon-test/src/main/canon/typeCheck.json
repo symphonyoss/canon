@@ -335,9 +335,7 @@
       
       "VersionedObject": {
         "type": "object",
-        "extends": {
-          "$ref": "#/components/schemas/FundamentalObject"
-        },
+        "extends": "#/components/schemas/FundamentalObject",
         "required": [
           "prevHash",
           "baseHash"
