@@ -41,9 +41,9 @@ public class ${model.camelCapitalizedName} extends ${model.camelCapitalizedName}
     }
     
     @Override
-    public I${model.camelCapitalizedName} newInstance(I${model.camelCapitalizedName}Entity other)<@checkLimitsClassThrows model/>
+    public I${model.camelCapitalizedName} newInstance(Builder builder)<@checkLimitsClassThrows model/>
     {
-      return new ${model.camelCapitalizedName}(this, other);
+      return new ${model.camelCapitalizedName}(this, builder);
     }
     
     @Override
@@ -58,6 +58,27 @@ public class ${model.camelCapitalizedName} extends ${model.camelCapitalizedName}
     protected AbstractFactory(I${model.model.camelCapitalizedName} model)
     {
       super(model);
+    }
+  }
+  
+  public static class Builder extends ${modelJavaClassName}Entity.Builder<Builder>
+  {
+    private ${(modelJavaClassName + "Entity.Factory")?right_pad(25)}  canonFactory_;
+  
+    public Builder(${modelJavaClassName}Entity.Factory factory)
+    {
+      canonFactory_ = factory;
+    }
+    
+    public Builder(${modelJavaClassName}Entity.Factory factory, I${modelJavaClassName}Entity initial)
+    {
+      super(initial);
+      canonFactory_ = factory;
+    }
+      
+    public I${modelJavaClassName} build()<@checkLimitsClassThrows model/>
+    {
+      return canonFactory_.newInstance(this);
     }
   }
 }

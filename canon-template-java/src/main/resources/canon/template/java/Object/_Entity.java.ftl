@@ -130,9 +130,9 @@
      * 
      * @return A new builder.
      */
-    public ${modelJavaClassName}Builder newBuilder()
+    public ${modelJavaClassName}.Builder newBuilder()
     {
-      return new ${modelJavaClassName}Builder(this);
+      return new ${modelJavaClassName}.Builder(this);
     }
     
     /**
@@ -140,13 +140,13 @@
      * Values are copied so that subsequent changes to initial will not be reflected in
      * the returned builder.
      * 
-     * @param initial A builder whose values are copied into a new builder.
+     * @param initial A builder or instance whose values are copied into a new builder.
      * 
      * @return A new builder.
      */
-    public ${modelJavaClassName}Builder newBuilder(I${modelJavaClassName}Entity initial)
+    public ${modelJavaClassName}.Builder newBuilder(I${modelJavaClassName}Entity initial)
     {
-      return new ${modelJavaClassName}Builder(this, initial);
+      return new ${modelJavaClassName}.Builder(this, initial);
     }
     
       
@@ -155,13 +155,86 @@
      * This is used to construct an entity from its builder as the builder also
      * implements the interface of the entity.
      * 
-     * @param other a source of all fields for the required entity.
+     * @param builder a builder containing values of all fields for the required entity.
      * 
      * @return An instance of the entity represented by the given values.
      * 
      * @throws BadFormatException If the given values are not valid.
      */
-    public abstract I${model.camelCapitalizedName} newInstance(I${model.camelCapitalizedName}Entity other)<@checkLimitsClassThrows model/>;
+    public abstract I${model.camelCapitalizedName} newInstance(${modelJavaClassName}.Builder builder)<@checkLimitsClassThrows model/>;
+  }
+  
+  public static class Builder<B extends Builder<?>>
+  <#if model.superSchema??>
+    extends ${model.superSchema.baseSchema.camelCapitalizedName}Entity.Builder<B>
+  <#else>
+    extends EntityBuilder
+  </#if>
+    implements I${modelJavaClassName}Entity
+  {
+  <#list model.fields as field>
+    <@setJavaType field/>
+    private ${fieldType?right_pad(25)}  ${field.camelName}__${javaBuilderTypeNew};
+  </#list>
+    
+    public Builder()
+    {
+    }
+    
+    public Builder(I${modelJavaClassName}Entity initial)
+    {
+  <#list model.fields as field>
+  <@setJavaType field/>
+      ${field.camelName}__${javaBuilderTypeCopyPrefix}initial.get${field.camelCapitalizedName}()${javaBuilderTypeCopyPostfix};
+  </#list>
+    }
+  <#list model.fields as field>
+    <@setJavaType field/>
+    
+    @Override
+    public ${fieldType} get${field.camelCapitalizedName}()
+    {
+      return ${field.camelName}__;
+    }
+  
+    public B with${field.camelCapitalizedName}(${fieldType} ${field.camelName})<#if field.canFailValidation> throws BadFormatException</#if>
+    {
+    <@checkLimits "        " field field.camelName/>
+      ${field.camelName}__${javaBuilderTypeCopyPrefix}${field.camelName}${javaBuilderTypeCopyPostfix};
+      return (B)this;
+    }
+    <#if field.isTypeDef>
+    
+    public B with${field.camelCapitalizedName}(${javaFieldClassName} ${field.camelName}) throws BadFormatException
+    {
+    <#if field.elementType=="Field" && field.required>
+      if(${field.camelName} == null)
+        throw new BadFormatException("${field.camelName} is required.");
+  
+    </#if>
+      ${field.camelName}__ = ${javaConstructTypePrefix}${field.camelName}${javaConstructTypePostfix};
+      return (B)this;
+    }
+    </#if>
+  </#list>
+  
+    @Override 
+    public ImmutableJsonObject getJsonObject()
+    {
+      MutableJsonObject jsonObject = new MutableJsonObject();
+      
+      jsonObject.addIfNotNull(CanonRuntime.JSON_TYPE, ${modelJavaClassName}Entity.TYPE_ID);
+  <#list model.fields as field>
+  <@setJavaType field/>
+  
+      if(${field.camelName}__ != null)
+      {
+        <@generateCreateJsonDomNodeFromField "          " field "jsonObject"/>
+      }
+  </#list>
+  
+      return jsonObject.immutify();
+    }
   }
 }
 <#include "../canon-template-java-Epilogue.ftl">
