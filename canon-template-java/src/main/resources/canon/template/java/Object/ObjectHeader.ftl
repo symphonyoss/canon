@@ -34,6 +34,9 @@ import ${javaFacadePackage}.I${model.model.camelCapitalizedName}ModelEntity;
 import ${javaFacadePackage}.I${model.model.camelCapitalizedName}ModelEntityFactory;
 import ${javaFacadePackage}.I${modelJavaClassName};
 import ${javaFacadePackage}.${modelJavaClassName};
+<#if model.superSchema??>
+import ${javaFacadePackage}.${model.superSchema.baseSchema.camelCapitalizedName};
+</#if>
 <#list model.superClasses as s>
   <#if s.isComponent>
 import ${javaFacadePackage}.I${s.camelCapitalizedName};

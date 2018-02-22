@@ -6,7 +6,7 @@
  #
  # Defined by the model:
  # ---------------------
- # javaModel.name                  Name as defined in the openApi3 input spec
+ # javaModel.name                  Name as defined in the canon input spec
  #
  # javaModel.camelName             Name in camel case with a lower case first letter
  #
@@ -17,6 +17,9 @@
  # javaModel.snakeCapitalizedName  Name in snake case with an upper case first letter 
  #
  # javaModel.elementType           The type of the parse tree element
+ #
+ # isArraySchema                   True iff the model is an array
+ # isObjectSchema                  True if the element type is an object
  #
  #
  #
@@ -362,7 +365,7 @@
       </#if>
     </#if>
     <#else>
-      <#if model.baseSchema.isObjectSchema>
+      <#if ! model.baseSchema.isArraySchema && model.baseSchema.isObjectSchema>
         <@"<#assign ${varPrefix}ElementType=\"I${model.camelCapitalizedName}\">"?interpret />
         <@"<#assign ${varPrefix}FQType=\"${javaFacadePackage}.I${model.camelCapitalizedName}\">"?interpret />
       <#else>
@@ -716,6 +719,7 @@ import com.google.protobuf.ByteString;
   
   <#list model.referencedTypes as field>
     <@setJavaType field/>
+    <@printField/>
     <#list field.attributes as name, value>
     </#list>
     <#if fieldFQType?has_content>

@@ -48,19 +48,9 @@ import ${javaFacadePackage}.I${s.camelCapitalizedName};
 
 <#include "Object.ftl">
 @SuppressWarnings("unused")
-public class ${modelJavaClassName}Builder
-<#if model.superSchema??>
-  extends ${model.superSchema.baseSchema.camelCapitalizedName}Builder
-<#else>
-  extends EntityBuilder
-</#if>
-  implements I${modelJavaClassName}Entity
+public class ${modelJavaClassName}Builder extends ${modelJavaClassName}AbstractBuilder<${modelJavaClassName}Builder>
 {
   private ${(modelJavaClassName + "Entity.Factory")?right_pad(25)}  canonFactory_;
-<#list model.fields as field>
-  <@setJavaType field/>
-  private ${fieldType?right_pad(25)}  ${field.camelName}__${javaBuilderTypeNew};
-</#list>
   
   public ${modelJavaClassName}Builder(${modelJavaClassName}Entity.Factory factory)
   {
@@ -69,7 +59,35 @@ public class ${modelJavaClassName}Builder
   
   public ${modelJavaClassName}Builder(${modelJavaClassName}Entity.Factory factory, I${modelJavaClassName}Entity initial)
   {
+    super(initial);
     canonFactory_ = factory;
+  }
+      
+  public I${modelJavaClassName} build()<@checkLimitsClassThrows model/>
+  {
+    return canonFactory_.newInstance(this);
+  }
+}
+
+/* package */ class ${modelJavaClassName}AbstractBuilder<B extends ${modelJavaClassName}AbstractBuilder<?>>
+<#if model.superSchema??>
+  extends ${model.superSchema.baseSchema.camelCapitalizedName}AbstractBuilder<B>
+<#else>
+  extends EntityBuilder
+</#if>
+  implements I${modelJavaClassName}Entity
+{
+<#list model.fields as field>
+  <@setJavaType field/>
+  private ${fieldType?right_pad(25)}  ${field.camelName}__${javaBuilderTypeNew};
+</#list>
+  
+  public ${modelJavaClassName}AbstractBuilder()
+  {
+  }
+  
+  public ${modelJavaClassName}AbstractBuilder(I${modelJavaClassName}Entity initial)
+  {
 <#list model.fields as field>
 <@setJavaType field/>
     ${field.camelName}__${javaBuilderTypeCopyPrefix}initial.get${field.camelCapitalizedName}()${javaBuilderTypeCopyPostfix};
@@ -84,15 +102,15 @@ public class ${modelJavaClassName}Builder
     return ${field.camelName}__;
   }
 
-  public ${modelJavaClassName}Builder with${field.camelCapitalizedName}(${fieldType} ${field.camelName})<#if field.canFailValidation> throws BadFormatException</#if>
+  public B with${field.camelCapitalizedName}(${fieldType} ${field.camelName})<#if field.canFailValidation> throws BadFormatException</#if>
   {
   <@checkLimits "        " field field.camelName/>
     ${field.camelName}__${javaBuilderTypeCopyPrefix}${field.camelName}${javaBuilderTypeCopyPostfix};
-    return this;
+    return (B)this;
   }
   <#if field.isTypeDef>
   
-  public ${modelJavaClassName}Builder with${field.camelCapitalizedName}(${javaFieldClassName} ${field.camelName}) throws BadFormatException
+  public B with${field.camelCapitalizedName}(${javaFieldClassName} ${field.camelName}) throws BadFormatException
   {
   <#if field.elementType=="Field" && field.required>
     if(${field.camelName} == null)
@@ -100,7 +118,7 @@ public class ${modelJavaClassName}Builder
 
   </#if>
     ${field.camelName}__ = ${javaConstructTypePrefix}${field.camelName}${javaConstructTypePostfix};
-    return this;
+    return (B)this;
   }
   </#if>
 </#list>
@@ -121,11 +139,6 @@ public class ${modelJavaClassName}Builder
 </#list>
 
     return jsonObject.immutify();
-  }
-      
-  public I${modelJavaClassName} build()<@checkLimitsClassThrows model/>
-  {
-    return canonFactory_.newInstance(this);
   }
 }
 <#include "../canon-template-java-Epilogue.ftl">

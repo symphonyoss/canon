@@ -94,7 +94,7 @@ public abstract class ${modelJavaClassName}PathHandler extends PathHandler<I${mo
   
     <@setJavaType operation.payload.schema/>
     <#if operation.payload.schema.isTypeDef>
-    ${javaClassName} _payload = context.parsePayload(${javaClassName}.newBuilder());
+    ${fieldType} _payload = context.parsePayload(${javaClassName}.newBuilder());
     <#else>
     ${javaClassName} _payload = context.parsePayload(getModel().get${javaClassName}Factory());
     </#if>
@@ -106,7 +106,7 @@ public abstract class ${modelJavaClassName}PathHandler extends PathHandler<I${mo
       {
   <#if operation.response??>
     <@setJavaType operation.response.schema/>
-        ${javaClassName} response =
+        ${fieldType} response =
   </#if> 
           handle${operation.camelCapitalizedName}(
   <#if operation.payload??>
