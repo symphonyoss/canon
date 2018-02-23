@@ -23,8 +23,7 @@ import org.symphonyoss.s2.canon.runtime.http.RequestContext;
 import org.symphonyoss.s2.fugue.di.ComponentDescriptor;
 
 <@importFieldTypes model true/>
-
-import ${javaFacadePackage}.I${model.model.camelCapitalizedName};
+import ${javaFacadePackage}.*;
 
 <#include "Path.ftl">
 @Immutable

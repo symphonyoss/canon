@@ -4,7 +4,7 @@
 <@setPrologueJavaType model/>
 import javax.annotation.concurrent.Immutable;
 
-import ${javaGenPackage}.I${model.camelCapitalizedName}Entity;
+import ${javaFacadePackage}.*;
 
 <#include "Object.ftl">
 @Immutable

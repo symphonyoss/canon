@@ -7,6 +7,7 @@ import org.symphonyoss.s2.canon.runtime.exception.CanonException;
 import org.symphonyoss.s2.canon.runtime.IEntityHandler;
 
 <@importFieldTypes model true/>
+import ${javaFacadePackage}.*;
 
 <#include "Path.ftl">
 public interface I${modelJavaClassName}PathHandler extends I${model.model.camelCapitalizedName}EntityHandler
