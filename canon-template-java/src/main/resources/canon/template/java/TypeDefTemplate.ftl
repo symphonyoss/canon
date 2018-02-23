@@ -17,7 +17,9 @@ import org.symphonyoss.s2.common.exception.BadFormatException;
 
 import org.symphonyoss.s2.canon.runtime.TypeDef;
 import org.symphonyoss.s2.canon.runtime.${modelJavaFieldClassName}TypeDefBuilder;
+<#if model.baseSchema.isGenerateFacade>
 import ${javaFacadePackage}.${modelJavaClassName};
+</#if>
 
 <#include "TypeDefHeader.ftl">
 <@setJavaType model/>

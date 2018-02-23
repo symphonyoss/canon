@@ -14,12 +14,12 @@ import org.symphonyoss.s2.canon.runtime.http.client.HttpParameter;
 
 <#list model.parameters as parameter>
   <@setJavaType parameter.schema/>
-  <#if javaFullyQualifiedClassName?has_content>
-import ${javaFullyQualifiedClassName};
+  <#if fieldFQType?has_content>
+import ${fieldFQType};
   </#if>
 </#list>
 <#if model.payload??>
-import ${javaFacadePackage}.${methodPayloadType};
+import ${javaFacadePackage}.*;
 </#if>
 
 @Immutable

@@ -26,9 +26,9 @@ package org.symphonyoss.s2.canon.test;
 import java.io.IOException;
 
 import org.junit.Test;
-import org.symphonyoss.s2.canon.test.typeCheck.facade.AllTheLists;
-import org.symphonyoss.s2.canon.test.typeCheck.facade.IAllTheLists;
-import org.symphonyoss.s2.canon.test.typeCheck.facade.SimpleObject;
+import org.symphonyoss.s2.canon.test.typeCheck.AllTheLists;
+import org.symphonyoss.s2.canon.test.typeCheck.IAllTheLists;
+import org.symphonyoss.s2.canon.test.typeCheck.SimpleObject;
 import org.symphonyoss.s2.canon.test.typeCheck.facade.TypeCheck;
 import org.symphonyoss.s2.common.dom.DomSerializer;
 import org.symphonyoss.s2.common.dom.DomWriter;

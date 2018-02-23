@@ -47,7 +47,7 @@ public class ObjectSchema extends Schema
 {
   private Set<String>          requiredButUndefinedSet_ = new HashSet<>();
   private List<ModelElement>   fields_                  = new ArrayList<>();
-  private boolean              abstract_;
+  private boolean              generateFacade_;
   private ReferenceSchema      superSchema_;
     
   public ObjectSchema(ModelElement parent, ParserContext context, String name)
@@ -96,9 +96,8 @@ public class ObjectSchema extends Schema
         context.raise(new ParserError("Required field \"%s\" is not defined!", requiredField));
       }
       
-      ParserContext isAbstract = context.get(Canon.ABSTRACT);
+      generateFacade_ = context.getBooleanNode(Canon.FACADE, false);
       
-      abstract_ = isAbstract != null && isAbstract.isBoolean() && isAbstract.asBoolean();
       
       ParserContext extendsContext = context.get(Canon.EXTENDS);
       
@@ -246,9 +245,10 @@ public class ObjectSchema extends Schema
     return true;
   }
   
-  public boolean getIsAbstract()
+  @Override
+  public boolean getIsGenerateFacade()
   {
-    return abstract_;
+    return generateFacade_;
   }
   
   @Override

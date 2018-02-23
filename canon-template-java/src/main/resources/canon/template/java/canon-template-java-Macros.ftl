@@ -25,7 +25,10 @@
  #
  # Defined by setJavaType macro:
  # -----------------------------
- # fieldType                   Name of the Java class to be referred to from other code
+ # fieldType                       Name of the Java class to be referred to from other code
+ #
+ # fieldFQType                     Fully qualified class name which should be imported. Only set for
+ #                                 external types.
  #
  # javaFullyQualifiedClassName     Fully qualified name of the Java class to be referred to from other
  #                                 code for imports NOT SET for non-imported types like String
@@ -357,21 +360,17 @@
       <#if model.enum??>
         <@"<#assign ${varPrefix}BaseValueFromElementSuffix=\".toString()\">"?interpret />
         <@"<#assign ${varPrefix}ElementFromBaseValuePrefix=\"${model.camelCapitalizedName}.valueOf(\">"?interpret />
-        <@"<#assign ${varPrefix}FQType=\"${javaGenPackage}.${model.camelCapitalizedName}\">"?interpret />
       <#else>
         <@"<#assign ${varPrefix}ElementFromBaseValuePrefix=\"${model.camelCapitalizedName}.newBuilder().build(\">"?interpret />
         <@"<#assign ${varPrefix}BaseValueFromElementSuffix=\".getValue()\">"?interpret />
-        <@"<#assign ${varPrefix}FQType=\"${javaFacadePackage}.${model.camelCapitalizedName}\">"?interpret />
       </#if>
     </#if>
     <#else>
       <#if ! model.baseSchema.isArraySchema && model.baseSchema.isObjectSchema>
         <@"<#assign ${varPrefix}ElementType=\"I${model.camelCapitalizedName}\">"?interpret />
-        <@"<#assign ${varPrefix}FQType=\"${javaFacadePackage}.I${model.camelCapitalizedName}\">"?interpret />
       <#else>
         <#if model.isComponent>
           <@"<#assign ${varPrefix}ElementType=\"${model.camelCapitalizedName}\">"?interpret />
-          <@"<#assign ${varPrefix}FQType=\"${javaFacadePackage}.${model.camelCapitalizedName}\">"?interpret />
         <#else>
           <@"<#assign ${varPrefix}ElementType=${varPrefix}BaseType>"?interpret />
         </#if>
@@ -716,11 +715,8 @@ import com.google.common.collect.ImmutableSet;
   <#if model.hasByteString>
 import com.google.protobuf.ByteString;
   </#if>
-  
   <#list model.referencedTypes as field>
     <@setJavaType field/>
-    <#list field.attributes as name, value>
-    </#list>
     <#if fieldFQType?has_content>
 import ${fieldFQType};
     </#if>
@@ -1028,13 +1024,13 @@ ${indent}}
     <#if (model.attributes['isDirectExternal']!"false") != "true">
 ${indent}    ${var}.add(${model.camelCapitalizedName}Builder.build(${value}));
     <#else>
-${indent}    ${var}.add(${model.attributes['javaExternalPackage']}.${model.attributes['javaExternalType']}.build(${value}));
+${indent}    ${var}.add(${model.attributes['javaExternalType']}.build(${value}));
     </#if>
   <#else>
     <#if model.enum??>
-${indent}    ${var}.add(${javaGenPackage}.${model.camelCapitalizedName}.valueOf(${value}));
+${indent}    ${var}.add(${model.camelCapitalizedName}.valueOf(${value}));
     <#else>
-${indent}    ${var}.add(${javaFacadePackage}.${model.camelCapitalizedName}.newBuilder().build(${value}));
+${indent}    ${var}.add(${model.camelCapitalizedName}.newBuilder().build(${value}));
     </#if>
   </#if>
 </#macro>

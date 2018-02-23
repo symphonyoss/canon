@@ -470,7 +470,7 @@
 				"extends": {
           "type": "string"
         },
-        "abstract": {
+        "facade": {
           "type": "boolean"
         },
         "nullable": {

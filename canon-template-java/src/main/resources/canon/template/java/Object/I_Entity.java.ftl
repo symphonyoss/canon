@@ -6,7 +6,7 @@
 import org.symphonyoss.s2.canon.runtime.IEntity;
 
 <@importFieldTypes model true/>
-import ${javaFacadePackage}.I${model.model.camelCapitalizedName}ModelEntity;
+import ${javaFacadePackage}.*;
 
 <#include "Object.ftl">
 public interface I${model.camelCapitalizedName}Entity

@@ -4,8 +4,7 @@
 import javax.annotation.concurrent.Immutable;
 
 <@importFieldTypes model true/>
-import ${javaFacadePackage}.${modelJavaClassName};
-import ${javaFacadePackage}.I${model.model.camelCapitalizedName};
+import ${javaFacadePackage}.*;
 
 import org.symphonyoss.s2.canon.runtime.IEntity${modelJavaCardinality};
 import org.symphonyoss.s2.canon.runtime.EntityArrayFactory;

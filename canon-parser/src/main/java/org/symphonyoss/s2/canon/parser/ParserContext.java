@@ -198,7 +198,7 @@ public class ParserContext extends BaseParserContext implements Iterable<ParserC
     
     if(node != null)
     {
-      if(!node.isNumber())
+      if(!node.isBoolean())
         raise(new UnexpectedTypeError(fieldName, Boolean.class, node));
       
       return node.asBoolean();

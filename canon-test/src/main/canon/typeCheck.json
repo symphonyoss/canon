@@ -18,6 +18,14 @@
         "description": "An integer typedef.",
         "type": "integer"
       },
+      "DoubleTypedef": {
+        "description": "A double typedef with a facade.",
+        "facade": true,
+        "type": "number",
+        "format": "double",
+        "minimum": -765546546547723.03330025,
+        "maximum": 7665465456464550000.00333025
+      },
       "Colour": {
         "description": "An enumeration.",
         "type": "string",
@@ -317,6 +325,7 @@
       
       "FundamentalObject": {
         "type": "object",
+        "facade": true,
         "required": [
           "absoluteHash"
         ],
@@ -335,6 +344,7 @@
       
       "VersionedObject": {
         "type": "object",
+        "facade": true,
         "extends": "#/components/schemas/FundamentalObject",
         "required": [
           "prevHash",

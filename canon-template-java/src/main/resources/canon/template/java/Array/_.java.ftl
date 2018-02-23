@@ -1,5 +1,5 @@
-<#if model.baseSchema.isGenerateFacade?? && model.baseSchema.isGenerateFacade>
-<#include "../canon-proforma-java-Prologue.ftl">
+<#if ! model.baseSchema.isGenerateFacade?? || ! model.baseSchema.isGenerateFacade>
+<#include "../canon-template-java-Prologue.ftl">
 <@setPrologueJavaType model/>
 import javax.annotation.concurrent.Immutable;
 
@@ -8,9 +8,9 @@ import org.symphonyoss.s2.common.dom.json.ImmutableJsonArray;
 import org.symphonyoss.s2.common.exception.BadFormatException;
 
 <@importFieldTypes model false/>
-import ${javaGenPackage}.*;
+import ${javaFacadePackage}.*;
 
 <#include "../../../template/java/Array/Array.ftl">
-<#include "Facade.ftl">
-<#include "../canon-proforma-java-Epilogue.ftl">
+<#include "../../../proforma/java/Array/Facade.ftl">
+<#include "../canon-template-java-Epilogue.ftl">
 </#if>
