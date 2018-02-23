@@ -32,36 +32,36 @@ package org.symphonyoss.s2.canon.runtime.exception;
  * @author Bruce Skingle
  *
  */
-public class JapiException extends Exception
+public class CanonException extends Exception
 {
   private static final long serialVersionUID = 1L;
 
   private final int         httpStatusCode_;
 
-  public JapiException(int httpStatusCode)
+  public CanonException(int httpStatusCode)
   {
     httpStatusCode_ = httpStatusCode;
   }
 
-  public JapiException(int httpStatusCode, String message)
+  public CanonException(int httpStatusCode, String message)
   {
     super(message);
     httpStatusCode_ = httpStatusCode;
   }
 
-  public JapiException(int httpStatusCode, String message, Throwable cause)
+  public CanonException(int httpStatusCode, String message, Throwable cause)
   {
     super(message, cause);
     httpStatusCode_ = httpStatusCode;
   }
 
-  public JapiException(int httpStatusCode, Throwable cause)
+  public CanonException(int httpStatusCode, Throwable cause)
   {
     super(cause);
     httpStatusCode_ = httpStatusCode;
   }
 
-  protected JapiException(int httpStatusCode, String message, Throwable cause, boolean enableSuppression,
+  protected CanonException(int httpStatusCode, String message, Throwable cause, boolean enableSuppression,
       boolean writableStackTrace)
   {
     super(message, cause, enableSuppression, writableStackTrace);

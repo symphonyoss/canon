@@ -28,7 +28,7 @@ import org.symphonyoss.s2.canon.runtime.PayloadResponseRequestManager;
 import org.symphonyoss.s2.canon.runtime.ResponseOnlyRequestManager;
 import org.symphonyoss.s2.canon.runtime.ModelRegistry;
 import org.symphonyoss.s2.canon.runtime.exception.BadRequestException;
-import org.symphonyoss.s2.canon.runtime.exception.JapiException;
+import org.symphonyoss.s2.canon.runtime.exception.CanonException;
 import org.symphonyoss.s2.canon.runtime.exception.NoSuchRecordException;
 import org.symphonyoss.s2.canon.runtime.exception.PermissionDeniedException;
 import org.symphonyoss.s2.canon.runtime.exception.ServerErrorException;
@@ -81,7 +81,7 @@ public abstract class ${modelJavaClassName}AsyncPathHandler extends AsyncPathHan
   }
 
   @Override
-  public void handle(RequestContext context, List<String> pathParams) throws IOException, JapiException
+  public void handle(RequestContext context, List<String> pathParams) throws IOException, CanonException
   {
     switch(context.getMethod())
     {
@@ -106,7 +106,7 @@ public abstract class ${modelJavaClassName}AsyncPathHandler extends AsyncPathHan
   
   <@setJavaMethod operation/>
   
-  private void do${operation.camelCapitalizedName}(RequestContext context, List<String> pathParams) throws IOException, JapiException
+  private void do${operation.camelCapitalizedName}(RequestContext context, List<String> pathParams) throws IOException, CanonException
   {
   <#include "GetParams.ftl">
 
@@ -129,7 +129,7 @@ public abstract class ${modelJavaClassName}AsyncPathHandler extends AsyncPathHan
         new PayloadResponseRequestManager<${methodPayloadType}, ${methodResponseType}>(in, out, async, getProcessExecutor(), getResponseExecutor())
       {
         @Override
-        public void handle(${methodPayloadDecl} payload, IConsumer<${methodResponseType}> consumer) throws JapiException
+        public void handle(${methodPayloadDecl} payload, IConsumer<${methodResponseType}> consumer) throws CanonException
         {
           handle${operation.camelCapitalizedName}(payload, consumer<#if operation.parameters?size != 0>,</#if>
       <#list operation.parameters as parameter>
@@ -163,7 +163,7 @@ public abstract class ${modelJavaClassName}AsyncPathHandler extends AsyncPathHan
         new PayloadOnlyRequestManager<${methodPayloadType}>(in, out, async, getProcessExecutor())
       {
         @Override
-        public void handle(${methodPayloadDecl} payload) throws JapiException
+        public void handle(${methodPayloadDecl} payload) throws CanonException
         {
           handle${operation.camelCapitalizedName}(payload<#if operation.parameters?size != 0>,</#if>
       <#list operation.parameters as parameter>
@@ -196,7 +196,7 @@ public abstract class ${modelJavaClassName}AsyncPathHandler extends AsyncPathHan
         new ResponseOnlyRequestManager<${methodResponseType}>(in, out, async, getProcessExecutor(), getResponseExecutor())
       {
         @Override
-        public void handle(IConsumer<${methodResponseType}> consumer) throws JapiException
+        public void handle(IConsumer<${methodResponseType}> consumer) throws CanonException
         {
           handle${operation.camelCapitalizedName}(consumer<#if operation.parameters?size != 0>,</#if>
       <#list operation.parameters as parameter>
@@ -217,7 +217,7 @@ public abstract class ${modelJavaClassName}AsyncPathHandler extends AsyncPathHan
         new EmptyRequestManager(in, out, async, getProcessExecutor())
       {
         @Override
-        public void handle() throws JapiException
+        public void handle() throws CanonException
         {
           handle${operation.camelCapitalizedName}(
       <#list operation.parameters as parameter>

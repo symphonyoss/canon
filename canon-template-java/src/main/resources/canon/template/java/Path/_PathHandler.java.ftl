@@ -13,7 +13,7 @@ import org.symphonyoss.s2.common.exception.BadFormatException;
 import org.symphonyoss.s2.canon.runtime.PathHandler;
 import org.symphonyoss.s2.canon.runtime.ModelRegistry;
 import org.symphonyoss.s2.canon.runtime.exception.BadRequestException;
-import org.symphonyoss.s2.canon.runtime.exception.JapiException;
+import org.symphonyoss.s2.canon.runtime.exception.CanonException;
 import org.symphonyoss.s2.canon.runtime.exception.NoSuchRecordException;
 import org.symphonyoss.s2.canon.runtime.exception.PermissionDeniedException;
 import org.symphonyoss.s2.canon.runtime.exception.ServerErrorException;
@@ -64,7 +64,7 @@ public abstract class ${modelJavaClassName}PathHandler extends PathHandler<I${mo
   }
 
   @Override
-  public void handle(RequestContext context, List<String> pathParams) throws IOException, JapiException
+  public void handle(RequestContext context, List<String> pathParams) throws IOException, CanonException
   {
     switch(context.getMethod())
     {
@@ -86,7 +86,7 @@ public abstract class ${modelJavaClassName}PathHandler extends PathHandler<I${mo
   }
 <#list model.operations as operation>
 
-  private void do${operation.camelCapitalizedName}(RequestContext context, List<String> pathParams) throws IOException, JapiException
+  private void do${operation.camelCapitalizedName}(RequestContext context, List<String> pathParams) throws IOException, CanonException
   {
   <#include "GetParams.ftl">
 
@@ -144,7 +144,7 @@ public abstract class ${modelJavaClassName}PathHandler extends PathHandler<I${mo
       {
         throw e;
       }
-      catch(JapiException | RuntimeException e)
+      catch(CanonException | RuntimeException e)
       {
         throw new ServerErrorException(e);
       }

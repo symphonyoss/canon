@@ -34,7 +34,7 @@ import javax.servlet.http.HttpServletResponse;
  * @author Bruce Skingle
  *
  */
-public class ServerErrorException extends JapiException
+public class ServerErrorException extends CanonException
 {
   private static final long serialVersionUID = 1L;
   

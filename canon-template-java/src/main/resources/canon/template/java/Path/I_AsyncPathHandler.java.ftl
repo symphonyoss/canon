@@ -3,7 +3,7 @@
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
-import org.symphonyoss.s2.canon.runtime.exception.JapiException;
+import org.symphonyoss.s2.canon.runtime.exception.CanonException;
 import org.symphonyoss.s2.canon.runtime.IConsumer;
 
 <@importFieldTypes model true/>
@@ -31,7 +31,7 @@ public interface I${modelJavaClassName}AsyncPathHandler extends I${model.model.c
     </#if>
 	</#list>
 	
-    ) throws JapiException;
+    ) throws CanonException;
     
 </#list>
 }

@@ -32,7 +32,7 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.symphonyoss.s2.canon.runtime.exception.JapiException;
+import org.symphonyoss.s2.canon.runtime.exception.CanonException;
 import org.symphonyoss.s2.canon.runtime.http.RequestContext;
 import org.symphonyoss.s2.fugue.di.ComponentDescriptor;
 
@@ -77,7 +77,7 @@ public abstract class PathHandler<M extends IModel> implements IEntityHandler
     {
       handle(context, variables);
     }
-    catch (JapiException e)
+    catch (CanonException e)
     {
       log_.error("Failed to service REST request", e);
       
@@ -180,7 +180,7 @@ public abstract class PathHandler<M extends IModel> implements IEntityHandler
     return partsLength_;
   }
 
-  protected abstract void handle(RequestContext context, List<String> variables) throws IOException, JapiException;
+  protected abstract void handle(RequestContext context, List<String> variables) throws IOException, CanonException;
   
   /**
    * Called by generated servlets for unsupported methods.

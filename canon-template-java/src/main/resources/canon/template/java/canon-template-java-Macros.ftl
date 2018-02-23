@@ -1131,6 +1131,6 @@ ${indent}    ${var}.add(${model.camelCapitalizedName}.newBuilder().build(${value
    * or <code>null</code>
     </#if>
   </#if>
-   * @throws JapiException                    If the method cannot be called
+   * @throws CanonException                    If the method cannot be called
    */
 </#macro>

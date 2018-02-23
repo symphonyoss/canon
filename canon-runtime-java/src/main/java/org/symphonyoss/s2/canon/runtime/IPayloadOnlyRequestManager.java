@@ -23,9 +23,9 @@
 
 package org.symphonyoss.s2.canon.runtime;
 
-import org.symphonyoss.s2.canon.runtime.exception.JapiException;
+import org.symphonyoss.s2.canon.runtime.exception.CanonException;
 
 public interface IPayloadOnlyRequestManager<P>
 {
-  void handle(P payload) throws JapiException;
+  void handle(P payload) throws CanonException;
 }
