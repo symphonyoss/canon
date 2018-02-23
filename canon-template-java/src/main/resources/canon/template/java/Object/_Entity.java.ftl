@@ -148,8 +148,7 @@
     {
       return new ${modelJavaClassName}.Builder(this, initial);
     }
-    
-      
+  
     /**
      * Return a new entity instance created from the given other instance.
      * This is used to construct an entity from its builder as the builder also
@@ -159,7 +158,7 @@
      * 
      * @return An instance of the entity represented by the given values.
      * 
-     * @throws BadFormatException If the given values are not valid.
+<@javadocLimitsClassThrows model/>
      */
     public abstract I${model.camelCapitalizedName} newInstance(${modelJavaClassName}.Builder builder)<@checkLimitsClassThrows model/>;
   }

@@ -748,6 +748,15 @@ import ${fieldElementFQBuilder};
   <#return false>
 </#function>
 
+<#macro javadocLimitsClassThrows model>
+  <#list model.fields as field>
+    <#if isCheckLimits(field)>
+     * @throws BadFormatException If the given values are not valid.
+      <#return>
+    </#if>
+  </#list>
+</#macro>
+
 <#macro checkLimitsClassThrows model><#list model.fields as field><#if isCheckLimits(field)> throws BadFormatException<#return></#if></#list></#macro>
 
 <#macro checkLimitsThrows model><#if isCheckLimits(model)> throws BadFormatException</#if></#macro>
