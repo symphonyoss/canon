@@ -1,0 +1,20 @@
+<#if ! model.baseSchema.isGenerateFacade?? || ! model.baseSchema.isGenerateFacade>
+<#include "../canon-template-java-Prologue.ftl">
+<#assign model=model.type>
+<@setPrologueJavaType model/>
+import javax.annotation.concurrent.Immutable;
+
+import ${javaFacadePackage}.*;
+
+<#include "Object.ftl">
+@Immutable
+public interface I${model.camelCapitalizedName}
+<#if model.superSchema??>
+  extends I${model.superSchema.baseSchema.camelCapitalizedName}, I${model.camelCapitalizedName}Entity
+<#else>
+  extends I${model.camelCapitalizedName}Entity
+</#if>
+{
+}
+<#include "../canon-template-java-Epilogue.ftl">
+</#if>

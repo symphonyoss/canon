@@ -33,7 +33,7 @@ import javax.servlet.http.HttpServletResponse;
  * @author Bruce Skingle
  *
  */
-public class PermissionDeniedException extends JapiException
+public class PermissionDeniedException extends CanonException
 {
   private static final long serialVersionUID = 1L;
   

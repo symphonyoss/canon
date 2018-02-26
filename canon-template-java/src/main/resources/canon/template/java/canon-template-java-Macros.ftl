@@ -6,7 +6,7 @@
  #
  # Defined by the model:
  # ---------------------
- # javaModel.name                  Name as defined in the openApi3 input spec
+ # javaModel.name                  Name as defined in the canon input spec
  #
  # javaModel.camelName             Name in camel case with a lower case first letter
  #
@@ -18,11 +18,17 @@
  #
  # javaModel.elementType           The type of the parse tree element
  #
+ # isArraySchema                   True iff the model is an array
+ # isObjectSchema                  True if the element type is an object
+ #
  #
  #
  # Defined by setJavaType macro:
  # -----------------------------
- # fieldType                   Name of the Java class to be referred to from other code
+ # fieldType                       Name of the Java class to be referred to from other code
+ #
+ # fieldFQType                     Fully qualified class name which should be imported. Only set for
+ #                                 external types.
  #
  # javaFullyQualifiedClassName     Fully qualified name of the Java class to be referred to from other
  #                                 code for imports NOT SET for non-imported types like String
@@ -159,9 +165,7 @@
  #----------------------------------------------------------------------------------------------------->
 <#macro setModelJavaType model>
   <#assign javaModel=model>
-  
   <@setType "model" model/>
-  
   <#assign modelJavaFieldClassName="">
   <#assign modelJavaElementClassName="">
   <#assign modelJavaCardinality="">
@@ -321,7 +325,7 @@
       <#return>
     
     <#default>
-      <@"<#assign ${varPrefix}BaseType=\"${model.camelCapitalizedName}\">"?interpret />
+      <@"<#assign ${varPrefix}BaseType=\"I${model.camelCapitalizedName}\">"?interpret />
   </#switch>
 </#macro>
 
@@ -356,19 +360,20 @@
       <#if model.enum??>
         <@"<#assign ${varPrefix}BaseValueFromElementSuffix=\".toString()\">"?interpret />
         <@"<#assign ${varPrefix}ElementFromBaseValuePrefix=\"${model.camelCapitalizedName}.valueOf(\">"?interpret />
-        <@"<#assign ${varPrefix}FQType=\"${javaGenPackage}.${model.camelCapitalizedName}\">"?interpret />
       <#else>
         <@"<#assign ${varPrefix}ElementFromBaseValuePrefix=\"${model.camelCapitalizedName}.newBuilder().build(\">"?interpret />
         <@"<#assign ${varPrefix}BaseValueFromElementSuffix=\".getValue()\">"?interpret />
-        <@"<#assign ${varPrefix}FQType=\"${javaFacadePackage}.${model.camelCapitalizedName}\">"?interpret />
       </#if>
     </#if>
     <#else>
-      <#if model.isComponent>
-        <@"<#assign ${varPrefix}ElementType=\"${model.camelCapitalizedName}\">"?interpret />
-        <@"<#assign ${varPrefix}FQType=\"${javaFacadePackage}.${model.camelCapitalizedName}\">"?interpret />
+      <#if ! model.baseSchema.isArraySchema && model.baseSchema.isObjectSchema>
+        <@"<#assign ${varPrefix}ElementType=\"I${model.camelCapitalizedName}\">"?interpret />
       <#else>
-        <@"<#assign ${varPrefix}ElementType=${varPrefix}BaseType>"?interpret />
+        <#if model.isComponent>
+          <@"<#assign ${varPrefix}ElementType=\"${model.camelCapitalizedName}\">"?interpret />
+        <#else>
+          <@"<#assign ${varPrefix}ElementType=${varPrefix}BaseType>"?interpret />
+        </#if>
       </#if>
   </#if>
 </#macro>
@@ -429,7 +434,7 @@
       <#return "Boolean">
     
     <#default>
-      <#return "${model.camelCapitalizedName}">
+      <#return "I${model.camelCapitalizedName}">
   </#switch>
 </#function>
 
@@ -710,11 +715,8 @@ import com.google.common.collect.ImmutableSet;
   <#if model.hasByteString>
 import com.google.protobuf.ByteString;
   </#if>
-  
   <#list model.referencedTypes as field>
     <@setJavaType field/>
-    <#list field.attributes as name, value>
-    </#list>
     <#if fieldFQType?has_content>
 import ${fieldFQType};
     </#if>
@@ -745,6 +747,15 @@ import ${fieldElementFQBuilder};
   </#list>
   <#return false>
 </#function>
+
+<#macro javadocLimitsClassThrows model>
+  <#list model.fields as field>
+    <#if isCheckLimits(field)>
+     * @throws BadFormatException If the given values are not valid.
+      <#return>
+    </#if>
+  </#list>
+</#macro>
 
 <#macro checkLimitsClassThrows model><#list model.fields as field><#if isCheckLimits(field)> throws BadFormatException<#return></#if></#list></#macro>
 
@@ -930,7 +941,7 @@ ${indent}${var}.addIfNotNull("${field.camelName}", ${field.camelName}__);
     <#if field.isObjectSchema>
 ${indent}if(node instanceof ImmutableJsonObject)
 ${indent}{
-${indent}  ${var} = canonFactory.getModel().get${fieldType}Factory().newInstance((ImmutableJsonObject)node);
+${indent}  ${var} = factory.getModel().get${field.elementSchema.camelCapitalizedName}Factory().newInstance((ImmutableJsonObject)node);
 ${indent}}
 ${indent}else
 ${indent}{
@@ -987,7 +998,8 @@ ${indent}}
 ${indent}    ${var} = ${javaTypeCopyPrefix}list${javaTypeCopyPostfix};
     <#else>
       <#if field.baseSchema.items.isComponent>
-${indent}  ${var} = canonFactory_.getModel().get${javaElementFieldClassName}Factory().newInstance${javaCardinality}((ImmutableJsonArray)node);
+${indent}  ${var} = canonFactory_.getModel().get${field.elementSchema.camelCapitalizedName}Factory().newInstance${javaCardinality}((ImmutableJsonArray)node);
+
       <#else>
 ${indent}  ${var} = ((ImmutableJsonArray)node).asImmutable${javaCardinality}Of(${javaElementFieldClassName}.class);
       </#if>
@@ -1021,13 +1033,13 @@ ${indent}}
     <#if (model.attributes['isDirectExternal']!"false") != "true">
 ${indent}    ${var}.add(${model.camelCapitalizedName}Builder.build(${value}));
     <#else>
-${indent}    ${var}.add(${model.attributes['javaExternalPackage']}.${model.attributes['javaExternalType']}.build(${value}));
+${indent}    ${var}.add(${model.attributes['javaExternalType']}.build(${value}));
     </#if>
   <#else>
     <#if model.enum??>
-${indent}    ${var}.add(${javaGenPackage}.${model.camelCapitalizedName}.valueOf(${value}));
+${indent}    ${var}.add(${model.camelCapitalizedName}.valueOf(${value}));
     <#else>
-${indent}    ${var}.add(${javaFacadePackage}.${model.camelCapitalizedName}.newBuilder().build(${value}));
+${indent}    ${var}.add(${model.camelCapitalizedName}.newBuilder().build(${value}));
     </#if>
   </#if>
 </#macro>
@@ -1119,6 +1131,6 @@ ${indent}    ${var}.add(${javaFacadePackage}.${model.camelCapitalizedName}.newBu
    * or <code>null</code>
     </#if>
   </#if>
-   * @throws JapiException                    If the method cannot be called
+   * @throws CanonException                    If the method cannot be called
    */
 </#macro>

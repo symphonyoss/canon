@@ -468,9 +468,9 @@
 			},
 			"properties": {
 				"extends": {
-          "$ref": "#/definitions/reference"
+          "type": "string"
         },
-        "abstract": {
+        "facade": {
           "type": "boolean"
         },
         "nullable": {

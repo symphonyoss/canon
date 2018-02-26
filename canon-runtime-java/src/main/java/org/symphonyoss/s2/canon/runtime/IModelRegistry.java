@@ -35,7 +35,7 @@ public interface IModelRegistry extends IComponent
 {
   IModelRegistry register(IModel factory);
 
-  IModelRegistry register(String name, IEntityFactory<?,?> factory);
+  IModelRegistry register(String name, IEntityFactory<?,?,?> factory);
 
   IEntity newInstance(ImmutableJsonObject jsonObject) throws BadFormatException;
 

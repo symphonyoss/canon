@@ -32,7 +32,7 @@ import javax.servlet.http.HttpServletResponse;
  * @author Bruce Skingle
  *
  */
-public class NoSuchRecordException extends JapiException
+public class NoSuchRecordException extends CanonException
 {
   private static final long serialVersionUID = 1L;
   

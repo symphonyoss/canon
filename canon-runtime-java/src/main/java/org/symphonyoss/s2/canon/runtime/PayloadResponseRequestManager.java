@@ -8,7 +8,7 @@ import javax.servlet.ServletInputStream;
 import javax.servlet.ServletOutputStream;
 import javax.servlet.WriteListener;
 
-import org.symphonyoss.s2.canon.runtime.exception.JapiException;
+import org.symphonyoss.s2.canon.runtime.exception.CanonException;
 import org.symphonyoss.s2.common.exception.BadFormatException;
 
 public abstract class PayloadResponseRequestManager<P,R extends IBaseEntity>
@@ -25,7 +25,7 @@ implements ReadListener, WriteListener, IPayloadResponseRequestManager<P,R>
   protected abstract P parsePayload(String payload) throws BadFormatException;
   
   @Override
-  protected void handleRequest(String request) throws BadFormatException, JapiException
+  protected void handleRequest(String request) throws BadFormatException, CanonException
   {
     handle(parsePayload(request), getResponseTask());
   }

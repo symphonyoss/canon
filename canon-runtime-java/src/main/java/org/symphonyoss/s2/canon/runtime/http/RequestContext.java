@@ -37,6 +37,7 @@ import javax.servlet.http.HttpServletResponse;
 import org.apache.commons.codec.binary.Base64;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.symphonyoss.s2.canon.runtime.Entity;
 import org.symphonyoss.s2.canon.runtime.IBaseEntity;
 import org.symphonyoss.s2.canon.runtime.IEntity;
 import org.symphonyoss.s2.canon.runtime.IEntityFactory;
@@ -263,7 +264,7 @@ public class RequestContext
     errors_.add(String.format(message));
   }
   
-  public <M extends IEntity> M parsePayload(IEntityFactory<M,?> factory)
+  public <E extends IEntity> E parsePayload(IEntityFactory<E,?,?> factory)
   {
     try
     {

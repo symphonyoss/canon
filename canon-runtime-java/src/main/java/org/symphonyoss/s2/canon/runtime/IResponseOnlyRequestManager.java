@@ -23,7 +23,7 @@
 
 package org.symphonyoss.s2.canon.runtime;
 
-import org.symphonyoss.s2.canon.runtime.exception.JapiException;
+import org.symphonyoss.s2.canon.runtime.exception.CanonException;
 
 /**
  * A handler for some async method which takes a payload and returns a response.
@@ -34,5 +34,5 @@ import org.symphonyoss.s2.canon.runtime.exception.JapiException;
  */
 public interface IResponseOnlyRequestManager<R>
 {
-  void handle(IConsumer<R> consumer) throws JapiException;
+  void handle(IConsumer<R> consumer) throws CanonException;
 }

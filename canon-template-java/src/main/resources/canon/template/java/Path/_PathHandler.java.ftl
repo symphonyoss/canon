@@ -13,7 +13,7 @@ import org.symphonyoss.s2.common.exception.BadFormatException;
 import org.symphonyoss.s2.canon.runtime.PathHandler;
 import org.symphonyoss.s2.canon.runtime.ModelRegistry;
 import org.symphonyoss.s2.canon.runtime.exception.BadRequestException;
-import org.symphonyoss.s2.canon.runtime.exception.JapiException;
+import org.symphonyoss.s2.canon.runtime.exception.CanonException;
 import org.symphonyoss.s2.canon.runtime.exception.NoSuchRecordException;
 import org.symphonyoss.s2.canon.runtime.exception.PermissionDeniedException;
 import org.symphonyoss.s2.canon.runtime.exception.ServerErrorException;
@@ -23,8 +23,7 @@ import org.symphonyoss.s2.canon.runtime.http.RequestContext;
 import org.symphonyoss.s2.fugue.di.ComponentDescriptor;
 
 <@importFieldTypes model true/>
-
-import ${javaFacadePackage}.I${model.model.camelCapitalizedName};
+import ${javaFacadePackage}.*;
 
 <#include "Path.ftl">
 @Immutable
@@ -64,7 +63,7 @@ public abstract class ${modelJavaClassName}PathHandler extends PathHandler<I${mo
   }
 
   @Override
-  public void handle(RequestContext context, List<String> pathParams) throws IOException, JapiException
+  public void handle(RequestContext context, List<String> pathParams) throws IOException, CanonException
   {
     switch(context.getMethod())
     {
@@ -86,7 +85,7 @@ public abstract class ${modelJavaClassName}PathHandler extends PathHandler<I${mo
   }
 <#list model.operations as operation>
 
-  private void do${operation.camelCapitalizedName}(RequestContext context, List<String> pathParams) throws IOException, JapiException
+  private void do${operation.camelCapitalizedName}(RequestContext context, List<String> pathParams) throws IOException, CanonException
   {
   <#include "GetParams.ftl">
 
@@ -94,9 +93,9 @@ public abstract class ${modelJavaClassName}PathHandler extends PathHandler<I${mo
   
     <@setJavaType operation.payload.schema/>
     <#if operation.payload.schema.isTypeDef>
-    ${javaClassName} _payload = context.parsePayload(${javaClassName}.newBuilder());
+    ${fieldType} _payload = context.parsePayload(${javaClassName}.newBuilder());
     <#else>
-    ${javaClassName} _payload = context.parsePayload(getModel().get${javaClassName}Factory());
+    ${fieldType} _payload = context.parsePayload(getModel().get${javaClassName}Factory());
     </#if>
   </#if>
   
@@ -106,7 +105,7 @@ public abstract class ${modelJavaClassName}PathHandler extends PathHandler<I${mo
       {
   <#if operation.response??>
     <@setJavaType operation.response.schema/>
-        ${javaClassName} response =
+        ${fieldType} response =
   </#if> 
           handle${operation.camelCapitalizedName}(
   <#if operation.payload??>
@@ -144,7 +143,7 @@ public abstract class ${modelJavaClassName}PathHandler extends PathHandler<I${mo
       {
         throw e;
       }
-      catch(JapiException | RuntimeException e)
+      catch(CanonException | RuntimeException e)
       {
         throw new ServerErrorException(e);
       }

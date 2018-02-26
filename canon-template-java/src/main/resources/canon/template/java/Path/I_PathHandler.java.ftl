@@ -3,10 +3,11 @@
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
-import org.symphonyoss.s2.canon.runtime.exception.JapiException;
+import org.symphonyoss.s2.canon.runtime.exception.CanonException;
 import org.symphonyoss.s2.canon.runtime.IEntityHandler;
 
 <@importFieldTypes model true/>
+import ${javaFacadePackage}.*;
 
 <#include "Path.ftl">
 public interface I${modelJavaClassName}PathHandler extends I${model.model.camelCapitalizedName}EntityHandler
@@ -17,21 +18,21 @@ public interface I${modelJavaClassName}PathHandler extends I${model.model.camelC
   <#if operation.payload??>
   <@setJavaType operation.payload.schema/>
   <#if operation.payload.isRequired>
-    @Nonnull  ${javaClassName?right_pad(25)} _payload<#if operation.parameters?size != 0>,</#if>
+    @Nonnull  ${fieldType?right_pad(25)} _payload<#if operation.parameters?size != 0>,</#if>
   <#else>
-    @Nullable ${javaClassName?right_pad(25)} _payload<#if operation.parameters?size != 0>,</#if>
+    @Nullable ${fieldType?right_pad(25)} _payload<#if operation.parameters?size != 0>,</#if>
   </#if>
   </#if>
 	<#list operation.parameters as parameter>
 	  <@setJavaType parameter.schema/>
 	  <#if parameter.isRequired>
-    @Nonnull  ${javaClassName?right_pad(25)} ${parameter.camelName}<#sep>,
+    @Nonnull  ${fieldType?right_pad(25)} ${parameter.camelName}<#sep>,
     <#else>
-    @Nullable ${javaClassName?right_pad(25)} ${parameter.camelName}<#sep>,
+    @Nullable ${fieldType?right_pad(25)} ${parameter.camelName}<#sep>,
     </#if>
 	</#list>
 	
-    ) throws JapiException;
+    ) throws CanonException;
     
 </#list>
 }
