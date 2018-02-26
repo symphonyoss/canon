@@ -16,10 +16,13 @@ import org.symphonyoss.s2.fugue.di.ComponentDescriptor;
 import ${javaFacadePackage}.I${model.camelCapitalizedName};
 
 <#list model.schemas as object>
+// model ${object}
   <#if object.isAbstract?? && object.isAbstract>
 //ABSTRACT ${object.camelName}
   <#else>
+    <#if object.isGenerateFacade?? && object.isGenerateFacade>
 import ${javaFacadePackage}.${object.camelCapitalizedName};
+    </#if>
   </#if>
 </#list>
 

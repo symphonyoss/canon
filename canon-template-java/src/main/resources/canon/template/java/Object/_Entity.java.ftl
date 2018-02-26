@@ -7,15 +7,15 @@
 </#list>
 
 <#-- Constructor from fields -->
-  protected ${modelJavaClassName}Entity(${modelJavaClassName}.Factory canonFactory, I${model.camelCapitalizedName}Entity canonOther)<@checkLimitsClassThrows model/>
+  protected ${modelJavaClassName}Entity(${modelJavaClassName}.AbstractFactory factory, I${model.camelCapitalizedName}Entity canonOther)<@checkLimitsClassThrows model/>
   {
-<#if model.extendsSchema??>
-    super(canonFactory.getModel().get${model.extendsSchema.baseSchema.camelCapitalizedName}Factory(), canonOther.getJsonObject());
+<#if model.superSchema??>
+    super(factory.getModel().get${model.superSchema.baseSchema.camelCapitalizedName}Factory(), canonOther.getJsonObject());
 <#else>
     super(canonOther.getJsonObject());
 </#if>
     
-    canonFactory_ = canonFactory;
+    canonFactory_ = factory;
 <#list model.fields as field>
     <@setJavaType field/>
 
@@ -28,29 +28,29 @@
   }
   
 <#-- Constructor from Json   -->  
-  protected ${modelJavaClassName}Entity(${modelJavaClassName}.Factory canonFactory, ImmutableJsonObject canonJsonObject) throws BadFormatException
+  protected ${modelJavaClassName}Entity(${modelJavaClassName}.AbstractFactory factory, ImmutableJsonObject jsonObject) throws BadFormatException
   {
-  <#if model.extendsSchema??>
-    super(canonFactory.getModel().get${model.extendsSchema.baseSchema.camelCapitalizedName}Factory(), canonJsonObject);
+<#if model.superSchema??>
+    super(factory.getModel().get${model.superSchema.baseSchema.camelCapitalizedName}Factory(), jsonObject);
 <#else>
-    super(canonJsonObject);
+    super(jsonObject);
 </#if>
     
-    if(canonJsonObject == null)
-      throw new BadFormatException("canonJsonObject is required");
+    if(jsonObject == null)
+      throw new BadFormatException("jsonObject is required");
   
-    canonFactory_ = canonFactory;
+    canonFactory_ = factory;
 
-    IImmutableJsonDomNode typeNode = canonJsonObject.get(CanonRuntime.JSON_TYPE);
+    IImmutableJsonDomNode typeNode = jsonObject.get(CanonRuntime.JSON_TYPE);
     if(!(typeNode instanceof IStringProvider && TYPE_ID.equals(((IStringProvider)typeNode).asString())))
     {
       throw new BadFormatException("_type attribute must be \"" + TYPE_ID + "\"");
     }
     
 <#list model.fields as field>
-    if(canonJsonObject.containsKey("${field.camelName}"))
+    if(jsonObject.containsKey("${field.camelName}"))
     {
-      IJsonDomNode  node = canonJsonObject.get("${field.camelName}");
+      IJsonDomNode  node = jsonObject.get("${field.camelName}");
   <@generateCreateFieldFromJsonDomNode "      " field "${field.camelName}_"/>
     }
     else
@@ -116,88 +116,123 @@
 
 <#include "ObjectBody.ftl">
   
-  public static abstract class Factory extends EntityFactory<${modelJavaClassName}, I${model.model.camelCapitalizedName}>
+  public static abstract class Factory
+      extends EntityFactory<I${modelJavaClassName}, I${modelJavaClassName}Entity, I${model.model.camelCapitalizedName}>
+
   {
-    private I${model.model.camelCapitalizedName} model_;
-    
     public Factory(I${model.model.camelCapitalizedName} model)
     {
-      model_ = model;
+      super(model);
     }
+    
+    /**
+     * Create a new builder with all fields initialized to default values.
+     * 
+     * @return A new builder.
+     */
+    public ${modelJavaClassName}.Builder newBuilder()
+    {
+      return new ${modelJavaClassName}.Builder(this);
+    }
+    
+    /**
+     * Create a new builder with all fields initialized from the given builder.
+     * Values are copied so that subsequent changes to initial will not be reflected in
+     * the returned builder.
+     * 
+     * @param initial A builder or instance whose values are copied into a new builder.
+     * 
+     * @return A new builder.
+     */
+    public ${modelJavaClassName}.Builder newBuilder(I${modelJavaClassName}Entity initial)
+    {
+      return new ${modelJavaClassName}.Builder(this, initial);
+    }
+  
+    /**
+     * Return a new entity instance created from the given other instance.
+     * This is used to construct an entity from its builder as the builder also
+     * implements the interface of the entity.
+     * 
+     * @param builder a builder containing values of all fields for the required entity.
+     * 
+     * @return An instance of the entity represented by the given values.
+     * 
+<@javadocLimitsClassThrows model/>
+     */
+    public abstract I${model.camelCapitalizedName} newInstance(${modelJavaClassName}.Builder builder)<@checkLimitsClassThrows model/>;
+  }
+  
+  public static class Builder<B extends Builder<?>>
+  <#if model.superSchema??>
+    extends ${model.superSchema.baseSchema.camelCapitalizedName}Entity.Builder<B>
+  <#else>
+    extends EntityBuilder
+  </#if>
+    implements I${modelJavaClassName}Entity
+  {
+  <#list model.fields as field>
+    <@setJavaType field/>
+    private ${fieldType?right_pad(25)}  ${field.camelName}__${javaBuilderTypeNew};
+  </#list>
+    
+    public Builder()
+    {
+    }
+    
+    public Builder(I${modelJavaClassName}Entity initial)
+    {
+  <#list model.fields as field>
+  <@setJavaType field/>
+      ${field.camelName}__${javaBuilderTypeCopyPrefix}initial.get${field.camelCapitalizedName}()${javaBuilderTypeCopyPostfix};
+  </#list>
+    }
+  <#list model.fields as field>
+    <@setJavaType field/>
     
     @Override
-    public I${model.model.camelCapitalizedName} getModel()
+    public ${fieldType} get${field.camelCapitalizedName}()
     {
-      return model_;
+      return ${field.camelName}__;
     }
-    
-    public static abstract class Builder extends EntityFactory.Builder implements I${modelJavaClassName}Entity
+  
+    public B with${field.camelCapitalizedName}(${fieldType} ${field.camelName})<#if field.canFailValidation> throws BadFormatException</#if>
     {
-    <#list model.fields as field>
-      <@setJavaType field/>
-      private ${fieldType?right_pad(25)}  ${field.camelName}__${javaBuilderTypeNew};
-    </#list>
-      
-      protected Builder()
-      {
-      }
-      
-      protected Builder(Builder initial)
-      {
-    <#list model.fields as field>
-    <@setJavaType field/>
-        ${field.camelName}__${javaBuilderTypeCopyPrefix}initial.${field.camelName}__${javaBuilderTypeCopyPostfix};
-    </#list>
-      }
-    <#list model.fields as field>
-      <@setJavaType field/>
-      
-      @Override
-      public ${fieldType} get${field.camelCapitalizedName}()
-      {
-        return ${field.camelName}__;
-      }
-
-      public ${modelJavaClassName}.Factory.Builder with${field.camelCapitalizedName}(${fieldType} ${field.camelName})<#if field.canFailValidation> throws BadFormatException</#if>
-      {
-      <@checkLimits "        " field field.camelName/>
-        ${field.camelName}__${javaBuilderTypeCopyPrefix}${field.camelName}${javaBuilderTypeCopyPostfix};
-        return (${modelJavaClassName}.Factory.Builder)this;
-      }
-      <#if field.isTypeDef>
-      
-      public ${modelJavaClassName}.Factory.Builder with${field.camelCapitalizedName}(${javaFieldClassName} ${field.camelName}) throws BadFormatException
-      {
-      <#if field.elementType=="Field" && field.required>
-        if(${field.camelName} == null)
-          throw new BadFormatException("${field.camelName} is required.");
-
-      </#if>
-        ${field.camelName}__ = ${javaConstructTypePrefix}${field.camelName}${javaConstructTypePostfix};
-        return (${modelJavaClassName}.Factory.Builder)this;
-      }
-      </#if>
-    </#list>
+    <@checkLimits "        " field field.camelName/>
+      ${field.camelName}__${javaBuilderTypeCopyPrefix}${field.camelName}${javaBuilderTypeCopyPostfix};
+      return (B)this;
+    }
+    <#if field.isTypeDef>
     
-      @Override 
-      public ImmutableJsonObject getJsonObject()
+    public B with${field.camelCapitalizedName}(${javaFieldClassName} ${field.camelName}) throws BadFormatException
+    {
+    <#if field.elementType=="Field" && field.required>
+      if(${field.camelName} == null)
+        throw new BadFormatException("${field.camelName} is required.");
+  
+    </#if>
+      ${field.camelName}__ = ${javaConstructTypePrefix}${field.camelName}${javaConstructTypePostfix};
+      return (B)this;
+    }
+    </#if>
+  </#list>
+  
+    @Override 
+    public ImmutableJsonObject getJsonObject()
+    {
+      MutableJsonObject jsonObject = new MutableJsonObject();
+      
+      jsonObject.addIfNotNull(CanonRuntime.JSON_TYPE, ${modelJavaClassName}Entity.TYPE_ID);
+  <#list model.fields as field>
+  <@setJavaType field/>
+  
+      if(${field.camelName}__ != null)
       {
-        MutableJsonObject jsonObject = new MutableJsonObject();
-        
-        jsonObject.addIfNotNull(CanonRuntime.JSON_TYPE, TYPE_ID);
-    <#list model.fields as field>
-    <@setJavaType field/>
-    
-        if(${field.camelName}__ != null)
-        {
-          <@generateCreateJsonDomNodeFromField "          " field "jsonObject"/>
-        }
-    </#list>
-    
-        return jsonObject.immutify();
+        <@generateCreateJsonDomNodeFromField "          " field "jsonObject"/>
       }
-          
-      public abstract ${modelJavaClassName} build()<@checkLimitsClassThrows model/>;
+  </#list>
+  
+      return jsonObject.immutify();
     }
   }
 }

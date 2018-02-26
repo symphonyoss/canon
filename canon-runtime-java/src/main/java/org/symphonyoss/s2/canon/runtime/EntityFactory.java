@@ -28,9 +28,7 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Set;
 
-import org.symphonyoss.s2.common.dom.DomSerializer;
 import org.symphonyoss.s2.common.dom.json.IImmutableJsonDomNode;
-import org.symphonyoss.s2.common.dom.json.IJsonDomNodeProvider;
 import org.symphonyoss.s2.common.dom.json.ImmutableJsonArray;
 import org.symphonyoss.s2.common.dom.json.ImmutableJsonObject;
 import org.symphonyoss.s2.common.exception.BadFormatException;
@@ -38,14 +36,40 @@ import org.symphonyoss.s2.common.exception.BadFormatException;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableSet;
 
-public abstract class EntityFactory<M extends IEntity, F extends IModel>
-implements IEntityFactory<M,F>
+/**
+ * A factory for an enclosing entity type.
+ * 
+ * @author Bruce Skingle
+ *
+ * @param <E> The type of the entity produced by this factory.
+ * @param <B> The interface type of the entity.
+ * @param <M> The type of the model to which the enclosing entity type belongs.
+ */
+public abstract class EntityFactory<E extends IEntity, B extends IEntity, M extends IModel>
+implements IEntityFactory<E,B,M>
 {
-  protected static final DomSerializer SERIALIZER = DomSerializer.newBuilder().withCanonicalMode(true).build();
-
-  public ImmutableList<M> newInstanceList(ImmutableJsonArray jsonArray) throws BadFormatException
+  private final M model_;
+  
+  /**
+   * Constructor.
+   * 
+   * @param model the model to which this factory belongs.
+   */
+  public EntityFactory(M model)
   {
-    List<M> list = new LinkedList<>();
+    model_ = model;
+  }
+  
+  @Override
+  public M getModel()
+  {
+    return model_;
+  }
+
+  @Override
+  public ImmutableList<E> newInstanceList(ImmutableJsonArray jsonArray) throws BadFormatException
+  {
+    List<E> list = new LinkedList<>();
     
     for(IImmutableJsonDomNode node : jsonArray)
     {
@@ -58,9 +82,10 @@ implements IEntityFactory<M,F>
     return ImmutableList.copyOf(list);
   }
   
-  public ImmutableSet<M> newInstanceSet(ImmutableJsonArray jsonArray) throws BadFormatException
+  @Override
+  public ImmutableSet<E> newInstanceSet(ImmutableJsonArray jsonArray) throws BadFormatException
   {
-    Set<M> list = new HashSet<>();
+    Set<E> list = new HashSet<>();
     
     for(IImmutableJsonDomNode node : jsonArray)
     {
@@ -76,22 +101,5 @@ implements IEntityFactory<M,F>
     }
     
     return ImmutableSet.copyOf(list);
-  }
-  
-  public abstract static class Builder implements IJsonDomNodeProvider, IBaseEntity
-  {
-    public abstract ImmutableJsonObject getJsonObject();
-    
-    @Override
-    public IImmutableJsonDomNode getJsonDomNode()
-    {
-      return getJsonObject();
-    }
-
-    @Override
-    public String serialize()
-    {
-      return SERIALIZER.serialize(getJsonObject());
-    }
   }
 }

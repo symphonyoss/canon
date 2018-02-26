@@ -30,17 +30,13 @@ import org.symphonyoss.s2.canon.runtime.http.RequestContext;
 import org.symphonyoss.s2.canon.runtime.http.client.HttpParameter;
 
 <#list model.parameters as parameter>
-  <@setJavaType parameter.schema/>  
-  <@printField/>
-  <#if javaFullyQualifiedClassName?has_content>
-import ${javaFullyQualifiedClassName};
+  <@setJavaType parameter.schema/>
+  <#if fieldFQType?has_content>
+import ${fieldFQType};
   </#if>
 </#list>
-<#if model.payload??>
-import ${javaFacadePackage}.${methodPayloadType};
-</#if>
-<#if model.response??>
-import ${javaFacadePackage}.${methodResponseType};
+<#if model.payload?? || model.response??>
+import ${javaFacadePackage}.*;
 </#if>
 
 @Immutable
@@ -115,7 +111,6 @@ public class ${model.parent.camelCapitalizedName}${model.camelCapitalizedName}Ht
           <#break>
         
         <#case "Query">
-          <@printField/>
       builder.addParameter("${parameter.name}", asString(${javaGetValuePrefix}${parameter.camelName}_${javaGetValuePostfix}));
           <#break>
         

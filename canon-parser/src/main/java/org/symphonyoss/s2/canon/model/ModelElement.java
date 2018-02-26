@@ -327,6 +327,11 @@ public class ModelElement
     return false;
   }
   
+  public boolean getIsGenerateFacade()
+  {
+    return false;
+  }
+  
   public ModelElement getReference()
   {
     return this;

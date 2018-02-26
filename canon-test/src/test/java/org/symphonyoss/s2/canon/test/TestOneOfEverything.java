@@ -36,10 +36,11 @@ import org.symphonyoss.s2.canon.runtime.IEntity;
 import org.symphonyoss.s2.canon.runtime.IEntityConsumer;
 import org.symphonyoss.s2.canon.runtime.IModelRegistry;
 import org.symphonyoss.s2.canon.runtime.ModelRegistry;
-import org.symphonyoss.s2.canon.test.oneofeverything.facade.ASimpleObject;
-import org.symphonyoss.s2.canon.test.oneofeverything.facade.DoubleMinMax;
-import org.symphonyoss.s2.canon.test.oneofeverything.facade.ListOfByteString;
-import org.symphonyoss.s2.canon.test.oneofeverything.facade.ObjectWithOneOfEverything;
+import org.symphonyoss.s2.canon.test.oneofeverything.DoubleMinMax;
+import org.symphonyoss.s2.canon.test.oneofeverything.IASimpleObject;
+import org.symphonyoss.s2.canon.test.oneofeverything.IObjectWithOneOfEverything;
+import org.symphonyoss.s2.canon.test.oneofeverything.ListOfByteString;
+import org.symphonyoss.s2.canon.test.oneofeverything.ObjectWithOneOfEverything;
 import org.symphonyoss.s2.canon.test.oneofeverything.facade.OneOfEverything;
 import org.symphonyoss.s2.common.dom.DomSerializer;
 import org.symphonyoss.s2.common.dom.DomWriter;
@@ -95,7 +96,7 @@ public class TestOneOfEverything extends AbstractModelObjectTest
   @Test
   public void testRoundTrip() throws IOException, BadFormatException
   {
-    ObjectWithOneOfEverything obj;
+    IObjectWithOneOfEverything obj;
     
     
     DomWriter writer = new DomWriter(System.out);
@@ -135,7 +136,7 @@ public class TestOneOfEverything extends AbstractModelObjectTest
       //((MutableJsonObject)adapted).addIfNotNull("_type", "foo");
       try
       {
-        ObjectWithOneOfEverything obj2 = objectFactory_.newInstance((ImmutableJsonObject) adapted.immutify());
+        IObjectWithOneOfEverything obj2 = objectFactory_.newInstance((ImmutableJsonObject) adapted.immutify());
         
         System.out.println("Reconstructed object:");
         writer.write(obj2.getJsonObject());
@@ -162,7 +163,7 @@ public class TestOneOfEverything extends AbstractModelObjectTest
   @Test
   public void testOneSchemas() throws BadFormatException, IOException
   {
-    ASimpleObject source = createTestObject3();
+    IASimpleObject source = createTestObject3();
     String serial = source.serialize();
     Reader reader = new StringReader(serial);
     IEntity deserialized = modelRegistry_.parseOne(reader);
@@ -218,7 +219,7 @@ public class TestOneOfEverything extends AbstractModelObjectTest
     }
   }
   
-  private ASimpleObject createTestObject3() throws BadFormatException
+  private IASimpleObject createTestObject3() throws BadFormatException
   {
     return oneOfEverything_.getASimpleObjectFactory().newBuilder()
         .withName("Simple3")
@@ -226,7 +227,7 @@ public class TestOneOfEverything extends AbstractModelObjectTest
         .build();
   }
 
-  private ASimpleObject createTestObject2() throws BadFormatException
+  private IASimpleObject createTestObject2() throws BadFormatException
   {
     return oneOfEverything_.getASimpleObjectFactory().newBuilder()
         .withName("Simple2")
@@ -234,7 +235,7 @@ public class TestOneOfEverything extends AbstractModelObjectTest
         .build();
   }
 
-  private ObjectWithOneOfEverything createTestObject1() throws BadFormatException
+  private IObjectWithOneOfEverything createTestObject1() throws BadFormatException
   {
     return objectFactory_.newBuilder()
         .withABoolean(false)

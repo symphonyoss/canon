@@ -7,7 +7,7 @@ import javax.servlet.ServletInputStream;
 import javax.servlet.ServletOutputStream;
 import javax.servlet.WriteListener;
 
-import org.symphonyoss.s2.canon.runtime.exception.JapiException;
+import org.symphonyoss.s2.canon.runtime.exception.CanonException;
 
 public abstract class ResponseOnlyRequestManager<R extends IBaseEntity>
 extends AbstractRequestManager<Void,R>
@@ -21,7 +21,7 @@ implements WriteListener, IResponseOnlyRequestManager<R>
   }
 
   @Override
-  protected void handleRequest(String request) throws JapiException
+  protected void handleRequest(String request) throws CanonException
   {
     handle(getResponseTask());
   }

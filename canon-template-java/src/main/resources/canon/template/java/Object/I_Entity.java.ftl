@@ -6,9 +6,15 @@
 import org.symphonyoss.s2.canon.runtime.IEntity;
 
 <@importFieldTypes model true/>
+import ${javaFacadePackage}.*;
 
 <#include "Object.ftl">
-public interface I${model.camelCapitalizedName}Entity extends IEntity
+public interface I${model.camelCapitalizedName}Entity
+<#if model.superSchema??>
+  extends I${model.superSchema.baseSchema.camelCapitalizedName}Entity, I${model.model.camelCapitalizedName}ModelEntity
+<#else>
+  extends I${model.model.camelCapitalizedName}ModelEntity
+</#if>
 {
 <#list model.fields as field>
   <@setJavaType field/>

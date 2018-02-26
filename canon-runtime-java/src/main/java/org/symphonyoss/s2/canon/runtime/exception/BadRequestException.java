@@ -34,7 +34,7 @@ import javax.servlet.http.HttpServletResponse;
  * @author Bruce Skingle
  *
  */
-public class BadRequestException extends JapiException
+public class BadRequestException extends CanonException
 {
   private static final long serialVersionUID = 1L;
   

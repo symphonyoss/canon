@@ -13,14 +13,13 @@ import org.symphonyoss.s2.canon.runtime.http.ParameterLocation;
 import org.symphonyoss.s2.canon.runtime.http.client.HttpParameter;
 
 <#list model.parameters as parameter>
-  <@setJavaType parameter.schema/>  
-  <@printField/>
-  <#if javaFullyQualifiedClassName?has_content>
-import ${javaFullyQualifiedClassName};
+  <@setJavaType parameter.schema/>
+  <#if fieldFQType?has_content>
+import ${fieldFQType};
   </#if>
 </#list>
 <#if model.payload??>
-import ${javaFacadePackage}.${methodPayloadType};
+import ${javaFacadePackage}.*;
 </#if>
 
 @Immutable
@@ -57,7 +56,6 @@ public class ${javaModelClassName} extends ${model.parent.camelCapitalizedName}$
     return japiPayload_;
   }
   
-  <@printField/>
   public ${javaModelClassName} withJapiPayload(${methodPayloadType} japiPayload)
   {
     japiPayload_.add(${javaGetValuePrefix}japiPayload${javaGetValuePostfix});

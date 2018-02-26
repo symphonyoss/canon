@@ -122,6 +122,11 @@ public class ParserContext extends BaseParserContext implements Iterable<ParserC
   {
     return jsonNode_.asBoolean();
   }
+  
+  public String asText()
+  {
+    return jsonNode_.asText();
+  }
 
   @Override
   public Iterator<ParserContext> iterator()
@@ -193,7 +198,7 @@ public class ParserContext extends BaseParserContext implements Iterable<ParserC
     
     if(node != null)
     {
-      if(!node.isNumber())
+      if(!node.isBoolean())
         raise(new UnexpectedTypeError(fieldName, Boolean.class, node));
       
       return node.asBoolean();

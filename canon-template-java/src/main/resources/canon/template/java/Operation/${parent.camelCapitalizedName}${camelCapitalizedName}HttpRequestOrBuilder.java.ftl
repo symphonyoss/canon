@@ -8,14 +8,13 @@ import org.symphonyoss.s2.common.dom.json.JsonArray;
 import org.symphonyoss.s2.canon.runtime.http.client.HttpRequestOrBuilder;
 
 <#list model.parameters as parameter>
-  <@setJavaType parameter.schema/>  
-  <@printField/>
-  <#if javaFullyQualifiedClassName?has_content>
-import ${javaFullyQualifiedClassName};
+  <@setJavaType parameter.schema/>
+  <#if fieldFQType?has_content>
+import ${fieldFQType};
   </#if>
 </#list>
 <#if model.payload?? && !model.payload.isMultiple>
-import ${javaFacadePackage}.${methodPayloadType};
+import ${javaFacadePackage}.*;
 </#if>
   
 @Immutable
