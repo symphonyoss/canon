@@ -47,11 +47,10 @@ import com.fasterxml.jackson.databind.node.ObjectNode;
 
 public class Model extends ModelElement
 {
-  private static final String COMPONENTS = "components";
-
+  
   private static Logger       log_       = LoggerFactory.getLogger(Model.class);
   
-  private Version             openapi_;
+  private Version             version_;
   private Map<String, String> modelMap_        = new HashMap<>();
   private SimpleDateFormat    yearFormat_      = new SimpleDateFormat("yyyy");
   private SimpleDateFormat    yearMonthFormat_ = new SimpleDateFormat("yyyy-MM");
@@ -61,6 +60,10 @@ public class Model extends ModelElement
   private Paths paths_;
 
   private String basePath_ = "";
+
+  private Components components_;
+
+  private ParserContext infoContext_;
   
   public Model(ParserContext parserContext)
   {
@@ -73,8 +76,8 @@ public class Model extends ModelElement
       switch(subContext.getName())
       {
         case "canon":
-          openapi_ = new Version(this, subContext);
-          add(openapi_);
+          version_ = new Version(this, subContext);
+          add(version_);
           break;
           
         case Canon.METHODS:
@@ -88,7 +91,12 @@ public class Model extends ModelElement
           break;
           
         case "info":
-          case "components":
+          infoContext_ = subContext;
+          break;
+          
+        case Canon.COMPONENTS:
+          components_ = new Components(this, subContext);
+          add(Canon.COMPONENTS, components_);
           break;
           
         case Canon.X_MODEL:
@@ -142,7 +150,7 @@ public class Model extends ModelElement
     modelMap_.put(Canon.DATE, dateFormat_.format(now));
     modelMap_.put(Canon.INPUT_SOURCE, parserContext.getRootParserContext().getInputSource());
     
-    add(COMPONENTS, new Components(this, parserContext.get(COMPONENTS)));
+
   }
   
   @Override
@@ -151,9 +159,19 @@ public class Model extends ModelElement
     return this;
   }
   
-  public Version getOpenapi()
+  public Components getComponents()
   {
-    return openapi_;
+    return components_;
+  }
+
+  public Version getVersion()
+  {
+    return version_;
+  }
+
+  public ParserContext getInfoContext()
+  {
+    return infoContext_;
   }
 
   public Map<String, String> getModelMap()

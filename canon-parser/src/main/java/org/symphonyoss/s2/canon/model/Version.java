@@ -66,6 +66,6 @@ public class Version extends ModelElement
   @Override
   public String toString()
   {
-    return String.format("Version(%d.%d.%d)", major_, minor_, patch_);
+    return String.format("%d.%d.%d", major_, minor_, patch_);
   }
 }

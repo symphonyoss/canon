@@ -86,7 +86,7 @@ public class AllOfSchema extends AbstractContainerSchema
   }
 
   @Override
-  protected void getSchemas(Set<AbstractSchema> result)
+  protected void getSchemas(Set<Schema> result)
   {
     //super.getSchemas(result);
     

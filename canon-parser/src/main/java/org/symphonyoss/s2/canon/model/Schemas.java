@@ -23,7 +23,9 @@
 
 package org.symphonyoss.s2.canon.model;
 
+import java.util.Collection;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
@@ -38,7 +40,8 @@ public class Schemas extends ModelElement
 
   private static Logger log_ = LoggerFactory.getLogger(Schemas.class);
   
-  private Map<String, ReferenceOrSchema> schemaMap_ = new HashMap<>();
+  private Map<String, Schema> schemaMap_ = new HashMap<>();
+  private Set<Schema> schemaSet_ = new HashSet<>();
 
   
   public Schemas(Components parent, ParserContext parserContext)
@@ -72,9 +75,10 @@ public class Schemas extends ModelElement
         objectSchema = new Component(this, schema, objectSchema, "AllOf", objectSchema.getName());
       }
       
-      if(objectSchema instanceof ReferenceOrSchema)
+      if(objectSchema instanceof Schema)
       {
-        schemaMap_.put(schema.getPath(), (ReferenceOrSchema) objectSchema);
+        schemaMap_.put(schema.getPath(), (Schema) objectSchema);
+        schemaSet_.add((Schema) objectSchema);
         add(schema.getName(), objectSchema);
       }
       else
@@ -86,6 +90,12 @@ public class Schemas extends ModelElement
   protected void getReferencedTypes(Set<AbstractSchema> result)
   {
     result.addAll(schemaMap_.values());
+  }
+  
+  @Override
+  public Set<Schema> getSchemas()
+  {
+    return schemaSet_;
   }
   
   @Override

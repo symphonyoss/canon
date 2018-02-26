@@ -30,6 +30,8 @@ public class Components extends ModelElement
 {
   
 
+  private Schemas schemas_;
+
   public Components(Model parent, ParserContext parserContext)
   {
     super(parent, parserContext, "Components");
@@ -38,7 +40,8 @@ public class Components extends ModelElement
     
     if(schemas != null)
     {
-      add(Canon.SCHEMAS, new Schemas(this, schemas));
+      schemas_ = new Schemas(this, schemas);
+      add(Canon.SCHEMAS, schemas_);
     }
     
     ParserContext parameterSets = parserContext.get(Canon.PARAMETER_SETS);
@@ -49,6 +52,11 @@ public class Components extends ModelElement
     }
   }
   
+  public Schemas getSchemaModels()
+  {
+    return schemas_;
+  }
+
   @Override
   public String toString()
   {

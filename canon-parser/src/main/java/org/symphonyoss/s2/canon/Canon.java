@@ -42,6 +42,9 @@ public class Canon
 
   /* JSON Constants */
   public static final String X_MODEL               = "model";
+  public static final String COMPONENTS            = "components";
+  public static final String INFO                  = "info";
+
   public static final String X_ID                  = "id";
   public static final String X_ATTRIBUTES          = "x-canon-attributes";
   public static final String X_CARDINALITY         = "x-canon-cardinality";

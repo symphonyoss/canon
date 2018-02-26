@@ -273,7 +273,7 @@ public class ObjectSchema extends Schema
   }
 
   @Override
-  protected void getSchemas(Set<AbstractSchema> result)
+  protected void getSchemas(Set<Schema> result)
   {
     super.getSchemas(result);
     

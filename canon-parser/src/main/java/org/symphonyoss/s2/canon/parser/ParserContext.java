@@ -23,7 +23,9 @@
 
 package org.symphonyoss.s2.canon.parser;
 
+import java.util.ArrayList;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Map.Entry;
 
 import org.symphonyoss.s2.canon.parser.error.UnexpectedTypeError;
@@ -118,14 +120,30 @@ public class ParserContext extends BaseParserContext implements Iterable<ParserC
     return jsonNode_.isBoolean();
   }
 
+  public final boolean isNumber()
+  {
+    return jsonNode_.isNumber();
+  }
+
   public boolean asBoolean()
   {
     return jsonNode_.asBoolean();
   }
   
-  public String asText()
+  public String getText()
   {
     return jsonNode_.asText();
+  }
+  
+  public List<ParserContext> getChildren()
+  {
+    List<ParserContext>     children  = new ArrayList<>();
+    Iterator<ParserContext> it        = iterator();
+    
+    while(it.hasNext())
+      children.add(it.next());
+    
+    return children;
   }
 
   @Override

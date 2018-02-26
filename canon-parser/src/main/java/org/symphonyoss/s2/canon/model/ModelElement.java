@@ -357,16 +357,16 @@ public class ModelElement
       child.getReferencedTypes(result);
   }
   
-  public Set<AbstractSchema> getSchemas()
+  public Set<Schema> getSchemas()
   {
-    Set<AbstractSchema> result = new HashSet<>();
+    Set<Schema> result = new HashSet<>();
     
     getSchemas(result);
     
     return result;
   }
   
-  protected void getSchemas(Set<AbstractSchema> result)
+  protected void getSchemas(Set<Schema> result)
   {
     for(ModelElement child : getChildren())
       child.getSchemas(result);

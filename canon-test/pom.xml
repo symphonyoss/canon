@@ -41,6 +41,11 @@
       <artifactId>canon-template-java</artifactId>
       <version>${project.version}</version>
     </dependency>
+    <dependency>
+      <groupId>org.symphonyoss.s2.canon</groupId>
+      <artifactId>canon-template-openapi</artifactId>
+      <version>${project.version}</version>
+    </dependency>
     
     <dependency>
       <groupId>org.symphonyoss.s2.canon</groupId>
@@ -68,6 +73,7 @@
   <properties>
     <canon.template.groupid>org.symphonyoss.s2.canon</canon.template.groupid>
     <canon.template.java>canon-template-java</canon.template.java>
+    <canon.template.openapi>canon-template-openapi</canon.template.openapi>
     <canon.template.version>${project.version}</canon.template.version>
   </properties>
   
@@ -90,6 +96,11 @@
                 <templateArtifact>
                   <groupId>${canon.template.groupid}</groupId>
                   <artifactId>${canon.template.java}</artifactId>
+                  <version>${canon.template.version}</version>
+                </templateArtifact>
+                <templateArtifact>
+                  <groupId>${canon.template.groupid}</groupId>
+                  <artifactId>${canon.template.openapi}</artifactId>
                   <version>${canon.template.version}</version>
                 </templateArtifact>
               </templateArtifacts>

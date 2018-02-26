@@ -44,6 +44,7 @@
 	<module>canon-template-java</module>
 	<module>canon-runtime-java</module>
 	<module>canon-launch</module>
+	<module>canon-template-openapi</module>
 	</modules>
 
 	<licenses>
