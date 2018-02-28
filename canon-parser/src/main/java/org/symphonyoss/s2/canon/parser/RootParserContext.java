@@ -45,14 +45,15 @@ public class RootParserContext extends BaseParserContext
 
   private final String          inputSource_;
   private final String          inputSourceName_;
+  private final boolean         referencedModel_;
   private Reader                reader_;
   private int                   errorCnt_;
   private URL                   url_;
   private ModelSetParserContext modelSetParserContext_;
 
-  public RootParserContext(ModelSetParserContext modelSetParserContext, URL url) throws ParsingException
+  public RootParserContext(ModelSetParserContext modelSetParserContext, URL url, boolean referencedModel) throws ParsingException
   {
-    this(modelSetParserContext, url, openStream(url));
+    this(modelSetParserContext, url, openStream(url), referencedModel);
   }
   
   private static Reader openStream(URL url) throws ParsingException
@@ -67,7 +68,7 @@ public class RootParserContext extends BaseParserContext
     }
   }
 
-  public RootParserContext(ModelSetParserContext modelSetParserContext, URL baseUrl, Reader inputStream) throws ParsingException
+  public RootParserContext(ModelSetParserContext modelSetParserContext, URL baseUrl, Reader inputStream, boolean referencedModel) throws ParsingException
   {
     log_ = modelSetParserContext.getLogFactory().getLogger(RootParserContext.class);
     
@@ -75,6 +76,7 @@ public class RootParserContext extends BaseParserContext
     url_ = baseUrl;
     reader_ = inputStream;
     inputSource_ = url_.toString();
+    referencedModel_ = referencedModel;
     
     String path = url_.getPath();
     
@@ -115,11 +117,12 @@ public class RootParserContext extends BaseParserContext
     return path;
   }
 
-  public RootParserContext(File inputFile, Reader inputStream)
+  public RootParserContext(File inputFile, Reader inputStream, boolean referencedModel)
   {
     reader_ = inputStream;
     inputSource_ = inputFile.getAbsolutePath();
     inputSourceName_ = inputFile.getName();
+    referencedModel_ = referencedModel;
     try
     {
       url_ = inputFile.toURI().toURL();
@@ -130,6 +133,14 @@ public class RootParserContext extends BaseParserContext
     }
   }
   
+  /**
+   * @return True iff this is a referenced model, and generation should not be performed.
+   */
+  public boolean isReferencedModel()
+  {
+    return referencedModel_;
+  }
+
   public URL getUrl()
   {
     return url_;

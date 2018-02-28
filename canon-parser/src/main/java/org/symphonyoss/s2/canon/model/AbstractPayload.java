@@ -75,7 +75,8 @@ public class AbstractPayload extends ModelElement
   {
     super.validate();
     
-    if(schema_ != null && !multiple_ && !schema_.getIsObjectSchema())
+    // Unresolvable elements are reported as errors elsewhere
+    if(schema_ != null && !multiple_ && schema_.isResolved() && !schema_.getIsObjectSchema())
     {
         getContext().raise(new ParserError(getElementType() + " schemas must be objects"));
     }

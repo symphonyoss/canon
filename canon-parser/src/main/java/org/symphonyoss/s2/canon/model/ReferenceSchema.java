@@ -114,6 +114,7 @@ public class ReferenceSchema extends ReferenceOrSchema
     return type_.getIsObjectSchema();
   }
 
+  @Override
   public boolean  isResolved()
   {
     return type_ != null;

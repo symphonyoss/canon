@@ -83,7 +83,7 @@ public class ModelSetParserContext
     {
       URL url = file.toURI().toURL();
       
-      RootParserContext context = new RootParserContext(this, url);
+      RootParserContext context = new RootParserContext(this, url, false);
       generationContexts_.put(url, context);
       parseQueue_.add(context);
     }
@@ -95,7 +95,7 @@ public class ModelSetParserContext
   
   public void addGenerationSource(URL baseUrl, Reader reader) throws ParsingException
   {
-    RootParserContext context = new RootParserContext(this, baseUrl, reader);
+    RootParserContext context = new RootParserContext(this, baseUrl, reader, false);
     generationContexts_.put(baseUrl, context);
     parseQueue_.add(context);
   }
@@ -144,7 +144,10 @@ public class ModelSetParserContext
     model.resolve();
     model.validate();
     
-    generateQueue_.add(model);
+    if(!model.getContext().getRootParserContext().isReferencedModel())
+    {
+      generateQueue_.add(model);
+    }
     model.getContext().getRootParserContext().epilogue("Validation");
   }
 
@@ -152,7 +155,7 @@ public class ModelSetParserContext
   {
     if(!referencedContexts_.containsKey(url))
     {
-      RootParserContext context = new RootParserContext(this, url);
+      RootParserContext context = new RootParserContext(this, url, true);
       referencedContexts_.put(url, context);
       parseQueue_.add(context);
     }

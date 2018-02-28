@@ -31,4 +31,9 @@ public abstract class ReferenceOrSchema extends AbstractSchema
   {
     super(parent, context, type, name);
   }
+
+  public boolean isResolved()
+  {
+    return true;
+  }
 }
