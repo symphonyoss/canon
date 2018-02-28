@@ -10,7 +10,7 @@ public class ${model.camelCapitalizedName} extends ${model.camelCapitalizedName}
   }
   
 <#-- Constrictor from Json   -->
-  protected ${model.camelCapitalizedName}(${modelJavaClassName}.AbstractFactory factory, ImmutableJsonObject jsonObject) throws BadFormatException
+  protected ${model.camelCapitalizedName}(${modelJavaClassName}.AbstractFactory factory, ImmutableJsonObject jsonObject) throws InvalidValueException
   {
     super(factory, jsonObject);
   }
@@ -24,13 +24,13 @@ public class ${model.camelCapitalizedName} extends ${model.camelCapitalizedName}
     }
     
     @Override
-    public I${model.camelCapitalizedName} newInstance(Builder builder)<@checkLimitsClassThrows model/>
+    public I${model.camelCapitalizedName} newInstance(I${modelJavaClassName}Entity builder)<@checkLimitsClassThrows model/>
     {
       return new ${model.camelCapitalizedName}(this, builder);
     }
     
     @Override
-    public I${model.camelCapitalizedName} newInstance(ImmutableJsonObject jsonObject) throws BadFormatException
+    public I${model.camelCapitalizedName} newInstance(ImmutableJsonObject jsonObject) throws InvalidValueException
     {
       return new ${model.camelCapitalizedName}(this, jsonObject);
     }
@@ -44,24 +44,22 @@ public class ${model.camelCapitalizedName} extends ${model.camelCapitalizedName}
     }
   }
   
-  public static class Builder extends ${modelJavaClassName}Entity.Builder<Builder>
+  public static class AbstractBuilder<B extends AbstractBuilder<?>> extends ${modelJavaClassName}Entity.AbstractBuilder<B>
   {
-    private ${(modelJavaClassName + "Entity.Factory")?right_pad(25)}  canonFactory_;
-  
-    public Builder(${modelJavaClassName}Entity.Factory factory)
+    public AbstractBuilder()
     {
-      canonFactory_ = factory;
     }
     
-    public Builder(${modelJavaClassName}Entity.Factory factory, I${modelJavaClassName}Entity initial)
+    public AbstractBuilder(I${modelJavaClassName}Entity initial)
     {
       super(initial);
-      canonFactory_ = factory;
     }
-      
-    public I${modelJavaClassName} build()<@checkLimitsClassThrows model/>
+
+    @Override 
+    public void validate() throws InvalidValueException
     {
-      return canonFactory_.newInstance(this);
+      super.validate();
+      // called by build() - add validation or build logic here
     }
   }
 }

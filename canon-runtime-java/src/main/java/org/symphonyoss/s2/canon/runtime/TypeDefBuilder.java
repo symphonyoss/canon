@@ -24,11 +24,11 @@
 package org.symphonyoss.s2.canon.runtime;
 
 import org.symphonyoss.s2.common.dom.json.JsonValue;
-import org.symphonyoss.s2.common.exception.BadFormatException;
+import org.symphonyoss.s2.common.exception.InvalidValueException;
 
 public abstract class TypeDefBuilder<M,T>
 {
-  public abstract M build(T value) throws BadFormatException;
-  public abstract M build(JsonValue<?,?> jsonValue) throws BadFormatException;
+  public abstract M build(T value) throws InvalidValueException;
+  public abstract M build(JsonValue<?,?> jsonValue) throws InvalidValueException;
   public abstract T toValue(M instance);
 }

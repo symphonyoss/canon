@@ -27,24 +27,24 @@ import javax.annotation.Nonnull;
 
 import org.symphonyoss.s2.common.dom.json.IJsonDomNode;
 import org.symphonyoss.s2.common.dom.json.JsonBoolean;
-import org.symphonyoss.s2.common.exception.BadFormatException;
+import org.symphonyoss.s2.common.exception.InvalidValueException;
 
 public class BooleanBaseModelType
 {
   private final @Nonnull JsonBoolean jsonValue_;
 
-  public BooleanBaseModelType(Boolean value) throws BadFormatException
+  public BooleanBaseModelType(Boolean value) throws InvalidValueException
   {
     if(value == null)
-      throw new BadFormatException("value is required.");
+      throw new InvalidValueException("value is required.");
 
     jsonValue_ = new JsonBoolean(value);
   }
   
-  public BooleanBaseModelType(@Nonnull IJsonDomNode node) throws BadFormatException
+  public BooleanBaseModelType(@Nonnull IJsonDomNode node) throws InvalidValueException
   {
     if(node == null)
-      throw new BadFormatException("value is required.");
+      throw new InvalidValueException("value is required.");
       
     if(node instanceof JsonBoolean)
     {
@@ -52,7 +52,7 @@ public class BooleanBaseModelType
     }
     else
     {
-      throw new BadFormatException("value must be an instance of Boolean not " + node.getClass().getName());
+      throw new InvalidValueException("value must be an instance of Boolean not " + node.getClass().getName());
     }
   }
 

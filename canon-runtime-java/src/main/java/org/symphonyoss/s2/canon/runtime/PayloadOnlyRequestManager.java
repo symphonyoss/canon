@@ -31,7 +31,7 @@ import javax.servlet.ServletInputStream;
 import javax.servlet.ServletOutputStream;
 
 import org.symphonyoss.s2.canon.runtime.exception.CanonException;
-import org.symphonyoss.s2.common.exception.BadFormatException;
+import org.symphonyoss.s2.common.exception.InvalidValueException;
 
 public abstract class PayloadOnlyRequestManager<P>
 extends AbstractRequestManager<P,IBaseEntity>
@@ -44,10 +44,10 @@ implements ReadListener, IPayloadOnlyRequestManager<P>
     super(in, out, async, processExecutor, null);
   }
 
-  protected abstract P parsePayload(String payload) throws BadFormatException;
+  protected abstract P parsePayload(String payload) throws InvalidValueException;
   
   @Override
-  protected void handleRequest(String request) throws BadFormatException, CanonException
+  protected void handleRequest(String request) throws InvalidValueException, CanonException
   {
     handle(parsePayload(request));
   }

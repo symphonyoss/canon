@@ -27,24 +27,24 @@ import javax.annotation.Nonnull;
 
 import org.symphonyoss.s2.common.dom.json.IJsonDomNode;
 import org.symphonyoss.s2.common.dom.json.JsonDouble;
-import org.symphonyoss.s2.common.exception.BadFormatException;
+import org.symphonyoss.s2.common.exception.InvalidValueException;
 
 public class DoubleBaseModelType
 {
   private final @Nonnull JsonDouble jsonValue_;
 
-  public DoubleBaseModelType(Double value) throws BadFormatException
+  public DoubleBaseModelType(Double value) throws InvalidValueException
   {
     if(value == null)
-      throw new BadFormatException("value is required.");
+      throw new InvalidValueException("value is required.");
 
     jsonValue_ = new JsonDouble(value);
   }
   
-  public DoubleBaseModelType(@Nonnull IJsonDomNode node) throws BadFormatException
+  public DoubleBaseModelType(@Nonnull IJsonDomNode node) throws InvalidValueException
   {
     if(node == null)
-      throw new BadFormatException("value is required.");
+      throw new InvalidValueException("value is required.");
       
     if(node instanceof JsonDouble)
     {
@@ -52,7 +52,7 @@ public class DoubleBaseModelType
     }
     else
     {
-      throw new BadFormatException("value must be an instance of Double not " + node.getClass().getName());
+      throw new InvalidValueException("value must be an instance of Double not " + node.getClass().getName());
     }
   }
 

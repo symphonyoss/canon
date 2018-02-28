@@ -13,7 +13,7 @@ import org.symphonyoss.s2.common.dom.IDoubleProvider;
 import org.symphonyoss.s2.common.dom.IByteStringProvider;
 import org.symphonyoss.s2.common.dom.json.IJsonDomNode;
 
-import org.symphonyoss.s2.common.exception.BadFormatException;
+import org.symphonyoss.s2.common.exception.InvalidValueException;
 
 import org.symphonyoss.s2.canon.runtime.TypeDef;
 import org.symphonyoss.s2.canon.runtime.${modelJavaFieldClassName}TypeDefBuilder;
@@ -28,20 +28,20 @@ public class ${modelJavaClassName}TypeDef<#if isComparable(model)> extends TypeD
 {
   private @Nonnull ${modelJavaFieldClassName} value_;
 
-  protected ${modelJavaClassName}TypeDef(@Nonnull ${modelJavaFieldClassName} value) throws BadFormatException
+  protected ${modelJavaClassName}TypeDef(@Nonnull ${modelJavaFieldClassName} value) throws InvalidValueException
   {
     if(value == null)
-      throw new BadFormatException("value is required.");
+      throw new InvalidValueException("value is required.");
       
 <@checkLimits "    " model "value"/>
     value_ = value;
   }
 
   <#-- Constructor from Json   -->  
-  protected ${modelJavaClassName}TypeDef(@Nonnull IJsonDomNode node) throws BadFormatException
+  protected ${modelJavaClassName}TypeDef(@Nonnull IJsonDomNode node) throws InvalidValueException
   {
     if(node == null)
-      throw new BadFormatException("value is required.");
+      throw new InvalidValueException("value is required.");
 
     if(node instanceof I${javaElementFieldClassName}Provider)
     {
@@ -53,7 +53,7 @@ public class ${modelJavaClassName}TypeDef<#if isComparable(model)> extends TypeD
     }
     else
     {
-      throw new BadFormatException("value must be an instance of ${javaFieldClassName} not " + node.getClass().getName());
+      throw new InvalidValueException("value must be an instance of ${javaFieldClassName} not " + node.getClass().getName());
     }
   }
   

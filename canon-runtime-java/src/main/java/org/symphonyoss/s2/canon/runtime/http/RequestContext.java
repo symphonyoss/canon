@@ -45,7 +45,7 @@ import org.symphonyoss.s2.canon.runtime.ModelRegistry;
 import org.symphonyoss.s2.canon.runtime.TypeDefBuilder;
 import org.symphonyoss.s2.common.dom.json.ImmutableJsonObject;
 import org.symphonyoss.s2.common.dom.json.JsonValue;
-import org.symphonyoss.s2.common.exception.BadFormatException;
+import org.symphonyoss.s2.common.exception.InvalidValueException;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ArrayNode;
@@ -272,7 +272,7 @@ public class RequestContext
       
       return factory.newInstance(jsonObject);
     }
-    catch (BadFormatException | IOException e)
+    catch (InvalidValueException | IOException e)
     {
       log_.error("Failed to parse payload", e);
       error("Unable to parse payload");
@@ -294,7 +294,7 @@ public class RequestContext
       
       return builder.build(jsonObject);
     }
-    catch (BadFormatException | IOException e)
+    catch (InvalidValueException | IOException e)
     {
       log_.error("Failed to parse payload", e);
       error("Unable to parse payload");

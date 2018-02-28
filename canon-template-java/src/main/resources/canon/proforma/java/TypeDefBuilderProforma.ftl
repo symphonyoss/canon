@@ -9,14 +9,14 @@ import org.symphonyoss.s2.common.dom.IFloatProvider;
 import org.symphonyoss.s2.common.dom.IDoubleProvider;
 import org.symphonyoss.s2.common.dom.IByteStringProvider;
 
-import org.symphonyoss.s2.common.exception.BadFormatException;
+import org.symphonyoss.s2.common.exception.InvalidValueException;
 
 import ${modelJavaFullyQualifiedClassName};
 
 public class ${model.camelCapitalizedName}Builder
 {
 <#if model.enum??>
-  public static ${modelJavaClassName} valueOf(${modelJavaFieldClassName} value) throws BadFormatException
+  public static ${modelJavaClassName} valueOf(${modelJavaFieldClassName} value) throws InvalidValueException
   {
     // TODO Auto-generated method stub
     return ${modelJavaClassName}.valueOf(value);
@@ -28,7 +28,7 @@ public class ${model.camelCapitalizedName}Builder
     return instance.toString();
   }
 <#else>
-  public static ${modelJavaClassName} build(${modelJavaFieldClassName} value) throws BadFormatException
+  public static ${modelJavaClassName} build(${modelJavaFieldClassName} value) throws InvalidValueException
   {
     // TODO Auto-generated method stub
     return new ${modelJavaClassName}(value);

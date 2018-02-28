@@ -4,7 +4,7 @@ import javax.annotation.concurrent.Immutable;
 
 import com.google.protobuf.ByteString;
 
-import org.symphonyoss.s2.common.exception.BadFormatException;
+import org.symphonyoss.s2.common.exception.InvalidValueException;
 
 import ${javaGenPackage}.${modelJavaClassName}TypeDef;
 
@@ -14,7 +14,7 @@ public class ${modelJavaClassName} extends ${modelJavaClassName}TypeDef
 {
   private static Builder theBuilder = new Builder();
   
-  private ${modelJavaClassName}(@Nonnull ${modelJavaFieldClassName} value) throws BadFormatException
+  private ${modelJavaClassName}(@Nonnull ${modelJavaFieldClassName} value) throws InvalidValueException
   {
     super(value);
   }
@@ -35,7 +35,7 @@ public class ${modelJavaClassName} extends ${modelJavaClassName}TypeDef
     }
     
     @Override
-    public ${modelJavaClassName} build(@Nonnull ${modelJavaFieldClassName} value) throws BadFormatException
+    public ${modelJavaClassName} build(@Nonnull ${modelJavaFieldClassName} value) throws InvalidValueException
     {
       return new ${modelJavaClassName}(value);
     }

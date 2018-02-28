@@ -25,7 +25,7 @@ import org.symphonyoss.s2.common.dom.json.ImmutableJsonObject;
 import org.symphonyoss.s2.common.dom.json.MutableJsonArray;
 import org.symphonyoss.s2.common.dom.json.MutableJsonObject;
 
-import org.symphonyoss.s2.common.exception.BadFormatException;
+import org.symphonyoss.s2.common.exception.InvalidValueException;
 
 <@importFieldTypes model true/>
 import ${javaFacadePackage}.*;

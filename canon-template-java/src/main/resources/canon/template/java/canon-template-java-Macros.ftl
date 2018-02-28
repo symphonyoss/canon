@@ -751,15 +751,15 @@ import ${fieldElementFQBuilder};
 <#macro javadocLimitsClassThrows model>
   <#list model.fields as field>
     <#if isCheckLimits(field)>
-     * @throws BadFormatException If the given values are not valid.
+     * @throws InvalidValueException If the given values are not valid.
       <#return>
     </#if>
   </#list>
 </#macro>
 
-<#macro checkLimitsClassThrows model><#list model.fields as field><#if isCheckLimits(field)> throws BadFormatException<#return></#if></#list></#macro>
+<#macro checkLimitsClassThrows model><#list model.fields as field><#if isCheckLimits(field)> throws InvalidValueException<#return></#if></#list></#macro>
 
-<#macro checkLimitsThrows model><#if isCheckLimits(model)> throws BadFormatException</#if></#macro>
+<#macro checkLimitsThrows model><#if isCheckLimits(model)> throws InvalidValueException</#if></#macro>
 
 <#function isCheckLimits model>
   <#switch model.elementType>
@@ -798,12 +798,12 @@ import ${fieldElementFQBuilder};
 <#macro checkLimits2 indent model name>
   <#if model.minimum??>
 ${indent}if(${name} != null && ${name} < ${model.minimumAsString})
-${indent}  throw new BadFormatException("Value " + ${name} + " of ${name} is less than the minimum allowed of ${model.minimum}");
+${indent}  throw new InvalidValueException("Value " + ${name} + " of ${name} is less than the minimum allowed of ${model.minimum}");
 
   </#if>
   <#if model.maximum??>
 ${indent}if(${name} != null && ${name} > ${model.maximumAsString})
-${indent}  throw new BadFormatException("Value " + ${name} + " of ${name} is more than the maximum allowed of ${model.maximum}");
+${indent}  throw new InvalidValueException("Value " + ${name} + " of ${name} is more than the maximum allowed of ${model.maximum}");
 
   </#if>
 </#macro>
@@ -826,7 +826,7 @@ ${indent}  throw new BadFormatException("Value " + ${name} + " of ${name} is mor
     <#case "Field">
       <#if model.required>     
 ${indent}if(${name} == null)
-${indent}  throw new BadFormatException("${name} is required.");
+${indent}  throw new InvalidValueException("${name} is required.");
 
       </#if>
       <@checkLimits2 indent model.type name/>
@@ -850,13 +850,13 @@ ${indent}  throw new BadFormatException("${name} is required.");
 
 ${indent}if(${var}.size() < ${model.minItems})
 ${indent}{
-${indent}  throw new BadFormatException("${name} has " + ${var}.size() + " items but at least ${model.minItems} are required");
+${indent}  throw new InvalidValueException("${name} has " + ${var}.size() + " items but at least ${model.minItems} are required");
 ${indent}}
       </#if>
       <#if model.maxItems??>
 ${indent}if(${var}.size() > ${model.maxItems})
 ${indent}{
-${indent}  throw new BadFormatException("${name} has " + ${var}.size() + " items but at most ${model.maxItems} are allowed");
+${indent}  throw new InvalidValueException("${name} has " + ${var}.size() + " items but at most ${model.maxItems} are allowed");
 ${indent}}
       </#if>
       <#break>
@@ -909,15 +909,6 @@ ${indent}{
 ${indent}  valueList.add(${fieldBaseValueFromElementPrefix}value${fieldBaseValueFromElementSuffix});
 ${indent}}
 ${indent}${var}.add("${field.camelName}", valueList);
-  
-        <#if field.baseSchema.items.component.isTypeDef>
-  // A12 array of typedef
-//${indent}${var}.addCollectionOf${javaElementFieldClassName}Provider("${field.camelName}", ${javaGetValuePrefix}${field.camelName}__${javaGetValuePostfix});
-
-        <#else>
-  // A13 array of not typedef
-//${indent}${var}.addCollectionOf${javaElementFieldClassName}("${field.camelName}", ${javaGetValuePrefix}${field.camelName}__${javaGetValuePostfix});
-        </#if>
       </#if>
     <#else>
 ${indent}${var}.addIfNotNull("${field.camelName}", ${field.camelName}__);
@@ -945,7 +936,7 @@ ${indent}  ${var} = factory.getModel().get${field.elementSchema.camelCapitalized
 ${indent}}
 ${indent}else
 ${indent}{
-${indent}  throw new BadFormatException("${field.camelName} must be an Object node not " + node.getClass().getName());
+${indent}  throw new InvalidValueException("${field.camelName} must be an Object node not " + node.getClass().getName());
 ${indent}}
     <#else>
       <#if field.isArraySchema>
@@ -956,7 +947,7 @@ ${indent}  ${var} = ${fieldType}.newBuilder().with((ImmutableJsonArray)node).bui
 ${indent}}
 ${indent}else
 ${indent}{
-${indent}  throw new BadFormatException("${field.camelName} must be an Array node not " + node.getClass().getName());
+${indent}  throw new InvalidValueException("${field.camelName} must be an Array node not " + node.getClass().getName());
 ${indent}}
       <#else>
 ${indent}if(node instanceof I${javaElementFieldClassName}Provider)
@@ -969,12 +960,12 @@ ${indent}    ${var} = ${javaConstructTypePrefix}value${javaConstructTypePostfix}
 ${indent}  }
 ${indent}  catch(RuntimeException e)
 ${indent}  {
-${indent}    throw new BadFormatException("Value \"" + value + "\" for ${field.camelName} is not a valid value", e);
+${indent}    throw new InvalidValueException("Value \"" + value + "\" for ${field.camelName} is not a valid value", e);
 ${indent}  }
 ${indent}}
 ${indent}else
 ${indent}{
-${indent}    throw new BadFormatException("${field.camelName} must be an instance of ${javaFieldClassName} not " + node.getClass().getName());
+${indent}    throw new InvalidValueException("${field.camelName} must be an instance of ${javaFieldClassName} not " + node.getClass().getName());
 ${indent}}     
         </#if>
       </#if>
@@ -1008,7 +999,7 @@ ${indent}  ${var} = ((ImmutableJsonArray)node).asImmutable${javaCardinality}Of($
 ${indent}}
 ${indent}else
 ${indent}{
-${indent}  throw new BadFormatException("${field.camelName} must be an array not " + node.getClass().getName());
+${indent}  throw new InvalidValueException("${field.camelName} must be an array not " + node.getClass().getName());
 ${indent}}
     <#else> 
 ${indent}if(node instanceof I${javaElementFieldClassName}Provider)
@@ -1021,7 +1012,7 @@ ${indent}  ${var} = ${javaTypeCopyPrefix}${field.camelName}${javaTypeCopyPostfix
 ${indent}}
 ${indent}else
 ${indent}{
-${indent}    throw new BadFormatException("${field.camelName} must be an instance of ${javaFieldClassName} not " + node.getClass().getName());
+${indent}    throw new InvalidValueException("${field.camelName} must be an instance of ${javaFieldClassName} not " + node.getClass().getName());
 ${indent}}
     </#if>
   </#if>

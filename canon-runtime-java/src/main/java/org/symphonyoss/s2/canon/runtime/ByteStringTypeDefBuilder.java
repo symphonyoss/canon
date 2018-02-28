@@ -26,14 +26,14 @@ package org.symphonyoss.s2.canon.runtime;
 import org.apache.commons.codec.binary.Base64;
 import org.symphonyoss.s2.common.dom.json.JsonString;
 import org.symphonyoss.s2.common.dom.json.JsonValue;
-import org.symphonyoss.s2.common.exception.BadFormatException;
+import org.symphonyoss.s2.common.exception.InvalidValueException;
 
 import com.google.protobuf.ByteString;
 
 public abstract class ByteStringTypeDefBuilder<M> extends TypeDefBuilder<M,ByteString>
 {
   @Override
-  public M build(JsonValue<?, ?> jsonValue) throws BadFormatException
+  public M build(JsonValue<?, ?> jsonValue) throws InvalidValueException
   {
     if(jsonValue instanceof JsonString)
     {
@@ -46,7 +46,7 @@ public abstract class ByteStringTypeDefBuilder<M> extends TypeDefBuilder<M,ByteS
       );
     }
     
-    throw new BadFormatException("Expected a string but found a " + jsonValue.getClass().getName());
+    throw new InvalidValueException("Expected a string but found a " + jsonValue.getClass().getName());
   }
 
 }

@@ -28,7 +28,7 @@ import java.io.InputStream;
 import java.io.Reader;
 
 import org.symphonyoss.s2.common.dom.json.ImmutableJsonObject;
-import org.symphonyoss.s2.common.exception.BadFormatException;
+import org.symphonyoss.s2.common.exception.InvalidValueException;
 import org.symphonyoss.s2.fugue.di.IComponent;
 
 public interface IModelRegistry extends IComponent
@@ -37,11 +37,11 @@ public interface IModelRegistry extends IComponent
 
   IModelRegistry register(String name, IEntityFactory<?,?,?> factory);
 
-  IEntity newInstance(ImmutableJsonObject jsonObject) throws BadFormatException;
+  IEntity newInstance(ImmutableJsonObject jsonObject) throws InvalidValueException;
 
-  IEntity parseOne(Reader reader) throws IOException, BadFormatException;
+  IEntity parseOne(Reader reader) throws IOException, InvalidValueException;
   
-  void parseStream(InputStream in, IEntityConsumer consumer) throws BadFormatException, IOException;
+  void parseStream(InputStream in, IEntityConsumer consumer) throws InvalidValueException, IOException;
   
 //  Collection<IUrlPathServlet> getServlets();
 //  void register(IUrlPathServlet servlet);

@@ -36,7 +36,7 @@ import org.symphonyoss.s2.common.dom.json.IJsonDomNode;
 import org.symphonyoss.s2.common.dom.json.IJsonObject;
 import org.symphonyoss.s2.common.dom.json.ImmutableJsonObject;
 import org.symphonyoss.s2.common.dom.json.jackson.JacksonAdaptor;
-import org.symphonyoss.s2.common.exception.BadFormatException;
+import org.symphonyoss.s2.common.exception.InvalidValueException;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -50,7 +50,7 @@ public class TestAllTheLists extends AbstractModelObjectTest
   private final SimpleObject.Factory simpleObjectFactory_ = typeCheck_.getSimpleObjectFactory();
   
   @Test
-  public void testRoundTrip() throws IOException, BadFormatException
+  public void testRoundTrip() throws IOException, InvalidValueException
   {
     IAllTheLists obj;
     
@@ -99,7 +99,7 @@ public class TestAllTheLists extends AbstractModelObjectTest
         
         assertEquals(obj, obj2);
       }
-      catch(BadFormatException e)
+      catch(InvalidValueException e)
       {
         System.err.println("Failed to deserialize from JSON");
         e.printStackTrace();
@@ -118,7 +118,7 @@ public class TestAllTheLists extends AbstractModelObjectTest
 
   
 
-  private IAllTheLists createTestObject1() throws BadFormatException
+  private IAllTheLists createTestObject1() throws InvalidValueException
   {
     return objectFactory_.newBuilder()
           .withBooleanListField(ImmutableList.of(true, false))

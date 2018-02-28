@@ -25,7 +25,7 @@ package org.symphonyoss.s2.canon.test.oneofeverything;
 
 import org.symphonyoss.s2.common.dom.IByteStringProvider;
 import org.symphonyoss.s2.common.dom.json.IJsonDomNode;
-import org.symphonyoss.s2.common.exception.BadFormatException;
+import org.symphonyoss.s2.common.exception.InvalidValueException;
 
 import com.google.protobuf.ByteString;
 
@@ -51,7 +51,7 @@ public class DirectHash
     someObscureImplementatinoDetail_ = someObscureImplementatinoDetail;
   }
   
-  public static DirectHash someObscureImplementationFactory(ByteString value) throws BadFormatException
+  public static DirectHash someObscureImplementationFactory(ByteString value) throws InvalidValueException
   {
     return new DirectHash(value, 7);
   }
@@ -70,7 +70,7 @@ public class DirectHash
    * The following canon standard factory methods have been added so that this class
    * can be used as a direct external class with JAPIGEN.
    */
-  public static DirectHash build(ByteString value) throws BadFormatException
+  public static DirectHash build(ByteString value) throws InvalidValueException
   {
     return someObscureImplementationFactory(value);
   }
@@ -80,7 +80,7 @@ public class DirectHash
     return instance.someObscureGetter();
   }
 
-  public static DirectHash build(IJsonDomNode node) throws BadFormatException
+  public static DirectHash build(IJsonDomNode node) throws InvalidValueException
   {
     if(node instanceof IByteStringProvider)
     {
@@ -89,7 +89,7 @@ public class DirectHash
     }
     else
     {
-      throw new BadFormatException("Hash must be an instance of ByteString not " + node.getClass().getName());
+      throw new InvalidValueException("Hash must be an instance of ByteString not " + node.getClass().getName());
     }
   }
 }

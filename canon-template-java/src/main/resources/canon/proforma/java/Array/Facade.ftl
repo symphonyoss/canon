@@ -1,12 +1,12 @@
 @Immutable
 public class ${model.camelCapitalizedName} extends ${model.camelCapitalizedName}EntityArray
 {
-  private ${modelJavaClassName}(IEntity${modelJavaCardinality}<${modelJavaElementClassName}> other)<#if model.canFailValidation> throws BadFormatException</#if>
+  private ${modelJavaClassName}(IEntity${modelJavaCardinality}<${modelJavaElementClassName}> other)<#if model.canFailValidation> throws InvalidValueException</#if>
   {
     super(other);
   }
   
-  private ${modelJavaClassName}(ImmutableJsonArray jsonArray) throws BadFormatException
+  private ${modelJavaClassName}(ImmutableJsonArray jsonArray) throws InvalidValueException
   {
     super(jsonArray);
   }
@@ -48,7 +48,7 @@ public class ${model.camelCapitalizedName} extends ${model.camelCapitalizedName}
     }
   
     @Override
-    public ${model.camelCapitalizedName} build() throws BadFormatException
+    public ${model.camelCapitalizedName} build() throws InvalidValueException
     {
       /*
        * This is where you would place hand written code to enforce further constraints

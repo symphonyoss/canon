@@ -28,7 +28,7 @@
   }
   
 <#-- Constructor from Json   -->  
-  protected ${modelJavaClassName}Entity(${modelJavaClassName}.AbstractFactory factory, ImmutableJsonObject jsonObject) throws BadFormatException
+  protected ${modelJavaClassName}Entity(${modelJavaClassName}.AbstractFactory factory, ImmutableJsonObject jsonObject) throws InvalidValueException
   {
 <#if model.superSchema??>
     super(factory.getModel().get${model.superSchema.baseSchema.camelCapitalizedName}Factory(), jsonObject);
@@ -37,15 +37,15 @@
 </#if>
     
     if(jsonObject == null)
-      throw new BadFormatException("jsonObject is required");
+      throw new InvalidValueException("jsonObject is required");
   
     canonFactory_ = factory;
-
+<#-- We can't do this because of inheritance, we may be constructing a sub-class and the type will be that of the subclass
     IImmutableJsonDomNode typeNode = jsonObject.get(CanonRuntime.JSON_TYPE);
     if(!(typeNode instanceof IStringProvider && TYPE_ID.equals(((IStringProvider)typeNode).asString())))
     {
-      throw new BadFormatException("_type attribute must be \"" + TYPE_ID + "\"");
-    }
+      throw new InvalidValueException("_type attribute must be \"" + TYPE_ID + "\"");
+    }----->
     
 <#list model.fields as field>
     if(jsonObject.containsKey("${field.camelName}"))
@@ -56,7 +56,7 @@
     else
     {
   <#if field.required>
-      throw new BadFormatException("${field.camelName} is required.");
+      throw new InvalidValueException("${field.camelName} is required.");
   <#else>
       ${field.camelName}_ = null;
   </#if>
@@ -79,11 +79,11 @@
     private final ${"String"?right_pad(25)}  _discriminator_;
     private final ${"Object"?right_pad(25)}  _payload_;
   
-    public ${field.camelCapitalizedName}Entity(Object payload) throws BadFormatException
+    public ${field.camelCapitalizedName}Entity(Object payload) throws InvalidValueException
     {
       if(payload == null)
       {
-        throw new BadFormatException("OneOf payload cannot be null");
+        throw new InvalidValueException("OneOf payload cannot be null");
       }
       <#list field.children as ref>
       else if(payload instanceof ${fieldType})
@@ -96,7 +96,7 @@
       </#list>
       else
       {
-        throw new BadFormatException("Unknown payload type \"" + payload.getClass().getName() + "\"");
+        throw new InvalidValueException("Unknown payload type \"" + payload.getClass().getName() + "\"");
       }
     }
     public Object getPayload()
@@ -130,9 +130,9 @@
      * 
      * @return A new builder.
      */
-    public ${modelJavaClassName}.Builder newBuilder()
+    public Builder newBuilder()
     {
-      return new ${modelJavaClassName}.Builder(this);
+      return new Builder(this);
     }
     
     /**
@@ -144,9 +144,9 @@
      * 
      * @return A new builder.
      */
-    public ${modelJavaClassName}.Builder newBuilder(I${modelJavaClassName}Entity initial)
+    public Builder newBuilder(I${modelJavaClassName}Entity initial)
     {
-      return new ${modelJavaClassName}.Builder(this, initial);
+      return new Builder(this, initial);
     }
   
     /**
@@ -160,12 +160,35 @@
      * 
 <@javadocLimitsClassThrows model/>
      */
-    public abstract I${model.camelCapitalizedName} newInstance(${modelJavaClassName}.Builder builder)<@checkLimitsClassThrows model/>;
+    public abstract I${model.camelCapitalizedName} newInstance(I${modelJavaClassName}Entity builder)<@checkLimitsClassThrows model/>;
   }
   
-  public static class Builder<B extends Builder<?>>
+  public static class Builder extends ${modelJavaClassName}.AbstractBuilder<Builder>
+  {
+    private ${(modelJavaClassName + "Entity.Factory")?right_pad(25)}  canonFactory_;
+
+    public Builder(${modelJavaClassName}Entity.Factory factory)
+    {
+      super();
+      canonFactory_ = factory;
+    }
+    
+    public Builder(${modelJavaClassName}Entity.Factory factory, I${modelJavaClassName}Entity initial)
+    {
+      super(initial);
+      canonFactory_ = factory;
+    }
+         
+    public I${modelJavaClassName} build() throws InvalidValueException
+    {
+      validate();
+      return canonFactory_.newInstance(this);
+    }
+  }
+  
+  public static class AbstractBuilder<B extends AbstractBuilder<?>>
   <#if model.superSchema??>
-    extends ${model.superSchema.baseSchema.camelCapitalizedName}Entity.Builder<B>
+    extends ${model.superSchema.baseSchema.camelCapitalizedName}.AbstractBuilder<B>
   <#else>
     extends EntityBuilder
   </#if>
@@ -176,11 +199,11 @@
     private ${fieldType?right_pad(25)}  ${field.camelName}__${javaBuilderTypeNew};
   </#list>
     
-    public Builder()
+    public AbstractBuilder()
     {
     }
     
-    public Builder(I${modelJavaClassName}Entity initial)
+    public AbstractBuilder(I${modelJavaClassName}Entity initial)
     {
   <#list model.fields as field>
   <@setJavaType field/>
@@ -196,7 +219,7 @@
       return ${field.camelName}__;
     }
   
-    public B with${field.camelCapitalizedName}(${fieldType} ${field.camelName})<#if field.canFailValidation> throws BadFormatException</#if>
+    public B with${field.camelCapitalizedName}(${fieldType} ${field.camelName})<#if field.canFailValidation> throws InvalidValueException</#if>
     {
     <@checkLimits "        " field field.camelName/>
       ${field.camelName}__${javaBuilderTypeCopyPrefix}${field.camelName}${javaBuilderTypeCopyPostfix};
@@ -204,11 +227,11 @@
     }
     <#if field.isTypeDef>
     
-    public B with${field.camelCapitalizedName}(${javaFieldClassName} ${field.camelName}) throws BadFormatException
+    public B with${field.camelCapitalizedName}(${javaFieldClassName} ${field.camelName}) throws InvalidValueException
     {
     <#if field.elementType=="Field" && field.required>
       if(${field.camelName} == null)
-        throw new BadFormatException("${field.camelName} is required.");
+        throw new InvalidValueException("${field.camelName} is required.");
   
     </#if>
       ${field.camelName}__ = ${javaConstructTypePrefix}${field.camelName}${javaConstructTypePostfix};
@@ -223,16 +246,29 @@
       MutableJsonObject jsonObject = new MutableJsonObject();
       
       jsonObject.addIfNotNull(CanonRuntime.JSON_TYPE, ${modelJavaClassName}Entity.TYPE_ID);
+
+      getJsonObject(jsonObject);
+  
+      return jsonObject.immutify();
+    }
+    
+    @Override 
+    public void getJsonObject(MutableJsonObject jsonObject)
+    {
+      super.getJsonObject(jsonObject);
   <#list model.fields as field>
-  <@setJavaType field/>
+    <@setJavaType field/>
   
       if(${field.camelName}__ != null)
       {
         <@generateCreateJsonDomNodeFromField "          " field "jsonObject"/>
       }
   </#list>
-  
-      return jsonObject.immutify();
+    }
+    
+    public void validate() throws InvalidValueException
+    {
+      super.validate();
     }
   }
 }

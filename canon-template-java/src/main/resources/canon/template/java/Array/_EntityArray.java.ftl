@@ -12,7 +12,7 @@ import org.symphonyoss.s2.canon.runtime.EntityArrayFactory;
 import org.symphonyoss.s2.common.dom.json.IJsonDomNode;
 import org.symphonyoss.s2.common.dom.json.ImmutableJsonArray;
 import org.symphonyoss.s2.common.dom.json.MutableJsonArray;
-import org.symphonyoss.s2.common.exception.BadFormatException;
+import org.symphonyoss.s2.common.exception.InvalidValueException;
 
 import org.symphonyoss.s2.canon.runtime.Entity${modelJavaCardinality};
 
@@ -20,14 +20,14 @@ import org.symphonyoss.s2.canon.runtime.Entity${modelJavaCardinality};
 @Immutable
 public class ${modelJavaClassName}EntityArray extends Entity${modelJavaCardinality}<${modelJavaElementClassName}>
 {
-  protected ${modelJavaClassName}EntityArray(IEntity${modelJavaCardinality}<${modelJavaElementClassName}> other)<#if model.canFailValidation> throws BadFormatException</#if>
+  protected ${modelJavaClassName}EntityArray(IEntity${modelJavaCardinality}<${modelJavaElementClassName}> other)<#if model.canFailValidation> throws InvalidValueException</#if>
   {
     super(other);
 <@checkItemLimits "    " model "Array" "this"/>
   }
   
   <#-- Constructor from Json   -->  
-  protected ${modelJavaClassName}EntityArray(ImmutableJsonArray jsonArray) throws BadFormatException
+  protected ${modelJavaClassName}EntityArray(ImmutableJsonArray jsonArray) throws InvalidValueException
   {
     super(jsonArray, jsonArray.asImmutable${modelJavaCardinality}Of(${modelJavaElementClassName}.class));
 <@checkItemLimits "    " model "Array" "this"/>
@@ -79,7 +79,7 @@ public class ${modelJavaClassName}EntityArray extends Entity${modelJavaCardinali
       return (${modelJavaClassName}.Builder)this;
     }
 
-    public ${modelJavaClassName}.Builder with(ImmutableJsonArray node) throws BadFormatException
+    public ${modelJavaClassName}.Builder with(ImmutableJsonArray node) throws InvalidValueException
     {
       elements__.addAll(node.asImmutableListOf(${modelJavaElementClassName}.class));
       return (${modelJavaClassName}.Builder)this;
@@ -100,7 +100,7 @@ public class ${modelJavaClassName}EntityArray extends Entity${modelJavaCardinali
       return jsonArray.immutify();
     }
     
-    public abstract ${modelJavaClassName} build() throws BadFormatException;
+    public abstract ${modelJavaClassName} build() throws InvalidValueException;
   }
 }
 <#include "../canon-template-java-Epilogue.ftl">

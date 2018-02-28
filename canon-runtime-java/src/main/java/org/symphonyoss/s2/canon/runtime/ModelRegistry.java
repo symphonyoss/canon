@@ -39,7 +39,7 @@ import org.symphonyoss.s2.common.dom.json.IJsonObject;
 import org.symphonyoss.s2.common.dom.json.ImmutableJsonObject;
 import org.symphonyoss.s2.common.dom.json.JsonValue;
 import org.symphonyoss.s2.common.dom.json.jackson.JacksonAdaptor;
-import org.symphonyoss.s2.common.exception.BadFormatException;
+import org.symphonyoss.s2.common.exception.InvalidValueException;
 import org.symphonyoss.s2.common.fault.TransactionFault;
 import org.symphonyoss.s2.fugue.di.Cardinality;
 import org.symphonyoss.s2.fugue.di.ComponentDescriptor;
@@ -104,18 +104,18 @@ public class ModelRegistry implements IModelRegistry
 //  }
 
   @Override
-  public IEntity newInstance(ImmutableJsonObject jsonObject) throws BadFormatException
+  public IEntity newInstance(ImmutableJsonObject jsonObject) throws InvalidValueException
   {
     String typeId = jsonObject.getString(CanonRuntime.JSON_TYPE);
     IEntityFactory<?,?,?> factory = factoryMap_.get(typeId);
     
     if(factory == null)
-      throw new BadFormatException("Unknown type \"" + typeId + "\"");
+      throw new InvalidValueException("Unknown type \"" + typeId + "\"");
     
     return factory.newInstance(jsonObject);
   }
   
-  public static ImmutableJsonObject parseOneJsonObject(Reader reader) throws BadFormatException
+  public static ImmutableJsonObject parseOneJsonObject(Reader reader) throws InvalidValueException
   {
     ObjectMapper  mapper = new ObjectMapper().configure(Feature.AUTO_CLOSE_SOURCE, false);
     
@@ -131,16 +131,16 @@ public class ModelRegistry implements IModelRegistry
       }
       else
       {
-        throw new BadFormatException("Expected a JSON Object but read a " + adapted.getClass().getName());
+        throw new InvalidValueException("Expected a JSON Object but read a " + adapted.getClass().getName());
       }
     }
     catch(IOException e)
     {
-      throw new BadFormatException("Failed to parse input", e);
+      throw new InvalidValueException("Failed to parse input", e);
     }
   }
   
-  public static JsonValue<?,?> parseOneJsonValue(Reader reader) throws BadFormatException
+  public static JsonValue<?,?> parseOneJsonValue(Reader reader) throws InvalidValueException
   {
     ObjectMapper  mapper = new ObjectMapper().configure(Feature.AUTO_CLOSE_SOURCE, false);
     
@@ -154,23 +154,23 @@ public class ModelRegistry implements IModelRegistry
       }
       else
       {
-        throw new BadFormatException("Expected a JSON value but read a " + tree.getClass().getName());
+        throw new InvalidValueException("Expected a JSON value but read a " + tree.getClass().getName());
       }
     }
     catch(IOException e)
     {
-      throw new BadFormatException("Failed to parse input", e);
+      throw new InvalidValueException("Failed to parse input", e);
     }
   }
   
   @Override
-  public IEntity parseOne(Reader reader) throws IOException, BadFormatException
+  public IEntity parseOne(Reader reader) throws IOException, InvalidValueException
   {
     return newInstance(parseOneJsonObject(reader));
   }
 
   @Override
-  public void parseStream(InputStream in, IEntityConsumer consumer) throws BadFormatException, IOException
+  public void parseStream(InputStream in, IEntityConsumer consumer) throws InvalidValueException, IOException
   {
     JsonArrayParser arrayParser = new JsonArrayParser()
     {
@@ -184,7 +184,7 @@ public class ModelRegistry implements IModelRegistry
           
           consumer.consume(result);
         }
-        catch (BadFormatException | IOException e)
+        catch (InvalidValueException | IOException e)
         {
           // TODO I think handle needs to throw BadFormatException
           throw new TransactionFault(e);

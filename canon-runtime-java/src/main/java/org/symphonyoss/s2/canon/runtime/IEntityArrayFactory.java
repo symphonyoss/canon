@@ -24,10 +24,10 @@
 package org.symphonyoss.s2.canon.runtime;
 
 import org.symphonyoss.s2.common.dom.json.ImmutableJsonArray;
-import org.symphonyoss.s2.common.exception.BadFormatException;
+import org.symphonyoss.s2.common.exception.InvalidValueException;
 
 public interface IEntityArrayFactory<M extends IEntityArray, F extends IModel>
 {
   F  getModel();
-  M  newInstance(ImmutableJsonArray jsonArray) throws BadFormatException;
+  M  newInstance(ImmutableJsonArray jsonArray) throws InvalidValueException;
 }

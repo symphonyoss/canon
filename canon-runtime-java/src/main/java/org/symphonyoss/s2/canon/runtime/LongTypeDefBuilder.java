@@ -26,12 +26,12 @@ package org.symphonyoss.s2.canon.runtime;
 import org.symphonyoss.s2.common.dom.json.JsonLong;
 import org.symphonyoss.s2.common.dom.json.JsonInteger;
 import org.symphonyoss.s2.common.dom.json.JsonValue;
-import org.symphonyoss.s2.common.exception.BadFormatException;
+import org.symphonyoss.s2.common.exception.InvalidValueException;
 
 public abstract class LongTypeDefBuilder<M> extends TypeDefBuilder<M,Long>
 {
   @Override
-  public M build(JsonValue<?, ?> jsonValue) throws BadFormatException
+  public M build(JsonValue<?, ?> jsonValue) throws InvalidValueException
   {
     if(jsonValue instanceof JsonLong)
       return build(((JsonLong)jsonValue).asLong());
@@ -39,7 +39,7 @@ public abstract class LongTypeDefBuilder<M> extends TypeDefBuilder<M,Long>
     if(jsonValue instanceof JsonInteger)
       return build((long)((JsonInteger)jsonValue).asInteger());
     
-    throw new BadFormatException("Expected a long integer but found a " + jsonValue.getClass().getName());
+    throw new InvalidValueException("Expected a long integer but found a " + jsonValue.getClass().getName());
   }
 
 }

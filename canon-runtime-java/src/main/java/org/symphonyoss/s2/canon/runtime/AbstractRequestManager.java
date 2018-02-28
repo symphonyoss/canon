@@ -9,7 +9,7 @@ import javax.servlet.ServletOutputStream;
 import javax.servlet.http.HttpServletResponse;
 
 import org.symphonyoss.s2.canon.runtime.exception.CanonException;
-import org.symphonyoss.s2.common.exception.BadFormatException;
+import org.symphonyoss.s2.common.exception.InvalidValueException;
 
 public abstract class AbstractRequestManager<P,R extends IBaseEntity>
 {
@@ -104,7 +104,7 @@ public abstract class AbstractRequestManager<P,R extends IBaseEntity>
           // delegated to sub-classes
           handleRequest(request);
         }
-        catch(BadFormatException e)
+        catch(InvalidValueException e)
         {
           HttpServletResponse response = (HttpServletResponse)getAsync().getResponse();
           
@@ -165,7 +165,7 @@ public abstract class AbstractRequestManager<P,R extends IBaseEntity>
     return async_;
   }
 
-  protected abstract void handleRequest(String request) throws BadFormatException, CanonException;
+  protected abstract void handleRequest(String request) throws InvalidValueException, CanonException;
 
 
   public void onDataAvailable() throws IOException

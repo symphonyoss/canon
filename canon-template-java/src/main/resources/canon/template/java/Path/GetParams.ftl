@@ -12,7 +12,7 @@
     {
       ${parameter.camelName} = ${javaConstructTypePrefix}${parameter.camelName}Value${javaConstructTypePostfix};
     }
-    catch(BadFormatException e)
+    catch(InvalidValueException e)
     {
       context.error("Parameter \"${parameter.camelName}\" has invalid value \"%s\" (%s)", ${parameter.camelName}Value, e.getMessage());
     }
@@ -23,7 +23,7 @@
     {
       <@checkLimits "      " parameter.schema parameter.camelName/>
     }
-    catch(BadFormatException e)
+    catch(InvalidValueException e)
     {
       context.error(e.getMessage());
     }
@@ -46,7 +46,7 @@
       {
         ${parameter.camelName} = ${javaConstructTypePrefix}${parameter.camelName}Value${javaConstructTypePostfix};
       }
-      catch(BadFormatException e)
+      catch(InvalidValueException e)
       {
         context.error("Parameter \"${parameter.camelName}\" has invalid value \"%s\" (%s)", ${parameter.camelName}Value, e.getMessage());
       }
@@ -57,7 +57,7 @@
       {
         <@checkLimits "        " parameter.schema parameter.camelName/>
       }
-      catch(BadFormatException e)
+      catch(InvalidValueException e)
       {
         context.error(e.getMessage());
       }

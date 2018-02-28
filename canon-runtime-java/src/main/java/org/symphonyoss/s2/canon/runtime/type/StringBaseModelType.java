@@ -27,24 +27,24 @@ import javax.annotation.Nonnull;
 
 import org.symphonyoss.s2.common.dom.json.IJsonDomNode;
 import org.symphonyoss.s2.common.dom.json.JsonString;
-import org.symphonyoss.s2.common.exception.BadFormatException;
+import org.symphonyoss.s2.common.exception.InvalidValueException;
 
 public class StringBaseModelType
 {
   private final @Nonnull JsonString jsonValue_;
 
-  public StringBaseModelType(String value) throws BadFormatException
+  public StringBaseModelType(String value) throws InvalidValueException
   {
     if(value == null)
-      throw new BadFormatException("value is required.");
+      throw new InvalidValueException("value is required.");
 
     jsonValue_ = new JsonString(value);
   }
   
-  public StringBaseModelType(@Nonnull IJsonDomNode node) throws BadFormatException
+  public StringBaseModelType(@Nonnull IJsonDomNode node) throws InvalidValueException
   {
     if(node == null)
-      throw new BadFormatException("value is required.");
+      throw new InvalidValueException("value is required.");
       
     if(node instanceof JsonString)
     {
@@ -52,7 +52,7 @@ public class StringBaseModelType
     }
     else
     {
-      throw new BadFormatException("value must be an instance of String not " + node.getClass().getName());
+      throw new InvalidValueException("value must be an instance of String not " + node.getClass().getName());
     }
   }
 

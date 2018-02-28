@@ -27,24 +27,24 @@ import javax.annotation.Nonnull;
 
 import org.symphonyoss.s2.common.dom.json.IJsonDomNode;
 import org.symphonyoss.s2.common.dom.json.JsonInteger;
-import org.symphonyoss.s2.common.exception.BadFormatException;
+import org.symphonyoss.s2.common.exception.InvalidValueException;
 
 public class IntegerBaseModelType
 {
   private final @Nonnull JsonInteger jsonValue_;
 
-  public IntegerBaseModelType(Integer value) throws BadFormatException
+  public IntegerBaseModelType(Integer value) throws InvalidValueException
   {
     if(value == null)
-      throw new BadFormatException("value is required.");
+      throw new InvalidValueException("value is required.");
 
     jsonValue_ = new JsonInteger(value);
   }
   
-  public IntegerBaseModelType(@Nonnull IJsonDomNode node) throws BadFormatException
+  public IntegerBaseModelType(@Nonnull IJsonDomNode node) throws InvalidValueException
   {
     if(node == null)
-      throw new BadFormatException("value is required.");
+      throw new InvalidValueException("value is required.");
       
     if(node instanceof JsonInteger)
     {
@@ -52,7 +52,7 @@ public class IntegerBaseModelType
     }
     else
     {
-      throw new BadFormatException("value must be an instance of Integer not " + node.getClass().getName());
+      throw new InvalidValueException("value must be an instance of Integer not " + node.getClass().getName());
     }
   }
 

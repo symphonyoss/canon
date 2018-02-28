@@ -25,17 +25,17 @@ package org.symphonyoss.s2.canon.runtime;
 
 import org.symphonyoss.s2.common.dom.json.JsonString;
 import org.symphonyoss.s2.common.dom.json.JsonValue;
-import org.symphonyoss.s2.common.exception.BadFormatException;
+import org.symphonyoss.s2.common.exception.InvalidValueException;
 
 public abstract class StringTypeDefBuilder<M> extends TypeDefBuilder<M,String>
 {
   @Override
-  public M build(JsonValue<?, ?> jsonValue) throws BadFormatException
+  public M build(JsonValue<?, ?> jsonValue) throws InvalidValueException
   {
     if(jsonValue instanceof JsonString)
       return build(((JsonString)jsonValue).asString());
     
-    throw new BadFormatException("Expected a string but found a " + jsonValue.getClass().getName());
+    throw new InvalidValueException("Expected a string but found a " + jsonValue.getClass().getName());
   }
 
 }

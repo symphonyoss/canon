@@ -25,17 +25,17 @@ package org.symphonyoss.s2.canon.runtime;
 
 import org.symphonyoss.s2.common.dom.json.JsonBoolean;
 import org.symphonyoss.s2.common.dom.json.JsonValue;
-import org.symphonyoss.s2.common.exception.BadFormatException;
+import org.symphonyoss.s2.common.exception.InvalidValueException;
 
 public abstract class BooleanTypeDefBuilder<M> extends TypeDefBuilder<M,Boolean>
 {
   @Override
-  public M build(JsonValue<?, ?> jsonValue) throws BadFormatException
+  public M build(JsonValue<?, ?> jsonValue) throws InvalidValueException
   {
     if(jsonValue instanceof JsonBoolean)
       return build(((JsonBoolean)jsonValue).asBoolean());
     
-    throw new BadFormatException("Expected an boolean but found a " + jsonValue.getClass().getName());
+    throw new InvalidValueException("Expected an boolean but found a " + jsonValue.getClass().getName());
   }
 
 }

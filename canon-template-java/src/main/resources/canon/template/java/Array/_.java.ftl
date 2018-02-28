@@ -5,7 +5,7 @@ import javax.annotation.concurrent.Immutable;
 
 import org.symphonyoss.s2.canon.runtime.IEntity${modelJavaCardinality};
 import org.symphonyoss.s2.common.dom.json.ImmutableJsonArray;
-import org.symphonyoss.s2.common.exception.BadFormatException;
+import org.symphonyoss.s2.common.exception.InvalidValueException;
 
 <@importFieldTypes model false/>
 import ${javaFacadePackage}.*;

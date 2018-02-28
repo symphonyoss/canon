@@ -20,7 +20,7 @@ import org.apache.http.entity.StringEntity;
 import org.apache.http.impl.client.CloseableHttpClient;
 
 import org.symphonyoss.s2.common.dom.json.ImmutableJsonArray;
-import org.symphonyoss.s2.common.exception.BadFormatException;
+import org.symphonyoss.s2.common.exception.InvalidValueException;
 
 import org.symphonyoss.s2.canon.runtime.IEntity;
 import org.symphonyoss.s2.canon.runtime.JsonArrayParser;
@@ -177,7 +177,7 @@ public class ${model.parent.camelCapitalizedName}${model.camelCapitalizedName}Ht
               </#if>
             }
           }
-          catch (BadFormatException | IOException e)
+          catch (InvalidValueException | IOException e)
           {
             // TODO Auto-generated catch block
             e.printStackTrace();

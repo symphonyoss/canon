@@ -1,5 +1,5 @@
 <#include "../canon-template-java-Prologue.ftl">
-import org.symphonyoss.s2.common.exception.BadFormatException;
+import org.symphonyoss.s2.common.exception.InvalidValueException;
 
 import org.symphonyoss.s2.common.dom.json.ImmutableJsonObject;
 

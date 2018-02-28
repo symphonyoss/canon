@@ -28,12 +28,12 @@ import org.symphonyoss.s2.common.dom.json.JsonFloat;
 import org.symphonyoss.s2.common.dom.json.JsonInteger;
 import org.symphonyoss.s2.common.dom.json.JsonLong;
 import org.symphonyoss.s2.common.dom.json.JsonValue;
-import org.symphonyoss.s2.common.exception.BadFormatException;
+import org.symphonyoss.s2.common.exception.InvalidValueException;
 
 public abstract class DoubleTypeDefBuilder<M> extends TypeDefBuilder<M,Double>
 {
   @Override
-  public M build(JsonValue<?, ?> jsonValue) throws BadFormatException
+  public M build(JsonValue<?, ?> jsonValue) throws InvalidValueException
   {
     if(jsonValue instanceof JsonDouble)
       return build(((JsonDouble)jsonValue).asDouble());
@@ -47,7 +47,7 @@ public abstract class DoubleTypeDefBuilder<M> extends TypeDefBuilder<M,Double>
     if(jsonValue instanceof JsonInteger)
       return build((double)((JsonInteger)jsonValue).asInteger());
     
-    throw new BadFormatException("Expected a double but found a " + jsonValue.getClass().getName());
+    throw new InvalidValueException("Expected a double but found a " + jsonValue.getClass().getName());
   }
 
 }

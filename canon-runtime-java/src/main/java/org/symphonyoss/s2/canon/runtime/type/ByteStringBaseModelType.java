@@ -28,7 +28,7 @@ import javax.annotation.Nonnull;
 import org.apache.commons.codec.binary.Base64;
 import org.symphonyoss.s2.common.dom.json.IJsonDomNode;
 import org.symphonyoss.s2.common.dom.json.JsonBase64String;
-import org.symphonyoss.s2.common.exception.BadFormatException;
+import org.symphonyoss.s2.common.exception.InvalidValueException;
 
 import com.google.protobuf.ByteString;
 
@@ -36,18 +36,18 @@ public class ByteStringBaseModelType
 {
   private final @Nonnull JsonBase64String jsonValue_;
 
-  public ByteStringBaseModelType(ByteString value) throws BadFormatException
+  public ByteStringBaseModelType(ByteString value) throws InvalidValueException
   {
     if(value == null)
-      throw new BadFormatException("value is required.");
+      throw new InvalidValueException("value is required.");
 
     jsonValue_ = new JsonBase64String(Base64.encodeBase64URLSafeString(value.toByteArray()));
   }
   
-  public ByteStringBaseModelType(@Nonnull IJsonDomNode node) throws BadFormatException
+  public ByteStringBaseModelType(@Nonnull IJsonDomNode node) throws InvalidValueException
   {
     if(node == null)
-      throw new BadFormatException("value is required.");
+      throw new InvalidValueException("value is required.");
       
     if(node instanceof JsonBase64String)
     {
@@ -55,7 +55,7 @@ public class ByteStringBaseModelType
     }
     else
     {
-      throw new BadFormatException("value must be an instance of ByteString not " + node.getClass().getName());
+      throw new InvalidValueException("value must be an instance of ByteString not " + node.getClass().getName());
     }
   }
 

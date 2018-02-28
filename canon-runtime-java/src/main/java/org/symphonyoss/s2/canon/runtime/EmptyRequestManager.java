@@ -30,7 +30,7 @@ import javax.servlet.ServletInputStream;
 import javax.servlet.ServletOutputStream;
 
 import org.symphonyoss.s2.canon.runtime.exception.CanonException;
-import org.symphonyoss.s2.common.exception.BadFormatException;
+import org.symphonyoss.s2.common.exception.InvalidValueException;
 
 public abstract class EmptyRequestManager
 extends AbstractRequestManager<Void,IBaseEntity>
@@ -44,7 +44,7 @@ implements IEmptyRequestManager
   }
   
   @Override
-  protected void handleRequest(String request) throws BadFormatException, CanonException
+  protected void handleRequest(String request) throws InvalidValueException, CanonException
   {
     handle();
   }

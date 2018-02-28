@@ -27,6 +27,8 @@ import org.symphonyoss.s2.common.dom.DomSerializer;
 import org.symphonyoss.s2.common.dom.json.IImmutableJsonDomNode;
 import org.symphonyoss.s2.common.dom.json.IJsonDomNodeProvider;
 import org.symphonyoss.s2.common.dom.json.ImmutableJsonObject;
+import org.symphonyoss.s2.common.dom.json.MutableJsonObject;
+import org.symphonyoss.s2.common.exception.InvalidValueException;
 
 /**
  * A builder for some entity type.
@@ -46,6 +48,16 @@ public abstract class EntityBuilder implements IJsonDomNodeProvider, IBaseEntity
    */
   public abstract ImmutableJsonObject getJsonObject();
   
+  /**
+   * Fill in the JSON representation of the current state of this builder.
+   * 
+   * Implementations should call <code>super.getJsonObject(jsonObject);</code>
+   * 
+   * @param jsonObject the JSON representation of the current state of this builder.
+   */
+  public void getJsonObject(MutableJsonObject jsonObject)
+  {}
+  
   @Override
   public IImmutableJsonDomNode getJsonDomNode()
   {
@@ -57,5 +69,12 @@ public abstract class EntityBuilder implements IJsonDomNodeProvider, IBaseEntity
   {
     return SERIALIZER.serialize(getJsonObject());
   }
-
+  
+  /**
+   * Called immediately prior to building an instance from this builder.
+   * 
+   * @throws InvalidValueException May be thrown if the values in the builder as a whole are not valid.
+   */
+  public void validate() throws InvalidValueException
+  {}
 }

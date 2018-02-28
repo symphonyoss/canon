@@ -25,7 +25,7 @@ package org.symphonyoss.s2.canon.runtime;
 
 import org.symphonyoss.s2.common.dom.json.ImmutableJsonArray;
 import org.symphonyoss.s2.common.dom.json.ImmutableJsonObject;
-import org.symphonyoss.s2.common.exception.BadFormatException;
+import org.symphonyoss.s2.common.exception.InvalidValueException;
 
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableSet;
@@ -55,9 +55,9 @@ public interface IEntityFactory<E extends IEntity, B extends IEntity, M extends 
    * 
    * @return An instance of the entity represented by the given serialized form.
    * 
-   * @throws BadFormatException If the given JSON is not valid.
+   * @throws InvalidValueException If the given JSON is not valid.
    */
-  E  newInstance(ImmutableJsonObject jsonObject) throws BadFormatException;
+  E  newInstance(ImmutableJsonObject jsonObject) throws InvalidValueException;
 
 
   /**
@@ -67,9 +67,9 @@ public interface IEntityFactory<E extends IEntity, B extends IEntity, M extends 
    * 
    * @return A list of instances of the entity represented by the given serialized form.
    * 
-   * @throws BadFormatException If the given JSON is not valid.
+   * @throws InvalidValueException If the given JSON is not valid.
    */
-  ImmutableList<E> newInstanceList(ImmutableJsonArray jsonArray) throws BadFormatException;
+  ImmutableList<E> newInstanceList(ImmutableJsonArray jsonArray) throws InvalidValueException;
 
   /**
    * Return a set of new entity instances created from the given JSON array.
@@ -78,7 +78,7 @@ public interface IEntityFactory<E extends IEntity, B extends IEntity, M extends 
    * 
    * @return A set of instances of the entity represented by the given serialized form.
    * 
-   * @throws BadFormatException If the given JSON is not valid.
+   * @throws InvalidValueException If the given JSON is not valid.
    */
-  ImmutableSet<E> newInstanceSet(ImmutableJsonArray jsonArray) throws BadFormatException;
+  ImmutableSet<E> newInstanceSet(ImmutableJsonArray jsonArray) throws InvalidValueException;
 }

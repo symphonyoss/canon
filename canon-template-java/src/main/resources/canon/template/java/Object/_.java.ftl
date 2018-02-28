@@ -8,7 +8,7 @@ import com.google.protobuf.ByteString;
 
 import org.symphonyoss.s2.common.dom.json.ImmutableJsonObject;
 
-import org.symphonyoss.s2.common.exception.BadFormatException;
+import org.symphonyoss.s2.common.exception.InvalidValueException;
 
 import ${javaFacadePackage}.*;
 

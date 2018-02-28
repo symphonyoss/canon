@@ -31,7 +31,7 @@ import java.util.Set;
 import org.symphonyoss.s2.common.dom.json.IImmutableJsonDomNode;
 import org.symphonyoss.s2.common.dom.json.ImmutableJsonArray;
 import org.symphonyoss.s2.common.dom.json.ImmutableJsonObject;
-import org.symphonyoss.s2.common.exception.BadFormatException;
+import org.symphonyoss.s2.common.exception.InvalidValueException;
 
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableSet;
@@ -67,7 +67,7 @@ implements IEntityFactory<E,B,M>
   }
 
   @Override
-  public ImmutableList<E> newInstanceList(ImmutableJsonArray jsonArray) throws BadFormatException
+  public ImmutableList<E> newInstanceList(ImmutableJsonArray jsonArray) throws InvalidValueException
   {
     List<E> list = new LinkedList<>();
     
@@ -76,14 +76,14 @@ implements IEntityFactory<E,B,M>
       if(node instanceof ImmutableJsonObject)
         list.add(newInstance((ImmutableJsonObject) node));
       else
-        throw new BadFormatException("Expected an array of JSON objectcs, but encountered a " + node.getClass().getName());
+        throw new InvalidValueException("Expected an array of JSON objectcs, but encountered a " + node.getClass().getName());
     }
     
     return ImmutableList.copyOf(list);
   }
   
   @Override
-  public ImmutableSet<E> newInstanceSet(ImmutableJsonArray jsonArray) throws BadFormatException
+  public ImmutableSet<E> newInstanceSet(ImmutableJsonArray jsonArray) throws InvalidValueException
   {
     Set<E> list = new HashSet<>();
     
@@ -92,11 +92,11 @@ implements IEntityFactory<E,B,M>
       if(node instanceof ImmutableJsonObject)
       {
         if(!list.add(newInstance((ImmutableJsonObject) node)))
-          throw new BadFormatException("Duplicate value " + node + " encountered in Set.");
+          throw new InvalidValueException("Duplicate value " + node + " encountered in Set.");
       }
       else
       {
-        throw new BadFormatException("Expected an array of JSON objectcs, but encountered a " + node.getClass().getName());
+        throw new InvalidValueException("Expected an array of JSON objectcs, but encountered a " + node.getClass().getName());
       }
     }
     
