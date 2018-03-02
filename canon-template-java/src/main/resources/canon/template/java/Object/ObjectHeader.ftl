@@ -20,15 +20,18 @@ import org.symphonyoss.s2.common.dom.IDoubleProvider;
 import org.symphonyoss.s2.common.dom.IByteStringProvider;
 import org.symphonyoss.s2.common.dom.json.IJsonDomNode;
 import org.symphonyoss.s2.common.dom.json.IImmutableJsonDomNode;
-import org.symphonyoss.s2.common.dom.json.ImmutableJsonArray;
+import org.symphonyoss.s2.common.dom.json.ImmutableJsonList;
+import org.symphonyoss.s2.common.dom.json.ImmutableJsonSet;
 import org.symphonyoss.s2.common.dom.json.ImmutableJsonObject;
-import org.symphonyoss.s2.common.dom.json.MutableJsonArray;
+import org.symphonyoss.s2.common.dom.json.MutableJsonList;
+import org.symphonyoss.s2.common.dom.json.MutableJsonSet;
 import org.symphonyoss.s2.common.dom.json.MutableJsonObject;
+import org.symphonyoss.s2.common.dom.json.JsonArray;
 
 import org.symphonyoss.s2.common.exception.InvalidValueException;
 
 <@importFieldTypes model true/>
-import ${javaFacadePackage}.*;
+<@importFacadePackages model/>
 
 <#include "Object.ftl">
 @Immutable

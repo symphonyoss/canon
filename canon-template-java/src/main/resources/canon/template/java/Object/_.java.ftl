@@ -10,7 +10,7 @@ import org.symphonyoss.s2.common.dom.json.ImmutableJsonObject;
 
 import org.symphonyoss.s2.common.exception.InvalidValueException;
 
-import ${javaFacadePackage}.*;
+<@importFacadePackages model/>
 
 <#include "../../../proforma/java/Object/Facade.ftl">
 <#include "../canon-template-java-Epilogue.ftl">

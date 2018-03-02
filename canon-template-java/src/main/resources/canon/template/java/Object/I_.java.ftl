@@ -4,7 +4,7 @@
 <@setPrologueJavaType model/>
 import javax.annotation.concurrent.Immutable;
 
-import ${javaFacadePackage}.*;
+<@importFacadePackages model/>
 
 <#include "Object.ftl">
 @Immutable

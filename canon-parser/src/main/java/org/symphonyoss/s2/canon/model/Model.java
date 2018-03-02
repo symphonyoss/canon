@@ -28,9 +28,11 @@ import java.net.URISyntaxException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.Set;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -38,6 +40,7 @@ import org.symphonyoss.s2.canon.Canon;
 import org.symphonyoss.s2.canon.parser.GenerationContext;
 import org.symphonyoss.s2.canon.parser.GenerationException;
 import org.symphonyoss.s2.canon.parser.ParserContext;
+import org.symphonyoss.s2.canon.parser.RootParserContext;
 import org.symphonyoss.s2.canon.parser.error.CodeGenerationAbortedInfo;
 import org.symphonyoss.s2.canon.parser.error.ParserWarning;
 import org.symphonyoss.s2.canon.parser.error.RequiredItemMissingError;
@@ -47,20 +50,19 @@ import com.fasterxml.jackson.databind.node.ObjectNode;
 
 public class Model extends ModelElement
 {
-  private static final String COMPONENTS = "components";
+  private static final String    COMPONENTS          = "components";
 
-  private static Logger       log_       = LoggerFactory.getLogger(Model.class);
-  
-  private Version             openapi_;
-  private Map<String, String> modelMap_        = new HashMap<>();
-  private SimpleDateFormat    yearFormat_      = new SimpleDateFormat("yyyy");
-  private SimpleDateFormat    yearMonthFormat_ = new SimpleDateFormat("yyyy-MM");
-  private SimpleDateFormat    dateFormat_      = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss z");
-  private URI                 canonId_;
+  private static Logger          log_                = LoggerFactory.getLogger(Model.class);
 
-  private Paths paths_;
-
-  private String basePath_ = "";
+  private Version                openapi_;
+  private Map<String, String>    modelMap_           = new HashMap<>();
+  private SimpleDateFormat       yearFormat_         = new SimpleDateFormat("yyyy");
+  private SimpleDateFormat       yearMonthFormat_    = new SimpleDateFormat("yyyy-MM");
+  private SimpleDateFormat       dateFormat_         = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss z");
+  private URI                    canonId_;
+  private Paths                  paths_;
+  private String                 basePath_           = "";
+  private Set<RootParserContext> referencedContexts_ = new HashSet<>();
   
   public Model(ParserContext parserContext)
   {
@@ -143,6 +145,8 @@ public class Model extends ModelElement
     modelMap_.put(Canon.INPUT_SOURCE, parserContext.getRootParserContext().getInputSource());
     
     add(COMPONENTS, new Components(this, parserContext.get(COMPONENTS)));
+    
+    parserContext.getRootParserContext().setModel(this);
   }
   
   @Override
@@ -203,5 +207,15 @@ public class Model extends ModelElement
   public String toString()
   {
     return "Model(" + canonId_ + ")";
+  }
+
+  public void addReferencedContext(RootParserContext referencedContext)
+  {
+    referencedContexts_.add(referencedContext);
+  }
+
+  public Set<RootParserContext> getReferencedContexts()
+  {
+    return referencedContexts_;
   }
 }

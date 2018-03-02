@@ -23,11 +23,12 @@
 
 package org.symphonyoss.s2.canon.runtime;
 
+import org.symphonyoss.s2.common.dom.json.ImmutableJsonSet;
+
 import com.google.common.collect.ImmutableSet;
 
 public interface IEntitySet<T> extends IEntityArray
 {
-
   ImmutableSet<T> getElements();
-
+  ImmutableJsonSet getJsonSet();
 }

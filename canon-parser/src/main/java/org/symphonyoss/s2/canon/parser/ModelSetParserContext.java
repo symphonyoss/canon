@@ -151,14 +151,18 @@ public class ModelSetParserContext
     model.getContext().getRootParserContext().epilogue("Validation");
   }
 
-  public void addReferencedModel(URL url) throws ParsingException
+  public RootParserContext addReferencedModel(URL url) throws ParsingException
   {
-    if(!referencedContexts_.containsKey(url))
+    RootParserContext context = referencedContexts_.get(url);
+    
+    if(context == null)
     {
-      RootParserContext context = new RootParserContext(this, url, true);
+      context = new RootParserContext(this, url, true);
       referencedContexts_.put(url, context);
       parseQueue_.add(context);
     }
+    
+    return context;
   }
   
   public Model getModel(URL url)

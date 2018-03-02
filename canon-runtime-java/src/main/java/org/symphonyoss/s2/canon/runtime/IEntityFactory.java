@@ -23,8 +23,13 @@
 
 package org.symphonyoss.s2.canon.runtime;
 
-import org.symphonyoss.s2.common.dom.json.ImmutableJsonArray;
+import java.util.List;
+import java.util.Set;
+
+import org.symphonyoss.s2.common.dom.json.ImmutableJsonList;
 import org.symphonyoss.s2.common.dom.json.ImmutableJsonObject;
+import org.symphonyoss.s2.common.dom.json.ImmutableJsonSet;
+import org.symphonyoss.s2.common.dom.json.JsonArray;
 import org.symphonyoss.s2.common.exception.InvalidValueException;
 
 import com.google.common.collect.ImmutableList;
@@ -59,7 +64,6 @@ public interface IEntityFactory<E extends IEntity, B extends IEntity, M extends 
    */
   E  newInstance(ImmutableJsonObject jsonObject) throws InvalidValueException;
 
-
   /**
    * Return a list of new entity instances created from the given JSON array.
    * 
@@ -69,7 +73,7 @@ public interface IEntityFactory<E extends IEntity, B extends IEntity, M extends 
    * 
    * @throws InvalidValueException If the given JSON is not valid.
    */
-  ImmutableList<E> newInstanceList(ImmutableJsonArray jsonArray) throws InvalidValueException;
+  List<E> newMutableList(JsonArray<?> jsonArray) throws InvalidValueException;
 
   /**
    * Return a set of new entity instances created from the given JSON array.
@@ -80,5 +84,27 @@ public interface IEntityFactory<E extends IEntity, B extends IEntity, M extends 
    * 
    * @throws InvalidValueException If the given JSON is not valid.
    */
-  ImmutableSet<E> newInstanceSet(ImmutableJsonArray jsonArray) throws InvalidValueException;
+  Set<E> newMutableSet(JsonArray<?> jsonArray) throws InvalidValueException;
+
+  /**
+   * Return a list of new entity instances created from the given JSON array.
+   * 
+   * @param jsonArray An array of the JSON serialized form of the required entity.
+   * 
+   * @return A list of instances of the entity represented by the given serialized form.
+   * 
+   * @throws InvalidValueException If the given JSON is not valid.
+   */
+  ImmutableList<E> newImmutableList(JsonArray<?> jsonArray) throws InvalidValueException;
+
+  /**
+   * Return a set of new entity instances created from the given JSON array.
+   * 
+   * @param jsonArray An array of the JSON serialized form of the required entity.
+   * 
+   * @return A set of instances of the entity represented by the given serialized form.
+   * 
+   * @throws InvalidValueException If the given JSON is not valid.
+   */
+  ImmutableSet<E> newImmutableSet(JsonArray<?> jsonArray) throws InvalidValueException;
 }

@@ -23,29 +23,36 @@
 
 package org.symphonyoss.s2.canon.runtime;
 
-import javax.annotation.concurrent.Immutable;
-
-import org.symphonyoss.s2.common.dom.json.ImmutableJsonArray;
+import org.symphonyoss.s2.common.dom.json.ImmutableJsonSet;
 
 import com.google.common.collect.ImmutableSet;
 
-@Immutable
-public class EntitySet<T> extends EntityArray
+public class EntitySet<T> extends EntityArray implements IEntitySet<T>
 {
   private final ImmutableSet<T> elements_;
+  private ImmutableJsonSet jsonSet_;
   
   public EntitySet(IEntitySet<T> other)
   {
-    super(other.getJsonArray());
+    super(other.getJsonSet());
+    jsonSet_ = other.getJsonSet();
     elements_ = other.getElements();
   }
   
-  public EntitySet(ImmutableJsonArray jsonArray, ImmutableSet<T> elements)
+  public EntitySet(ImmutableJsonSet jsonSet, ImmutableSet<T> elements)
   {
-    super(jsonArray);
+    super(jsonSet);
+    jsonSet_ = jsonSet;
     elements_ = elements;
   }
 
+  @Override
+  public ImmutableJsonSet getJsonSet()
+  {
+    return jsonSet_;
+  }
+
+  @Override
   public ImmutableSet<T> getElements()
   {
     return elements_;

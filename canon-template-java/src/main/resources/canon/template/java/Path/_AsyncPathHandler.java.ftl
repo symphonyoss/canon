@@ -38,7 +38,7 @@ import org.symphonyoss.s2.canon.runtime.http.RequestContext;
 import org.symphonyoss.s2.fugue.di.ComponentDescriptor;
 
 <@importFieldTypes model true/>
-import ${javaFacadePackage}.*;
+<@importFacadePackages model/>
 
 <#include "Path.ftl">
 @Immutable

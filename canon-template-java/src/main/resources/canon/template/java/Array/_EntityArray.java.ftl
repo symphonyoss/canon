@@ -4,19 +4,23 @@
 import javax.annotation.concurrent.Immutable;
 
 <@importFieldTypes model true/>
-import ${javaFacadePackage}.*;
+<@importFacadePackages model/>
 
 import org.symphonyoss.s2.canon.runtime.IEntity${modelJavaCardinality};
 import org.symphonyoss.s2.canon.runtime.EntityArrayFactory;
 
+import org.symphonyoss.s2.common.dom.json.IImmutableJsonDomNode;
 import org.symphonyoss.s2.common.dom.json.IJsonDomNode;
-import org.symphonyoss.s2.common.dom.json.ImmutableJsonArray;
-import org.symphonyoss.s2.common.dom.json.MutableJsonArray;
+import org.symphonyoss.s2.common.dom.json.ImmutableJsonList;
+import org.symphonyoss.s2.common.dom.json.ImmutableJsonSet;
+import org.symphonyoss.s2.common.dom.json.MutableJsonList;
+import org.symphonyoss.s2.common.dom.json.MutableJsonSet;
 import org.symphonyoss.s2.common.exception.InvalidValueException;
 
 import org.symphonyoss.s2.canon.runtime.Entity${modelJavaCardinality};
 
 <#include "Array.ftl">
+<@setJavaType model.baseSchema/>
 @Immutable
 public class ${modelJavaClassName}EntityArray extends Entity${modelJavaCardinality}<${modelJavaElementClassName}>
 {
@@ -27,7 +31,7 @@ public class ${modelJavaClassName}EntityArray extends Entity${modelJavaCardinali
   }
   
   <#-- Constructor from Json   -->  
-  protected ${modelJavaClassName}EntityArray(ImmutableJsonArray jsonArray) throws InvalidValueException
+  protected ${modelJavaClassName}EntityArray(ImmutableJson${javaCardinality} jsonArray) throws InvalidValueException
   {
     super(jsonArray, jsonArray.asImmutable${modelJavaCardinality}Of(${modelJavaElementClassName}.class));
 <@checkItemLimits "    " model "Array" "this"/>
@@ -79,16 +83,16 @@ public class ${modelJavaClassName}EntityArray extends Entity${modelJavaCardinali
       return (${modelJavaClassName}.Builder)this;
     }
 
-    public ${modelJavaClassName}.Builder with(ImmutableJsonArray node) throws InvalidValueException
+    public ${modelJavaClassName}.Builder with(ImmutableJson${javaCardinality} node) throws InvalidValueException
     {
       elements__.addAll(node.asImmutableListOf(${modelJavaElementClassName}.class));
       return (${modelJavaClassName}.Builder)this;
     }
     
     @Override 
-    public ImmutableJsonArray getJsonArray()
+    public ImmutableJson${javaCardinality} getJson${javaCardinality}()
     {
-      MutableJsonArray jsonArray = new MutableJsonArray();
+      MutableJson${javaCardinality} jsonArray = new MutableJson${javaCardinality}();
       
       for(${modelJavaElementClassName} value : elements__)
       <#if model.items.baseSchema.isObjectSchema>
@@ -98,6 +102,12 @@ public class ${modelJavaClassName}EntityArray extends Entity${modelJavaCardinali
       </#if>
       
       return jsonArray.immutify();
+    }
+    
+    @Override
+    public IImmutableJsonDomNode getJsonDomNode()
+    {
+      return getJson${javaCardinality}();
     }
     
     public abstract ${modelJavaClassName} build() throws InvalidValueException;
