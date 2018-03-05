@@ -10,9 +10,10 @@ import org.symphonyoss.s2.canon.runtime.IEntity${modelJavaCardinality};
 import org.symphonyoss.s2.canon.runtime.EntityArrayFactory;
 
 import org.symphonyoss.s2.common.dom.json.IImmutableJsonDomNode;
-import org.symphonyoss.s2.common.dom.json.IJsonDomNode;
 import org.symphonyoss.s2.common.dom.json.ImmutableJsonList;
 import org.symphonyoss.s2.common.dom.json.ImmutableJsonSet;
+import org.symphonyoss.s2.common.dom.json.IJsonDomNode;
+import org.symphonyoss.s2.common.dom.json.Json${modelJavaCardinality};
 import org.symphonyoss.s2.common.dom.json.MutableJsonList;
 import org.symphonyoss.s2.common.dom.json.MutableJsonSet;
 import org.symphonyoss.s2.common.exception.InvalidValueException;
@@ -31,9 +32,9 @@ public class ${modelJavaClassName}EntityArray extends Entity${modelJavaCardinali
   }
   
   <#-- Constructor from Json   -->  
-  protected ${modelJavaClassName}EntityArray(ImmutableJson${javaCardinality} jsonArray) throws InvalidValueException
+  protected ${modelJavaClassName}EntityArray(Json${modelJavaCardinality}<?> json${modelJavaCardinality}) throws InvalidValueException
   {
-    super(jsonArray, jsonArray.asImmutable${modelJavaCardinality}Of(${modelJavaElementClassName}.class));
+    super(json${modelJavaCardinality}.immutify(), json${modelJavaCardinality}.asImmutable${modelJavaCardinality}Of(${modelJavaElementClassName}.class));
 <@checkItemLimits "    " model "Array" "this"/>
   }
 
@@ -83,7 +84,7 @@ public class ${modelJavaClassName}EntityArray extends Entity${modelJavaCardinali
       return (${modelJavaClassName}.Builder)this;
     }
 
-    public ${modelJavaClassName}.Builder with(ImmutableJson${javaCardinality} node) throws InvalidValueException
+    public ${modelJavaClassName}.Builder with(Json${modelJavaCardinality}<?> node) throws InvalidValueException
     {
       elements__.addAll(node.asImmutableListOf(${modelJavaElementClassName}.class));
       return (${modelJavaClassName}.Builder)this;

@@ -955,7 +955,6 @@ ${indent}${var}.addIfNotNull("${field.camelName}", ${field.camelName}_);
  #----------------------------------------------------------------------------------------------------->
 <#macro generateCreateFieldFromJsonDomNode indent field var ifValidation factoryName mutable>
   <@setJavaType field/>
-  <@printField/>
   <#if field.isComponent>
     <#if field.isObjectSchema>
 ${indent}if(node instanceof ImmutableJsonObject)
@@ -968,9 +967,9 @@ ${indent}  throw new InvalidValueException("${field.camelName} must be an Object
 ${indent}}
     <#else>
       <#if field.isArraySchema>
-${indent}if(node instanceof JsonArray)
+${indent}if(node instanceof Json${fieldCardinality})
 ${indent}{
-${indent}  ${var} = ${fieldType}.newBuilder().with((JsonArray<?>)node).build();
+${indent}  ${var} = ${fieldType}.newBuilder().with((Json${fieldCardinality}<?>)node).build();
 <@checkItemLimits indent field field.camelName var/>
 ${indent}}
 ${indent}else ${ifValidation}
@@ -999,14 +998,14 @@ ${indent}}
       </#if>
   <#else>
     <#if field.isArraySchema>
-${indent}if(node instanceof JsonArray)
+${indent}if(node instanceof JsonArray)//HERE2
 ${indent}{
     <#if field.baseSchema.items.isTypeDef>
 <#assign elementClassName=field.baseSchema.items.baseSchema.camelCapitalizedName>   
     
 ${indent}${fieldCardinality}<${javaElementClassName}> list${javaBuilderTypeNew};
     
-${indent}for(IImmutableJsonDomNode itemNode : ((JsonArray<?>)node))
+${indent}for(IJsonDomNode itemNode : ((JsonArray<?>)node))
 ${indent}{
 ${indent}  if(itemNode instanceof I${javaElementFieldClassName}Provider)
 ${indent}  {

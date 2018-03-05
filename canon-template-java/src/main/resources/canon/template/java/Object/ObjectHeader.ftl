@@ -27,6 +27,8 @@ import org.symphonyoss.s2.common.dom.json.MutableJsonList;
 import org.symphonyoss.s2.common.dom.json.MutableJsonSet;
 import org.symphonyoss.s2.common.dom.json.MutableJsonObject;
 import org.symphonyoss.s2.common.dom.json.JsonArray;
+import org.symphonyoss.s2.common.dom.json.JsonList;
+import org.symphonyoss.s2.common.dom.json.JsonSet;
 
 import org.symphonyoss.s2.common.exception.InvalidValueException;
 
