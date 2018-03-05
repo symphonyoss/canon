@@ -50,7 +50,7 @@ public class ${model.parent.camelCapitalizedName}${model.camelCapitalizedName}Ht
   private ${("final HttpUriRequest")?right_pad(25)    } japiRequest_;
   <#if model.payload??>
     <#if model.payload.isMultiple>
-  private ${"ImmutableJson${javaCardinality}"?right_pad(25)          } japiPayload_;
+  private ${"ImmutableJsonList"?right_pad(25)          } japiPayload_;
     <#else>
   private ${methodPayloadType?right_pad(25)           } japiPayload_;
     </#if>
@@ -90,14 +90,14 @@ public class ${model.parent.camelCapitalizedName}${model.camelCapitalizedName}Ht
     }
     else
     {
-      japiPayload_ = other.getJapiPayload().immutify();
+      japiPayload_ = (ImmutableJsonList)other.getJapiPayload().immutify();
     }
       <#else>
     japiPayload_ = other.getJapiPayload();
       </#if>
     if(japiPayload_ != null)
     {
-      StringEntity entity = new StringEntity(japiPayload_.serialize(), StandardCharsets.UTF_8);
+      StringEntity entity = new StringEntity(japiPayload_.toString(), StandardCharsets.UTF_8);
         entity.setContentType(RequestContext.JSON_CONTENT_TYPE);
       
       builder.setEntity(entity);
@@ -126,7 +126,7 @@ public class ${model.parent.camelCapitalizedName}${model.camelCapitalizedName}Ht
   
   @Override
     <#if model.payload.isMultiple>
-  public ImmutableJson${javaCardinality} getJapiPayload()
+  public ImmutableJsonList getJapiPayload()
     <#else>
   public ${methodPayloadType} getJapiPayload()
     </#if>

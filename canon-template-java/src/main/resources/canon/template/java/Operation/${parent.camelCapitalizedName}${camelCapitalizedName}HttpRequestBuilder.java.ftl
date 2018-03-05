@@ -8,6 +8,7 @@ import java.util.Collection;
 
 import org.symphonyoss.s2.common.dom.json.ImmutableJsonList;
 import org.symphonyoss.s2.common.dom.json.ImmutableJsonSet;
+import org.symphonyoss.s2.common.dom.json.MutableJsonList;
 
 import org.symphonyoss.s2.canon.runtime.exception.BadRequestException;
 import org.symphonyoss.s2.canon.runtime.http.ParameterLocation;
@@ -28,7 +29,7 @@ public class ${javaModelClassName} extends ${model.parent.camelCapitalizedName}$
 {
   <#if model.payload??>
     <#if model.payload.isMultiple>
-  private ${"MutableJson${javaCardinality}"?right_pad(25)          } japiPayload_ = new MutableJson${javaCardinality}();
+  private ${"MutableJsonList"?right_pad(25)          } japiPayload_ = new MutableJsonList();
     <#else>
   private ${methodPayloadType?right_pad(25)           } japiPayload_;
     </#if>
@@ -52,7 +53,7 @@ public class ${javaModelClassName} extends ${model.parent.camelCapitalizedName}$
   <#if model.payload.isMultiple>
   <@setJavaType model.payload.schema/>
   @Override
-  public MutableJson${javaCardinality} getJapiPayload()
+  public MutableJsonList getJapiPayload()
   {
     return japiPayload_;
   }
