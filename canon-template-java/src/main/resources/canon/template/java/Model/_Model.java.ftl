@@ -14,7 +14,9 @@ import org.symphonyoss.s2.canon.runtime.Model;
 import org.symphonyoss.s2.fugue.di.ComponentDescriptor;
 
 import ${javaFacadePackage}.I${model.camelCapitalizedName};
-
+<#list model.model.referencedContexts as context>
+import ${context.model.modelMap["javaFacadePackage"]}.${context.model.camelCapitalizedName};
+</#list>
 <#list model.schemas as object>
 // model ${object}
   <#if object.isAbstract?? && object.isAbstract>
@@ -30,6 +32,9 @@ import ${javaFacadePackage}.${object.camelCapitalizedName};
 @SuppressWarnings("unused")
 public abstract class ${model.camelCapitalizedName}Model extends Model implements I${model.camelCapitalizedName}
 {
+<#list model.model.referencedContexts as context>
+  private final ${context.model.camelCapitalizedName} ${context.model.camelName}Model_;
+</#list>
 <#list model.schemas as object>
   <#if object.isAbstract?? && object.isAbstract>
   //ABSTRACT ${object.camelName}
@@ -38,6 +43,17 @@ public abstract class ${model.camelCapitalizedName}Model extends Model implement
   </#if>
 </#list>
 
+  public ${model.camelCapitalizedName}Model(
+<#list model.model.referencedContexts as context>
+    ${context.model.camelCapitalizedName} ${context.model.camelName}Model<#sep>,</#sep>
+</#list>
+  )
+  {
+<#list model.model.referencedContexts as context>
+    ${context.model.camelName}Model_ = ${context.model.camelName}Model;
+</#list>
+  }
+  
   @Override
   public ComponentDescriptor getComponentDescriptor()
   {
@@ -56,6 +72,20 @@ public abstract class ${model.camelCapitalizedName}Model extends Model implement
   </#if>
 </#list>
   }
+  
+  @Override
+  public ${model.camelCapitalizedName}Model get${model.camelCapitalizedName}Model()
+  {
+    return this;
+  }
+<#list model.model.referencedContexts as context>
+  
+  @Override
+  public ${context.model.camelCapitalizedName} get${context.model.camelCapitalizedName}Model()
+  {
+    return ${context.model.camelName}Model_;
+  }
+</#list>
 <#list model.schemas as object>
 
   <#if object.isAbstract?? && object.isAbstract>

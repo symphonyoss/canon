@@ -6,7 +6,8 @@ import javax.annotation.concurrent.Immutable;
 
 import java.util.Collection;
 
-import org.symphonyoss.s2.common.dom.json.MutableJsonArray;
+import org.symphonyoss.s2.common.dom.json.ImmutableJsonList;
+import org.symphonyoss.s2.common.dom.json.ImmutableJsonSet;
 
 import org.symphonyoss.s2.canon.runtime.exception.BadRequestException;
 import org.symphonyoss.s2.canon.runtime.http.ParameterLocation;
@@ -19,7 +20,7 @@ import ${fieldFQType};
   </#if>
 </#list>
 <#if model.payload??>
-import ${javaFacadePackage}.*;
+<@importFacadePackages model/>
 </#if>
 
 @Immutable
@@ -27,7 +28,7 @@ public class ${javaModelClassName} extends ${model.parent.camelCapitalizedName}$
 {
   <#if model.payload??>
     <#if model.payload.isMultiple>
-  private ${"MutableJsonArray"?right_pad(25)          } japiPayload_ = new MutableJsonArray();
+  private ${"MutableJson${javaCardinality}"?right_pad(25)          } japiPayload_ = new MutableJson${javaCardinality}();
     <#else>
   private ${methodPayloadType?right_pad(25)           } japiPayload_;
     </#if>
@@ -51,7 +52,7 @@ public class ${javaModelClassName} extends ${model.parent.camelCapitalizedName}$
   <#if model.payload.isMultiple>
   <@setJavaType model.payload.schema/>
   @Override
-  public MutableJsonArray getJapiPayload()
+  public MutableJson${javaCardinality} getJapiPayload()
   {
     return japiPayload_;
   }

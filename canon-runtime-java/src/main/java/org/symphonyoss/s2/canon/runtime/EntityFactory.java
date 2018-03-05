@@ -28,9 +28,10 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Set;
 
-import org.symphonyoss.s2.common.dom.json.IImmutableJsonDomNode;
-import org.symphonyoss.s2.common.dom.json.ImmutableJsonArray;
+import org.symphonyoss.s2.common.dom.json.IJsonDomNode;
 import org.symphonyoss.s2.common.dom.json.ImmutableJsonObject;
+import org.symphonyoss.s2.common.dom.json.JsonArray;
+import org.symphonyoss.s2.common.dom.json.JsonObject;
 import org.symphonyoss.s2.common.exception.InvalidValueException;
 
 import com.google.common.collect.ImmutableList;
@@ -67,31 +68,31 @@ implements IEntityFactory<E,B,M>
   }
 
   @Override
-  public ImmutableList<E> newInstanceList(ImmutableJsonArray jsonArray) throws InvalidValueException
+  public List<E> newMutableList(JsonArray<?> jsonArray) throws InvalidValueException
   {
     List<E> list = new LinkedList<>();
     
-    for(IImmutableJsonDomNode node : jsonArray)
+    for(IJsonDomNode node : jsonArray)
     {
-      if(node instanceof ImmutableJsonObject)
+      if(node instanceof JsonObject)
         list.add(newInstance((ImmutableJsonObject) node));
       else
         throw new InvalidValueException("Expected an array of JSON objectcs, but encountered a " + node.getClass().getName());
     }
     
-    return ImmutableList.copyOf(list);
+    return list;
   }
   
   @Override
-  public ImmutableSet<E> newInstanceSet(ImmutableJsonArray jsonArray) throws InvalidValueException
+  public Set<E> newMutableSet(JsonArray<?> jsonArray) throws InvalidValueException
   {
     Set<E> list = new HashSet<>();
     
-    for(IImmutableJsonDomNode node : jsonArray)
+    for(IJsonDomNode node : jsonArray)
     {
-      if(node instanceof ImmutableJsonObject)
+      if(node instanceof JsonObject)
       {
-        if(!list.add(newInstance((ImmutableJsonObject) node)))
+        if(!list.add(newInstance((ImmutableJsonObject) node.immutify())))
           throw new InvalidValueException("Duplicate value " + node + " encountered in Set.");
       }
       else
@@ -100,6 +101,18 @@ implements IEntityFactory<E,B,M>
       }
     }
     
-    return ImmutableSet.copyOf(list);
+    return list;
+  }
+  
+  @Override
+  public ImmutableList<E> newImmutableList(JsonArray<?> jsonArray) throws InvalidValueException
+  {
+    return ImmutableList.copyOf(newMutableList(jsonArray));
+  }
+  
+  @Override
+  public ImmutableSet<E> newImmutableSet(JsonArray<?> jsonArray) throws InvalidValueException
+  {
+    return ImmutableSet.copyOf(newMutableSet(jsonArray));
   }
 }

@@ -10,7 +10,7 @@
   protected ${modelJavaClassName}Entity(${modelJavaClassName}.AbstractFactory factory, I${model.camelCapitalizedName}Entity canonOther)<@checkLimitsClassThrows model/>
   {
 <#if model.superSchema??>
-    super(factory.getModel().get${model.superSchema.baseSchema.camelCapitalizedName}Factory(), canonOther.getJsonObject());
+    super(factory.getModel().get${model.superSchema.baseSchema.model.camelCapitalizedName}Model().get${model.superSchema.baseSchema.camelCapitalizedName}Factory(), canonOther.getJsonObject());
 <#else>
     super(canonOther.getJsonObject());
 </#if>
@@ -18,12 +18,11 @@
     canonFactory_ = factory;
 <#list model.fields as field>
     <@setJavaType field/>
-
     ${field.camelName}_ = ${javaTypeCopyPrefix}canonOther.get${field.camelCapitalizedName}()${javaTypeCopyPostfix};
 <#if requiresChecks>
 <@checkLimits "    " field field.camelName + "_"/>
-</#if>
 
+</#if>
 </#list>
   }
   
@@ -31,7 +30,7 @@
   protected ${modelJavaClassName}Entity(${modelJavaClassName}.AbstractFactory factory, ImmutableJsonObject jsonObject) throws InvalidValueException
   {
 <#if model.superSchema??>
-    super(factory.getModel().get${model.superSchema.baseSchema.camelCapitalizedName}Factory(), jsonObject);
+    super(factory.getModel().get${model.superSchema.baseSchema.model.camelCapitalizedName}Model().get${model.superSchema.baseSchema.camelCapitalizedName}Factory(), jsonObject);
 <#else>
     super(jsonObject);
 </#if>
@@ -51,7 +50,7 @@
     if(jsonObject.containsKey("${field.camelName}"))
     {
       IJsonDomNode  node = jsonObject.get("${field.camelName}");
-  <@generateCreateFieldFromJsonDomNode "      " field "${field.camelName}_"/>
+  <@generateCreateFieldFromJsonDomNode "      " field "${field.camelName}_" "" "canonFactory_" "Immutable"/>
     }
     else
     {
@@ -163,17 +162,25 @@
     public abstract I${model.camelCapitalizedName} newInstance(I${modelJavaClassName}Entity builder)<@checkLimitsClassThrows model/>;
   }
   
+  /**
+   * Builder for ${modelJavaClassName}
+   * 
+   * Created by calling I${modelJavaClassName}.newBuilder();
+   * 
+   * @author Bruce Skingle
+   *
+   */
   public static class Builder extends ${modelJavaClassName}.AbstractBuilder<Builder>
   {
     private ${(modelJavaClassName + "Entity.Factory")?right_pad(25)}  canonFactory_;
 
-    public Builder(${modelJavaClassName}Entity.Factory factory)
+    private Builder(${modelJavaClassName}Entity.Factory factory)
     {
       super();
       canonFactory_ = factory;
     }
     
-    public Builder(${modelJavaClassName}Entity.Factory factory, I${modelJavaClassName}Entity initial)
+    private Builder(${modelJavaClassName}Entity.Factory factory, I${modelJavaClassName}Entity initial)
     {
       super(initial);
       canonFactory_ = factory;
@@ -183,6 +190,12 @@
     {
       validate();
       return canonFactory_.newInstance(this);
+    }
+    
+    public Builder withValues(ImmutableJsonObject jsonObject, boolean ignoreValidation) throws InvalidValueException
+    {
+      super.setValues(canonFactory_, jsonObject, ignoreValidation);
+      return this;
     }
   }
   
@@ -196,19 +209,30 @@
   {
   <#list model.fields as field>
     <@setJavaType field/>
-    private ${fieldType?right_pad(25)}  ${field.camelName}__${javaBuilderTypeNew};
+    private ${fieldType?right_pad(25)}  ${field.camelName}_${javaBuilderTypeNew};
   </#list>
     
-    public AbstractBuilder()
+    protected AbstractBuilder()
     {
     }
     
-    public AbstractBuilder(I${modelJavaClassName}Entity initial)
+    protected AbstractBuilder(I${modelJavaClassName}Entity initial)
     {
   <#list model.fields as field>
   <@setJavaType field/>
-      ${field.camelName}__${javaBuilderTypeCopyPrefix}initial.get${field.camelCapitalizedName}()${javaBuilderTypeCopyPostfix};
+      ${field.camelName}_${javaBuilderTypeCopyPrefix}initial.get${field.camelCapitalizedName}()${javaBuilderTypeCopyPostfix};
   </#list>
+    }
+    
+    protected void setValues(Factory canonFactory, ImmutableJsonObject jsonObject, boolean ignoreValidation) throws InvalidValueException
+    {
+<#list model.fields as field>
+      if(jsonObject.containsKey("${field.camelName}"))
+      {
+        IJsonDomNode  node = jsonObject.get("${field.camelName}");
+  <@generateCreateFieldFromJsonDomNode "        " field "${field.camelName}_" "if(!ignoreValidation)" "canonFactory" "Mutable"/>
+      }
+</#list>
     }
   <#list model.fields as field>
     <@setJavaType field/>
@@ -216,25 +240,35 @@
     @Override
     public ${fieldType} get${field.camelCapitalizedName}()
     {
-      return ${field.camelName}__;
+      return ${field.camelName}_;
     }
   
-    public B with${field.camelCapitalizedName}(${fieldType} ${field.camelName})<#if field.canFailValidation> throws InvalidValueException</#if>
+    public B with${field.camelCapitalizedName}(${fieldType} value)<#if field.canFailValidation> throws InvalidValueException</#if>
     {
-    <@checkLimits "        " field field.camelName/>
-      ${field.camelName}__${javaBuilderTypeCopyPrefix}${field.camelName}${javaBuilderTypeCopyPostfix};
+    <@checkLimits "        " field "value"/>
+      ${field.camelName}_${javaBuilderTypeCopyPrefix}value${javaBuilderTypeCopyPostfix};
       return (B)this;
     }
+    <#if field.isArraySchema && ! field.isComponent>
+    <@printField/>
+  
+    public B with${field.camelCapitalizedName}(${fieldElementType} value)<#if field.canFailValidation> throws InvalidValueException</#if>
+    {
+    <@checkLimits "        " field "value"/>
+      ${field.camelName}_.add(value);
+      return (B)this;
+    }
+    </#if>
     <#if field.isTypeDef>
     
-    public B with${field.camelCapitalizedName}(${javaFieldClassName} ${field.camelName}) throws InvalidValueException
+    public B with${field.camelCapitalizedName}(${javaFieldClassName} value) throws InvalidValueException
     {
     <#if field.elementType=="Field" && field.required>
-      if(${field.camelName} == null)
+      if(value == null)
         throw new InvalidValueException("${field.camelName} is required.");
   
     </#if>
-      ${field.camelName}__ = ${javaConstructTypePrefix}${field.camelName}${javaConstructTypePostfix};
+      ${field.camelName}_ = ${javaConstructTypePrefix}value${javaConstructTypePostfix};
       return (B)this;
     }
     </#if>
@@ -259,7 +293,7 @@
   <#list model.fields as field>
     <@setJavaType field/>
   
-      if(${field.camelName}__ != null)
+      if(${field.camelName}_ != null)
       {
         <@generateCreateJsonDomNodeFromField "          " field "jsonObject"/>
       }

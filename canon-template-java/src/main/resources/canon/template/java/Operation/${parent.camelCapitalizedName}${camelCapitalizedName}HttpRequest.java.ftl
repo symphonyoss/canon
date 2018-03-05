@@ -19,7 +19,8 @@ import org.apache.http.client.methods.RequestBuilder;
 import org.apache.http.entity.StringEntity;
 import org.apache.http.impl.client.CloseableHttpClient;
 
-import org.symphonyoss.s2.common.dom.json.ImmutableJsonArray;
+import org.symphonyoss.s2.common.dom.json.ImmutableJsonList;
+import org.symphonyoss.s2.common.dom.json.ImmutableJsonSet;
 import org.symphonyoss.s2.common.exception.InvalidValueException;
 
 import org.symphonyoss.s2.canon.runtime.IEntity;
@@ -36,7 +37,7 @@ import ${fieldFQType};
   </#if>
 </#list>
 <#if model.payload?? || model.response??>
-import ${javaFacadePackage}.*;
+<@importFacadePackages model/>
 </#if>
 
 @Immutable
@@ -49,7 +50,7 @@ public class ${model.parent.camelCapitalizedName}${model.camelCapitalizedName}Ht
   private ${("final HttpUriRequest")?right_pad(25)    } japiRequest_;
   <#if model.payload??>
     <#if model.payload.isMultiple>
-  private ${"ImmutableJsonArray"?right_pad(25)          } japiPayload_;
+  private ${"ImmutableJson${javaCardinality}"?right_pad(25)          } japiPayload_;
     <#else>
   private ${methodPayloadType?right_pad(25)           } japiPayload_;
     </#if>
@@ -125,7 +126,7 @@ public class ${model.parent.camelCapitalizedName}${model.camelCapitalizedName}Ht
   
   @Override
     <#if model.payload.isMultiple>
-  public ImmutableJsonArray getJapiPayload()
+  public ImmutableJson${javaCardinality} getJapiPayload()
     <#else>
   public ${methodPayloadType} getJapiPayload()
     </#if>

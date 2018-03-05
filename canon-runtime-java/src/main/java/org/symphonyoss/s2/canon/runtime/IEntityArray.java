@@ -23,11 +23,7 @@
 
 package org.symphonyoss.s2.canon.runtime;
 
-import org.symphonyoss.s2.common.dom.json.ImmutableJsonArray;
-
 public interface IEntityArray extends IBaseEntity
 {
-  ImmutableJsonArray getJsonArray();
-
   int size();
 }

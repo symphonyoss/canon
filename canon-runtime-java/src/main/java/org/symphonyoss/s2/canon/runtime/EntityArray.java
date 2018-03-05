@@ -23,25 +23,16 @@
 
 package org.symphonyoss.s2.canon.runtime;
 
+import javax.annotation.Nonnull;
 import javax.annotation.concurrent.Immutable;
 
-import org.symphonyoss.s2.common.dom.json.ImmutableJsonArray;
+import org.symphonyoss.s2.common.dom.json.IImmutableJsonDomNode;
 
 @Immutable
 public abstract class EntityArray extends BaseEntity implements IEntityArray
 {
-  private final ImmutableJsonArray        jsonArray_;
-    
-  public EntityArray(ImmutableJsonArray jsonArray)
+  public EntityArray(@Nonnull IImmutableJsonDomNode jsonDomNode)
   {
-    super(jsonArray);
-    
-    jsonArray_ = jsonArray;
-  }
-
-  @Override
-  public ImmutableJsonArray getJsonArray()
-  {
-    return jsonArray_;
+    super(jsonDomNode);
   }
 }

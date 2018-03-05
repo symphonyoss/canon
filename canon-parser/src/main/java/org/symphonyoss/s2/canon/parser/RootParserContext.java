@@ -31,6 +31,8 @@ import java.net.MalformedURLException;
 import java.net.URI;
 import java.net.URL;
 
+import javax.annotation.Nullable;
+
 import org.symphonyoss.s2.canon.model.Model;
 import org.symphonyoss.s2.canon.parser.error.ParserError;
 import org.symphonyoss.s2.canon.parser.error.ParserInfo;
@@ -45,14 +47,16 @@ public class RootParserContext extends BaseParserContext
 
   private final String          inputSource_;
   private final String          inputSourceName_;
+  private final boolean         referencedModel_;
   private Reader                reader_;
   private int                   errorCnt_;
   private URL                   url_;
   private ModelSetParserContext modelSetParserContext_;
+  private Model                 model_;
 
-  public RootParserContext(ModelSetParserContext modelSetParserContext, URL url) throws ParsingException
+  public RootParserContext(ModelSetParserContext modelSetParserContext, URL url, boolean referencedModel) throws ParsingException
   {
-    this(modelSetParserContext, url, openStream(url));
+    this(modelSetParserContext, url, openStream(url), referencedModel);
   }
   
   private static Reader openStream(URL url) throws ParsingException
@@ -67,7 +71,7 @@ public class RootParserContext extends BaseParserContext
     }
   }
 
-  public RootParserContext(ModelSetParserContext modelSetParserContext, URL baseUrl, Reader inputStream) throws ParsingException
+  public RootParserContext(ModelSetParserContext modelSetParserContext, URL baseUrl, Reader inputStream, boolean referencedModel) throws ParsingException
   {
     log_ = modelSetParserContext.getLogFactory().getLogger(RootParserContext.class);
     
@@ -75,6 +79,7 @@ public class RootParserContext extends BaseParserContext
     url_ = baseUrl;
     reader_ = inputStream;
     inputSource_ = url_.toString();
+    referencedModel_ = referencedModel;
     
     String path = url_.getPath();
     
@@ -115,11 +120,12 @@ public class RootParserContext extends BaseParserContext
     return path;
   }
 
-  public RootParserContext(File inputFile, Reader inputStream)
+  public RootParserContext(File inputFile, Reader inputStream, boolean referencedModel)
   {
     reader_ = inputStream;
     inputSource_ = inputFile.getAbsolutePath();
     inputSourceName_ = inputFile.getName();
+    referencedModel_ = referencedModel;
     try
     {
       url_ = inputFile.toURI().toURL();
@@ -130,6 +136,24 @@ public class RootParserContext extends BaseParserContext
     }
   }
   
+  public Model getModel()
+  {
+    return model_;
+  }
+
+  public void setModel(Model model)
+  {
+    model_ = model;
+  }
+
+  /**
+   * @return True iff this is a referenced model, and generation should not be performed.
+   */
+  public boolean isReferencedModel()
+  {
+    return referencedModel_;
+  }
+
   public URL getUrl()
   {
     return url_;
@@ -192,7 +216,7 @@ public class RootParserContext extends BaseParserContext
     log_.infof("Parsing %s...", getInputSource());
   }
 
-  public void addReferencedModel(URI uri, ParserContext context) throws ParsingException
+  public @Nullable RootParserContext addReferencedModel(URI uri, ParserContext context) throws ParsingException
   {
     try
     {
@@ -200,11 +224,12 @@ public class RootParserContext extends BaseParserContext
         ? uri.toURL()
         : new URL(url_, uri.toString());
         
-        modelSetParserContext_.addReferencedModel(url);
+        return modelSetParserContext_.addReferencedModel(url);
     }
     catch (IOException e)
     {
       context.raise(new ParserError("Invalid URI \"%s\" (%s)", uri, e.getMessage()));
+      return null;
     }
   }
   

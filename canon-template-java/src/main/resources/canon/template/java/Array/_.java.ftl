@@ -4,11 +4,12 @@
 import javax.annotation.concurrent.Immutable;
 
 import org.symphonyoss.s2.canon.runtime.IEntity${modelJavaCardinality};
-import org.symphonyoss.s2.common.dom.json.ImmutableJsonArray;
+import org.symphonyoss.s2.common.dom.json.ImmutableJsonList;
+import org.symphonyoss.s2.common.dom.json.ImmutableJsonSet;
 import org.symphonyoss.s2.common.exception.InvalidValueException;
 
 <@importFieldTypes model false/>
-import ${javaFacadePackage}.*;
+<@importFacadePackages model/>
 
 <#include "../../../template/java/Array/Array.ftl">
 <#include "../../../proforma/java/Array/Facade.ftl">

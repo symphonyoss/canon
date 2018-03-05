@@ -24,9 +24,7 @@
 package org.symphonyoss.s2.canon.runtime;
 
 import org.symphonyoss.s2.common.dom.DomSerializer;
-import org.symphonyoss.s2.common.dom.json.IImmutableJsonDomNode;
 import org.symphonyoss.s2.common.dom.json.IJsonDomNodeProvider;
-import org.symphonyoss.s2.common.dom.json.ImmutableJsonArray;
 
 public abstract class EntityArrayFactory<M extends IEntityArray, F extends IModel>
 implements IEntityArrayFactory<M,F>
@@ -35,18 +33,10 @@ implements IEntityArrayFactory<M,F>
   
   public abstract static class Builder implements IJsonDomNodeProvider, IBaseEntity
   {
-    public abstract ImmutableJsonArray getJsonArray();
-    
-    @Override
-    public IImmutableJsonDomNode getJsonDomNode()
-    {
-      return getJsonArray();
-    }
-
     @Override
     public String serialize()
     {
-      return SERIALIZER.serialize(getJsonArray());
+      return SERIALIZER.serialize(getJsonDomNode());
     }
   }
 }

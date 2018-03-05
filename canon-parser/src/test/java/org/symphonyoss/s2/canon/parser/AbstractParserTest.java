@@ -157,7 +157,7 @@ public class AbstractParserTest
   public ParserContext  createParserContext(String input) throws ParsingException, JsonProcessingException, IOException
   {
     ModelSetParserContext modelSetContext = new ModelSetParserContext();
-    RootParserContext rootParserContext = new RootParserContext(modelSetContext, TEST_URL, new StringReader(input));
+    RootParserContext rootParserContext = new RootParserContext(modelSetContext, TEST_URL, new StringReader(input), false);
     
     ObjectMapper mapper = new ObjectMapper();
     JsonNode rootNode = mapper.readTree(rootParserContext.getReader());

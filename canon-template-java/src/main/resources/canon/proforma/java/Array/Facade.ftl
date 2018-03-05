@@ -1,3 +1,4 @@
+<@setJavaType model.baseSchema/>
 @Immutable
 public class ${model.camelCapitalizedName} extends ${model.camelCapitalizedName}EntityArray
 {
@@ -6,7 +7,7 @@ public class ${model.camelCapitalizedName} extends ${model.camelCapitalizedName}
     super(other);
   }
   
-  private ${modelJavaClassName}(ImmutableJsonArray jsonArray) throws InvalidValueException
+  private ${modelJavaClassName}(ImmutableJson${javaCardinality} jsonArray) throws InvalidValueException
   {
     super(jsonArray);
   }

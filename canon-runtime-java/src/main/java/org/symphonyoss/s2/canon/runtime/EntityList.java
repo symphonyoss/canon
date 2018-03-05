@@ -23,24 +23,33 @@
 
 package org.symphonyoss.s2.canon.runtime;
 
-import org.symphonyoss.s2.common.dom.json.ImmutableJsonArray;
+import org.symphonyoss.s2.common.dom.json.ImmutableJsonList;
 
 import com.google.common.collect.ImmutableList;
 
 public class EntityList<T> extends EntityArray implements IEntityList<T>
 {
   private final ImmutableList<T> elements_;
+  private ImmutableJsonList jsonList_;
   
   public EntityList(IEntityList<T> other)
   {
-    super(other.getJsonArray());
+    super(other.getJsonList());
+    jsonList_ = other.getJsonList();
     elements_ = other.getElements();
   }
   
-  public EntityList(ImmutableJsonArray jsonArray, ImmutableList<T> elements)
+  public EntityList(ImmutableJsonList jsonList, ImmutableList<T> elements)
   {
-    super(jsonArray);
+    super(jsonList);
+    jsonList_ = jsonList;
     elements_ = elements;
+  }
+
+  @Override
+  public ImmutableJsonList getJsonList()
+  {
+    return jsonList_;
   }
 
   @Override

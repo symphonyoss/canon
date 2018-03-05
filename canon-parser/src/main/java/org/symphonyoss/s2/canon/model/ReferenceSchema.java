@@ -27,6 +27,7 @@ import java.util.Set;
 
 import org.symphonyoss.s2.canon.parser.ParserContext;
 import org.symphonyoss.s2.canon.parser.ParsingException;
+import org.symphonyoss.s2.canon.parser.RootParserContext;
 import org.symphonyoss.s2.canon.parser.error.ParserError;
 
 /**
@@ -61,7 +62,10 @@ public class ReferenceSchema extends ReferenceOrSchema
     {
       try
       {
-        context.getRootParserContext().addReferencedModel(reference_.getBaseUri(), context);
+        RootParserContext referencedContext = context.getRootParserContext().addReferencedModel(reference_.getBaseUri(), context);
+        
+        if(referencedContext != null)
+          getModel().addReferencedContext(referencedContext);
       }
       catch (ParsingException e)
       {
@@ -114,6 +118,7 @@ public class ReferenceSchema extends ReferenceOrSchema
     return type_.getIsObjectSchema();
   }
 
+  @Override
   public boolean  isResolved()
   {
     return type_ != null;

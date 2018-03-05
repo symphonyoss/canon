@@ -4,7 +4,7 @@
 
 import org.symphonyoss.s2.canon.runtime.IEntity;
 
-import ${javaFacadePackage}.*;
+<@importFacadePackages model/>
 
 <#include "../Object/Object.ftl">
 public interface I${model.camelCapitalizedName}Entity extends IEntity,

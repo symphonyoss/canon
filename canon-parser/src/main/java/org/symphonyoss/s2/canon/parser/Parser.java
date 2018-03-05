@@ -78,6 +78,7 @@ public class Parser
       
       Model model = new Model(new ParserContext(rootParserContext, rootNode));
       
+      rootParserContext.setModel(model);
       rootParserContext.epilogue("Parsing");
       
       return model;

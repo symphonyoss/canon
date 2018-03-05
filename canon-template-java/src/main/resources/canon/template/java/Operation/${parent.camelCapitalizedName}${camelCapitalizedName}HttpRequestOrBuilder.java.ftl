@@ -14,7 +14,7 @@ import ${fieldFQType};
   </#if>
 </#list>
 <#if model.payload?? && !model.payload.isMultiple>
-import ${javaFacadePackage}.*;
+<@importFacadePackages model/>
 </#if>
   
 @Immutable

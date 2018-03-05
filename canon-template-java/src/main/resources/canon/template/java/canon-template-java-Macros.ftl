@@ -270,7 +270,7 @@
 <#macro setType varPrefix model>
   <@setBaseType varPrefix model.elementSchema/>
   <@setElementType varPrefix model.elementComponent/>
-  <#if !model.isComponent && model.isArraySchema>
+  <#if model.isArraySchema>
     <#switch model.baseSchema.cardinality>
       <#case "SET">
         <@"<#assign ${varPrefix}Cardinality=\"Set\">"?interpret />
@@ -278,7 +278,11 @@
       <#default>
         <@"<#assign ${varPrefix}Cardinality=\"List\">"?interpret />
     </#switch>
-    <@"<#assign ${varPrefix}Type=${varPrefix}Cardinality + \"<\" + ${varPrefix}ElementType + \">\">"?interpret />
+    <#if model.isComponent>
+      <@"<#assign ${varPrefix}Type=${varPrefix}ElementType>"?interpret />
+    <#else>
+      <@"<#assign ${varPrefix}Type=${varPrefix}Cardinality + \"<\" + ${varPrefix}ElementType + \">\">"?interpret />
+    </#if>
   <#else>
     <@"<#assign ${varPrefix}Cardinality=\"\">"?interpret />
     <@"<#assign ${varPrefix}Type=${varPrefix}ElementType>"?interpret />
@@ -571,6 +575,20 @@
 </#macro>
 
 <#------------------------------------------------------------------------------------------------------
+ # Generate imports for the the facade package of this and any referenced models
+ #
+ # @param model     A model element
+ #----------------------------------------------------------------------------------------------------->
+<#macro importFacadePackages model>
+import ${javaFacadePackage}.*;
+<#list model.model.referencedContexts as context>
+import ${context.model.modelMap["javaFacadePackage"]}.*;
+import ${context.model.modelMap["javaGenPackage"]}.*;
+</#list>
+</#macro>
+
+
+<#------------------------------------------------------------------------------------------------------
  # Set javaClassName for the given Schema
  #
  # Uses ${javaFieldClassName} and ${javaElementClassName} which must be set before calling this macro
@@ -755,9 +773,12 @@ import ${fieldElementFQBuilder};
       <#return>
     </#if>
   </#list>
+  <#if model.superSchema??>
+    <@javadocLimitsClassThrows model.superSchema.baseSchema/>
+  </#if>
 </#macro>
 
-<#macro checkLimitsClassThrows model><#list model.fields as field><#if isCheckLimits(field)> throws InvalidValueException<#return></#if></#list></#macro>
+<#macro checkLimitsClassThrows model><#list model.fields as field><#if isCheckLimits(field)> throws InvalidValueException<#return></#if></#list><#if model.superSchema??><@checkLimitsClassThrows model.superSchema.baseSchema/></#if></#macro>
 
 <#macro checkLimitsThrows model><#if isCheckLimits(model)> throws InvalidValueException</#if></#macro>
 
@@ -876,42 +897,44 @@ ${indent}}
   <@setJavaType field/>
   <#if field.isComponent>
     <#if field.enum??>
-${indent}${var}.addIfNotNull("${field.camelName}", ${field.camelName}__.toString());
+${indent}${var}.addIfNotNull("${field.camelName}", ${field.camelName}_.toString());
     <#else>
       <#if field.isArraySchema>
-${indent}${var}.addIfNotNull("${field.camelName}", ${field.camelName}__.getJsonArray());
+${indent}${var}.addIfNotNull("${field.camelName}", ${field.camelName}_.getJson${fieldCardinality}());
       <#else>
         <#if isExternal>
           <#if isDirectExternal>
-${indent}${var}.addIfNotNull("${field.camelName}", ${fieldType}.to${javaFieldClassName}(${field.camelName}__${javaGetValuePostfix});
+${indent}${var}.addIfNotNull("${field.camelName}", ${fieldType}.to${javaFieldClassName}(${field.camelName}_${javaGetValuePostfix});
           <#else>
-${indent}${var}.addIfNotNull("${field.camelName}", ${javaGetValuePrefix}${field.camelName}__${javaGetValuePostfix});
+${indent}${var}.addIfNotNull("${field.camelName}", ${javaGetValuePrefix}${field.camelName}_${javaGetValuePostfix});
           </#if>
         <#else>
           <#if field.isObjectSchema>
-${indent}${var}.addIfNotNull("${field.camelName}", ${field.camelName}__.getJsonObject());
+${indent}${var}.addIfNotNull("${field.camelName}", ${field.camelName}_.getJsonObject());
           <#else>
-${indent}${var}.addIfNotNull("${field.camelName}", ${field.camelName}__.getValue());
+${indent}${var}.addIfNotNull("${field.camelName}", ${field.camelName}_.getValue());
           </#if>
         </#if>
       </#if>
     </#if>
   <#else>
     <#if field.isArraySchema>
+    // T1
       <#if field.baseSchema.items.baseSchema.isObjectSchema>
-${indent}${var}.addCollectionOfDomNode("${field.camelName}", ${javaGetValuePrefix}${field.camelName}__${javaGetValuePostfix});
+${indent}${var}.addCollectionOfDomNode("${field.camelName}", ${javaGetValuePrefix}${field.camelName}_${javaGetValuePostfix});
 
       <#else>
-${indent}MutableJsonArray  valueList = new MutableJsonArray();
+      //T2
+${indent}MutableJson${javaCardinality}  value${javaCardinality} = new MutableJson${javaCardinality}();
 
-${indent}for(${fieldElementType} value : ${field.camelName}__)
+${indent}for(${fieldElementType} value : ${field.camelName}_)
 ${indent}{
-${indent}  valueList.add(${fieldBaseValueFromElementPrefix}value${fieldBaseValueFromElementSuffix});
+${indent}  value${javaCardinality}.add(${fieldBaseValueFromElementPrefix}value${fieldBaseValueFromElementSuffix});
 ${indent}}
-${indent}${var}.add("${field.camelName}", valueList);
+${indent}${var}.add("${field.camelName}", value${javaCardinality});
       </#if>
     <#else>
-${indent}${var}.addIfNotNull("${field.camelName}", ${field.camelName}__);
+${indent}${var}.addIfNotNull("${field.camelName}", ${field.camelName}_);
     </#if>
   </#if>
 </#macro>
@@ -922,32 +945,36 @@ ${indent}${var}.addIfNotNull("${field.camelName}", ${field.camelName}__);
  # The java variable "node" must have already been set to an IJsonDomNode and must not be null.
  #
  # NB this macro calls <@setJavaType field/>
- # @param indent    An indent string which is output at the start of each line generated
- # @param field     A model element representing the field to generate for
- # @param var       The name of a variable to which the extracted value will be assigned 
+ #
+ # @param indent        An indent string which is output at the start of each line generated
+ # @param field         A model element representing the field to generate for
+ # @param var           The name of a variable to which the extracted value will be assigned 
+ # @param ifValidation  If set then an if statement which guards validation checks
+ # @param factoryName   Name of the model factory
+ # @param mutable       "Mutable" for builders and "Immutable" for objects
  #----------------------------------------------------------------------------------------------------->
-<#macro generateCreateFieldFromJsonDomNode indent field var>
+<#macro generateCreateFieldFromJsonDomNode indent field var ifValidation factoryName mutable>
   <@setJavaType field/>
   <#if field.isComponent>
     <#if field.isObjectSchema>
 ${indent}if(node instanceof ImmutableJsonObject)
 ${indent}{
-${indent}  ${var} = factory.getModel().get${field.elementSchema.camelCapitalizedName}Factory().newInstance((ImmutableJsonObject)node);
+${indent}  ${var} = ${factoryName}.getModel().get${field.elementSchema.camelCapitalizedName}Factory().newInstance((ImmutableJsonObject)node);
 ${indent}}
-${indent}else
+${indent}else ${ifValidation}
 ${indent}{
 ${indent}  throw new InvalidValueException("${field.camelName} must be an Object node not " + node.getClass().getName());
 ${indent}}
     <#else>
       <#if field.isArraySchema>
-${indent}if(node instanceof ImmutableJsonArray)
+${indent}if(node instanceof Json${fieldCardinality})
 ${indent}{
-${indent}  ${var} = ${fieldType}.newBuilder().with((ImmutableJsonArray)node).build();
+${indent}  ${var} = ${fieldType}.newBuilder().with((Json${fieldCardinality}<?>)node).build();
 <@checkItemLimits indent field field.camelName var/>
 ${indent}}
-${indent}else
+${indent}else ${ifValidation}
 ${indent}{
-${indent}  throw new InvalidValueException("${field.camelName} must be an Array node not " + node.getClass().getName());
+${indent}  throw new InvalidValueException("${field.camelName} must be an array node not " + node.getClass().getName());
 ${indent}}
       <#else>
 ${indent}if(node instanceof I${javaElementFieldClassName}Provider)
@@ -960,10 +987,10 @@ ${indent}    ${var} = ${javaConstructTypePrefix}value${javaConstructTypePostfix}
 ${indent}  }
 ${indent}  catch(RuntimeException e)
 ${indent}  {
-${indent}    throw new InvalidValueException("Value \"" + value + "\" for ${field.camelName} is not a valid value", e);
+${indent}     ${ifValidation} throw new InvalidValueException("Value \"" + value + "\" for ${field.camelName} is not a valid value", e);
 ${indent}  }
 ${indent}}
-${indent}else
+${indent}else ${ifValidation}
 ${indent}{
 ${indent}    throw new InvalidValueException("${field.camelName} must be an instance of ${javaFieldClassName} not " + node.getClass().getName());
 ${indent}}     
@@ -971,14 +998,14 @@ ${indent}}
       </#if>
   <#else>
     <#if field.isArraySchema>
-${indent}if(node instanceof ImmutableJsonArray)
+${indent}if(node instanceof JsonArray)//HERE2
 ${indent}{
     <#if field.baseSchema.items.isTypeDef>
 <#assign elementClassName=field.baseSchema.items.baseSchema.camelCapitalizedName>   
     
-${indent}${javaCardinality}<${javaElementClassName}> list${javaBuilderTypeNew};
+${indent}${fieldCardinality}<${javaElementClassName}> list${javaBuilderTypeNew};
     
-${indent}for(IImmutableJsonDomNode itemNode : ((ImmutableJsonArray)node))
+${indent}for(IJsonDomNode itemNode : ((JsonArray<?>)node))
 ${indent}{
 ${indent}  if(itemNode instanceof I${javaElementFieldClassName}Provider)
 ${indent}  {
@@ -989,28 +1016,30 @@ ${indent}}
 ${indent}    ${var} = ${javaTypeCopyPrefix}list${javaTypeCopyPostfix};
     <#else>
       <#if field.baseSchema.items.isComponent>
-${indent}  ${var} = canonFactory_.getModel().get${field.elementSchema.camelCapitalizedName}Factory().newInstance${javaCardinality}((ImmutableJsonArray)node);
+${indent}  ${var} = ${factoryName}.getModel().get${field.elementSchema.camelCapitalizedName}Factory().new${mutable}${fieldCardinality}((JsonArray<?>)node);
 
       <#else>
-${indent}  ${var} = ((ImmutableJsonArray)node).asImmutable${javaCardinality}Of(${javaElementFieldClassName}.class);
+${indent}  ${var} = ((JsonArray<?>)node).asImmutable${fieldCardinality}Of(${javaElementFieldClassName}.class);
       </#if>
     </#if>
+    <#if ifValidation == "">
 <@checkItemLimits indent field field.camelName var/>
+    </#if>
 ${indent}}
-${indent}else
+${indent}else ${ifValidation}
 ${indent}{
 ${indent}  throw new InvalidValueException("${field.camelName} must be an array not " + node.getClass().getName());
 ${indent}}
     <#else> 
 ${indent}if(node instanceof I${javaElementFieldClassName}Provider)
 ${indent}{
-${indent}  ${javaFieldClassName} ${field.camelName} = ${javaConstructTypePrefix}((I${javaElementFieldClassName}Provider)node).as${javaElementFieldClassName}()${javaConstructTypePostfix};
-      <#if requiresChecks>
-        <@checkLimits "${indent}  " field field.camelName/>
+${indent}  ${javaFieldClassName} value = ${javaConstructTypePrefix}((I${javaElementFieldClassName}Provider)node).as${javaElementFieldClassName}()${javaConstructTypePostfix};
+      <#if requiresChecks && ifValidation == "">
+        <@checkLimits "${indent}  " field "value"/>
       </#if>
-${indent}  ${var} = ${javaTypeCopyPrefix}${field.camelName}${javaTypeCopyPostfix};
+${indent}  ${var} = ${javaTypeCopyPrefix}value${javaTypeCopyPostfix};
 ${indent}}
-${indent}else
+${indent}else ${ifValidation}
 ${indent}{
 ${indent}    throw new InvalidValueException("${field.camelName} must be an instance of ${javaFieldClassName} not " + node.getClass().getName());
 ${indent}}

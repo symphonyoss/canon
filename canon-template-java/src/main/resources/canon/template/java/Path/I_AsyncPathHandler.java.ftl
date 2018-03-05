@@ -7,7 +7,7 @@ import org.symphonyoss.s2.canon.runtime.exception.CanonException;
 import org.symphonyoss.s2.canon.runtime.IConsumer;
 
 <@importFieldTypes model true/>
-import ${javaFacadePackage}.*;
+<@importFacadePackages model/>
 
 <#include "Path.ftl">
 public interface I${modelJavaClassName}AsyncPathHandler extends I${model.model.camelCapitalizedName}EntityHandler

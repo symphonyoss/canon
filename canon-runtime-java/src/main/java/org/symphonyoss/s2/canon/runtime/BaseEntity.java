@@ -25,15 +25,11 @@ package org.symphonyoss.s2.canon.runtime;
 
 import javax.annotation.Nonnull;
 
-import org.symphonyoss.s2.common.dom.DomSerializer;
 import org.symphonyoss.s2.common.dom.json.IImmutableJsonDomNode;
 
 public class BaseEntity implements IBaseEntity
 {
-  protected static final DomSerializer SERIALIZER = DomSerializer.newBuilder().withCanonicalMode(true).build();
-
   private final @Nonnull IImmutableJsonDomNode      jsonDomNode_;
-  private final @Nonnull String                     asString_;
   
   public BaseEntity(@Nonnull IImmutableJsonDomNode jsonDomNode)
   {
@@ -41,7 +37,6 @@ public class BaseEntity implements IBaseEntity
       throw new NullPointerException("dom node is required");
     
     jsonDomNode_ = jsonDomNode;
-    asString_ = SERIALIZER.serialize(jsonDomNode_);
   }
 
   @Override
@@ -53,18 +48,24 @@ public class BaseEntity implements IBaseEntity
   @Override
   public @Nonnull String toString()
   {
-    return asString_;
+    return jsonDomNode_.toString();
   }
   
   @Override
   public @Nonnull String serialize()
   {
-    return asString_;
+    return jsonDomNode_.toString();
   }
   
   @Override
   public int hashCode()
   {
-    return asString_.hashCode();
+    return jsonDomNode_.hashCode();
+  }
+
+  @Override
+  public boolean equals(Object other)
+  {
+    return other instanceof BaseEntity && jsonDomNode_.equals(((BaseEntity)other).jsonDomNode_);
   }
 }
