@@ -26,9 +26,7 @@ package org.symphonyoss.s2.canon.runtime;
 import java.util.List;
 import java.util.Set;
 
-import org.symphonyoss.s2.common.dom.json.ImmutableJsonList;
 import org.symphonyoss.s2.common.dom.json.ImmutableJsonObject;
-import org.symphonyoss.s2.common.dom.json.ImmutableJsonSet;
 import org.symphonyoss.s2.common.dom.json.JsonArray;
 import org.symphonyoss.s2.common.exception.InvalidValueException;
 
@@ -40,8 +38,8 @@ import com.google.common.collect.ImmutableSet;
  * 
  * @author Bruce Skingle
  *
- * @param <E> The type of the entity produced by this factory.
- * @param <B> The base type of the entity.
+ * @param <E> The type of the entity produced by this factory, i.e. the facade.
+ * @param <B> The base type of the entity, i.e. the generated super class.
  * @param <M> The type of the model to which the enclosing entity type belongs.
  */
 public interface IEntityFactory<E extends IEntity, B extends IEntity, M extends IModel>
