@@ -14,6 +14,7 @@ import org.symphonyoss.s2.canon.runtime.Model;
 import org.symphonyoss.s2.fugue.di.ComponentDescriptor;
 
 import ${javaFacadePackage}.I${model.camelCapitalizedName};
+import ${javaFacadePackage}.I${model.camelCapitalizedName}ModelEntity;
 <#list model.model.referencedContexts as context>
 import ${context.model.modelMap["javaFacadePackage"]}.${context.model.camelCapitalizedName};
 </#list>
@@ -39,7 +40,7 @@ public abstract class ${model.camelCapitalizedName}Model extends Model implement
   <#if object.isAbstract?? && object.isAbstract>
   //ABSTRACT ${object.camelName}
   <#else>
-  private final ${(object.camelCapitalizedName + ".Factory")?right_pad(35)}  ${(object.camelName + "Factory_")?right_pad(35)} = new ${object.camelCapitalizedName}.Factory(this);
+  private final ${(object.camelCapitalizedName + ".Factory")?right_pad(35)}  ${object.camelName}Factory_;
   </#if>
 </#list>
 
@@ -51,6 +52,13 @@ public abstract class ${model.camelCapitalizedName}Model extends Model implement
   {
 <#list model.model.referencedContexts as context>
     ${context.model.camelName}Model_ = ${context.model.camelName}Model;
+</#list>
+<#list model.schemas as object>
+  <#if object.isAbstract?? && object.isAbstract>
+  //ABSTRACT ${object.camelName}
+  <#else>
+    ${(object.camelName + "Factory_")?right_pad(35)} = new ${object.camelCapitalizedName}Entity.Factory(this);
+  </#if>
 </#list>
   }
   
@@ -98,5 +106,11 @@ public abstract class ${model.camelCapitalizedName}Model extends Model implement
   }
   </#if>
 </#list>
+
+  @Override
+  public <T extends I${model.camelCapitalizedName}ModelEntity> T intern(T instance)
+  {
+    return instance;
+  }
 }
 <#include "../canon-template-java-Epilogue.ftl">

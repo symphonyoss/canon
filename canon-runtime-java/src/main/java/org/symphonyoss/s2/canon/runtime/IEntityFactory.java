@@ -39,17 +39,28 @@ import com.google.common.collect.ImmutableSet;
  * @author Bruce Skingle
  *
  * @param <E> The type of the entity produced by this factory, i.e. the facade.
- * @param <B> The base type of the entity, i.e. the generated super class.
- * @param <M> The type of the model to which the enclosing entity type belongs.
+ * @param <S> The super type of the entity, i.e. the generated super class.
+ * @param <B> The builder type of the entity.
  */
-public interface IEntityFactory<E extends IEntity, B extends IEntity, M extends IModel>
+public interface IEntityFactory<E extends IEntity, S extends IEntity, B extends EntityBuilder>
 {
   /**
-   * Return the model to which this factory belongs.
+   * Create a new builder with all fields initialized to default values.
    * 
-   * @return the model to which this factory belongs.
+   * @return A new builder.
    */
-  M  getModel();
+  public B newBuilder();
+  
+  /**
+   * Create a new builder with all fields initialized from the given builder.
+   * Values are copied so that subsequent changes to initial will not be reflected in
+   * the returned builder.
+   * 
+   * @param initial A builder or instance whose values are copied into a new builder.
+   * 
+   * @return A new builder.
+   */
+  public B newBuilder(S initial);
   
   /**
    * Return a new entity instance created from the given JSON serialization.
@@ -61,6 +72,19 @@ public interface IEntityFactory<E extends IEntity, B extends IEntity, M extends 
    * @throws InvalidValueException If the given JSON is not valid.
    */
   E  newInstance(ImmutableJsonObject jsonObject) throws InvalidValueException;
+  
+  /**
+   * Return a new entity instance created from the given other instance.
+   * This is used to construct an entity from its builder as the builder also
+   * implements the interface of the entity.
+   * 
+   * @param builder a builder containing values of all fields for the required entity.
+   * 
+   * @return An instance of the entity represented by the given values.
+   * 
+   * @throws InvalidValueException If the given values are not valid.
+   */
+  E newInstance(S builder) throws InvalidValueException;
 
   /**
    * Return a list of new entity instances created from the given JSON array.

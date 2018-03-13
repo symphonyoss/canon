@@ -959,7 +959,7 @@ ${indent}${var}.addIfNotNull("${field.camelName}", ${field.camelName}_);
     <#if field.isObjectSchema>
 ${indent}if(node instanceof ImmutableJsonObject)
 ${indent}{
-${indent}  ${var} = ${factoryName}.getModel().get${field.elementSchema.camelCapitalizedName}Factory().newInstance((ImmutableJsonObject)node);
+${indent}  ${var} = ${factoryName}.get${field.model.camelCapitalizedName}Model().get${field.elementSchema.camelCapitalizedName}Factory().newInstance((ImmutableJsonObject)node);
 ${indent}}
 ${indent}else ${ifValidation}
 ${indent}{
@@ -1016,7 +1016,7 @@ ${indent}}
 ${indent}    ${var} = ${javaTypeCopyPrefix}list${javaTypeCopyPostfix};
     <#else>
       <#if field.baseSchema.items.isComponent>
-${indent}  ${var} = ${factoryName}.getModel().get${field.elementSchema.camelCapitalizedName}Factory().new${mutable}${fieldCardinality}((JsonArray<?>)node);
+${indent}  ${var} = ${factoryName}.get${field.model.camelCapitalizedName}Model().get${field.elementSchema.camelCapitalizedName}Factory().new${mutable}${fieldCardinality}((JsonArray<?>)node);
 
       <#else>
 ${indent}  ${var} = ((JsonArray<?>)node).asImmutable${fieldCardinality}Of(${javaElementFieldClassName}.class);
