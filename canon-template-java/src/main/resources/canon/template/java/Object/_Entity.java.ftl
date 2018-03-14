@@ -196,7 +196,7 @@
     public AbstractFactory(I${model.model.camelCapitalizedName} model)
     {
   <#if model.superSchema??>
-      super(model.get${model.superSchema.baseSchema.model.camelCapitalizedName}Model()); //BRUCE
+      super(model.get${model.superSchema.baseSchema.model.camelCapitalizedName}Model());
   </#if>
       ${model.model.camelName}Model_ = model;
     }
@@ -226,9 +226,13 @@
      * 
      * @return The interned instance of the given object.
      */
-    public I${model.camelCapitalizedName} intern(I${model.camelCapitalizedName} instance)
+    public <T extends I${model.camelCapitalizedName}> T intern(T instance)
     {
+  <#if model.superSchema??>
+      return get${model.model.camelCapitalizedName}Model().intern(super.intern(instance));
+  <#else>
       return get${model.model.camelCapitalizedName}Model().intern(instance);
+  </#if>
     }
  
  <#--      
