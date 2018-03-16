@@ -1,13 +1,13 @@
 package org.symphonyoss.s2.canon.runtime.cache;
 
-import org.symphonyoss.s2.canon.runtime.Producer;
+import org.symphonyoss.s2.canon.runtime.SynchronousProducer;
 
 public class WeakMonitorCache<K,V extends Comparable<V>>
 extends WeakCache<K, IMonitor<V>>
 {
   private IMonitorFactory<K, V> monitorFactory_;
 
-	public WeakMonitorCache(Producer<IMonitor<V>> producer,
+	public WeakMonitorCache(SynchronousProducer<IMonitor<V>> producer,
 	    IMonitorFactory<K, V> monitorFactory)
   {
 	  super(producer);

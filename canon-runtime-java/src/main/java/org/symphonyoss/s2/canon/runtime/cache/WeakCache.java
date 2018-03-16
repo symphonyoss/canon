@@ -8,21 +8,22 @@ import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.Map;
 
-import org.symphonyoss.s2.canon.runtime.Producer;
+import org.symphonyoss.s2.canon.runtime.IProducerImpl;
+import org.symphonyoss.s2.canon.runtime.SynchronousProducer;
 
 public class WeakCache<K,V>
 {
   private Map<K, WeakReference<V>> map_           = new HashMap<>();
   private ReferenceQueue<V>        queue_         = new ReferenceQueue<>();
   private Thread                   discardThread_ = new DiscardThread();
-  private Producer<V>              producer_;
+  private IProducerImpl<V>         producer_;
 
   public WeakCache()
   {
     this(null);
   }
   
-	public WeakCache(Producer<V> producer)
+	public WeakCache(IProducerImpl<V> producer)
   {
 	  producer_ = producer;
 	  discardThread_.start();
@@ -129,7 +130,7 @@ public class WeakCache<K,V>
   protected void put(K key, V value, boolean notify)
   {
     if(notify && producer_ != null)
-      producer_.notifyListeners(value);
+      producer_.produce(value);
     
     map_.put(key, new WeakCacheReference<K,V>(key, value, queue_));
   }

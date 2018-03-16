@@ -16,82 +16,34 @@
 
 package org.symphonyoss.s2.canon.runtime;
 
-import java.util.LinkedList;
 import java.util.List;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.symphonyoss.s2.common.concurrent.NamedThreadFactory;
-import org.symphonyoss.s2.common.fault.TransactionFault;
 
 /**
- * A simple implementation of IProducer<V> which calls
- * listeners in the current thread.
+ * An implementation of IProducer<V> which calls
+ * listeners from a Cached Thread Pool.
  * 
  * If listener implementations block then there may be
  * performance issues so they should not do so, but they
  * need not be thread safe.
+ * 
  * @author bruce.skingle
  *
  * @param <V> The listener payload
  */
-public class Producer<V> implements IProducer<V>
+public class AsynchronousProducer<V> extends SynchronousProducer<V>
 {
-  private static Logger      log_ = LoggerFactory.getLogger(Producer.class);
-  
   private ExecutorService              notifier_      = Executors
       .newCachedThreadPool(new NamedThreadFactory("Producer"));
-  private List<IConsumer<V>> listeners_;
 
-  @Override
-  public synchronized void addListener(IConsumer<V> listener)
-  {
-    if(listeners_ == null)
-      listeners_ = new LinkedList<>();
-    
-    listeners_.add(listener);
-  }
-  
-  @Override
-  public synchronized boolean removeListener(IConsumer<V> listener)
-  {
-    if(listeners_ == null)
-      return false;
-    
-    return listeners_.remove(listener);
-  }
-  
-  public void notifyListeners(V value)
-  {
-    if(listeners_ != null)
-    {
-      for(IConsumer<V> listener : listeners_)
-      {
-        notify(listener, value);
-      }
-    }
-  }
-
-  public void notify(IConsumer<V> listener, V value)
+  protected void notify(IConsumer<V> listener, V value)
   {
     notifier_.submit(() ->
     {
-      try
-      {
-        listener.consume(value);
-      }
-      catch(TransactionFault e)
-      {
-        log_.error("TransactionFault thrown by Monitor listener (removed)", e);
-        removeListener(listener);
-      }
-      catch(RuntimeException e)
-      {
-        log_.error("Unknown exception thrown by Monitor listener (removed)", e);
-        removeListener(listener);
-      }
+      super.notify(listener, value);
     });
   }
 

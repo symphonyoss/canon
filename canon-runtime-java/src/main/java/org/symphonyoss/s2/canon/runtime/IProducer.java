@@ -17,7 +17,7 @@
 package org.symphonyoss.s2.canon.runtime;
 
 /**
- * An interface for an entity which produces objects for which listeners may beregistered.
+ * An interface for an entity which produces objects for which listeners may be registered.
  * 
  * @author Bruce Skingle
  *

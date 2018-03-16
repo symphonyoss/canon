@@ -17,7 +17,7 @@
 package org.symphonyoss.s2.canon.runtime.cache;
 
 import org.symphonyoss.s2.canon.runtime.IConsumer;
-import org.symphonyoss.s2.canon.runtime.Producer;
+import org.symphonyoss.s2.canon.runtime.SynchronousProducer;
 
 /**
  * An implementation of IMonitor<K,V> based upon an 
@@ -31,7 +31,7 @@ import org.symphonyoss.s2.canon.runtime.Producer;
  * @param <V> The value type
  */
 public class Monitor<K,V extends Comparable<V>>
-extends Producer<V>
+extends SynchronousProducer<V>
 implements IMonitor<V>
 {
   private V                  value_;
@@ -61,7 +61,7 @@ implements IMonitor<V>
   {
     value_ = value;
     
-    notifyListeners(value);
+    produce(value);
     
     return this;
   }
