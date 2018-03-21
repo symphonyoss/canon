@@ -205,7 +205,38 @@
     {
       return ${model.model.camelName}Model_;
     }
-    
+  
+  <#if model.superSchema??>
+    <#if model.baseSchema.model != model.superSchema.baseSchema.model>
+    /**
+     * Intern the given instance.
+     * 
+     * Entities created by a factory are interned before returning them to the caller.
+     * 
+     * This method is therefore called after Factory.newInstance(), which itself calls the entity facade
+     * constructor, but before the object is returned to the caller. The intern method can replace the 
+     * object returned if it so wishes.
+     * 
+     * The default implementation calls the model wide intern method, the default implementation of which
+     * returns the given instance without any change or side effect, however this may be overridden in the
+     * model facade, and the facade of any type may be overridden to do something else entirely.
+     *
+     * Since this object is a sub-class of an object defined in another model we need to call super.intern()
+     * to perform the intern in the super class model and then explicitly call the intern in our local model.
+     * 
+     * The intention is that the developer has the option to implement intern functionality either at the
+     * model level or separately for each type in the model.
+     * 
+     * @param instance A model object to be interned.
+     * 
+     * @return The interned instance of the given object.
+     */
+    public <T extends I${model.camelCapitalizedName}> T intern(T instance)
+    {
+      return get${model.model.camelCapitalizedName}Model().intern(super.intern(instance));
+    }
+    </#if>
+  <#else>
     /**
      * Intern the given instance.
      * 
@@ -228,12 +259,9 @@
      */
     public <T extends I${model.camelCapitalizedName}> T intern(T instance)
     {
-  <#if model.superSchema??>
-      return get${model.model.camelCapitalizedName}Model().intern(super.intern(instance));
-  <#else>
       return get${model.model.camelCapitalizedName}Model().intern(instance);
-  </#if>
     }
+  </#if>
  
  <#--      
     /**
