@@ -29,6 +29,7 @@
     <version>0.0.11-SNAPSHOT</version>
   </parent>
   <artifactId>canon-test</artifactId>
+  <version>0.0.9</version>
   
   <dependencies>
     <dependency>

@@ -23,7 +23,7 @@ import java.util.concurrent.Executors;
 import org.symphonyoss.s2.common.concurrent.NamedThreadFactory;
 
 /**
- * An implementation of IProducer<V> which calls
+ * An implementation of IProducer which calls
  * listeners from a Cached Thread Pool.
  * 
  * If listener implementations block then there may be

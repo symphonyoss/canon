@@ -57,7 +57,7 @@
 		<connection>scm:git:git://github.com/symphonyoss/canon.git</connection>
 		<developerConnection>scm:git:git@github.com:symphonyoss/canon.git</developerConnection>
 		<url>https://github.com/symphonyoss/canon</url>
-	  <tag>HEAD</tag>
+	  <tag>canon-0.0.9</tag>
   </scm>
 	
 	<developers>
