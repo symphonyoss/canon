@@ -6,11 +6,15 @@
   private final ${fieldType?right_pad(25)}  ${field.camelName}_;
 </#list>
 
-<#-- Constructor from fields -->
-  protected ${modelJavaClassName}Entity(${modelJavaClassName}.AbstractFactory factory, I${model.camelCapitalizedName}Entity canonOther)<@checkLimitsClassThrows model/>
+<#------------------------------------------------------------------------------------------------------------------------------
+
+ Constructor from fields
+ 
+------------------------------------------------------------------------------------------------------------------------------->
+  protected ${modelJavaClassName}Entity(${modelJavaClassName}.AbstractFactory<?,?,?> factory, I${model.camelCapitalizedName}Entity canonOther)<@checkLimitsClassThrows model/>
   {
 <#if model.superSchema??>
-    super(factory.getModel().get${model.superSchema.baseSchema.model.camelCapitalizedName}Model().get${model.superSchema.baseSchema.camelCapitalizedName}Factory(), canonOther.getJsonObject());
+    super(factory.get${model.model.camelCapitalizedName}Model().get${model.superSchema.baseSchema.model.camelCapitalizedName}Model().get${model.superSchema.baseSchema.camelCapitalizedName}Factory(), canonOther.getJsonObject());
 <#else>
     super(canonOther.getJsonObject());
 </#if>
@@ -26,11 +30,15 @@
 </#list>
   }
   
-<#-- Constructor from Json   -->  
-  protected ${modelJavaClassName}Entity(${modelJavaClassName}.AbstractFactory factory, ImmutableJsonObject jsonObject) throws InvalidValueException
+<#------------------------------------------------------------------------------------------------------------------------------
+
+ Constructor from Json
+ 
+-------------------------------------------------------------------------------------------------------------------------------> 
+  protected ${modelJavaClassName}Entity(${modelJavaClassName}.AbstractFactory<?,?,?> factory, ImmutableJsonObject jsonObject) throws InvalidValueException
   {
 <#if model.superSchema??>
-    super(factory.getModel().get${model.superSchema.baseSchema.model.camelCapitalizedName}Model().get${model.superSchema.baseSchema.camelCapitalizedName}Factory(), jsonObject);
+    super(factory.get${model.model.camelCapitalizedName}Model().get${model.superSchema.baseSchema.model.camelCapitalizedName}Model().get${model.superSchema.baseSchema.camelCapitalizedName}Factory(), jsonObject);
 <#else>
     super(jsonObject);
 </#if>
@@ -115,10 +123,18 @@
 
 <#include "ObjectBody.ftl">
   
-  public static abstract class Factory
-      extends EntityFactory<I${modelJavaClassName}, I${modelJavaClassName}Entity, I${model.model.camelCapitalizedName}>
+<#------------------------------------------------------------------------------------------------------------------------------
 
+ Factory
+ 
+-------------------------------------------------------------------------------------------------------------------------------> 
+  public static class Factory extends ${modelJavaClassName}.Factory
   {
+    /**
+     * Constructor.
+     * 
+     * @param model The model of which this factory is a part.
+     */
     public Factory(I${model.model.camelCapitalizedName} model)
     {
       super(model);
@@ -129,6 +145,7 @@
      * 
      * @return A new builder.
      */
+    @Override
     public Builder newBuilder()
     {
       return new Builder(this);
@@ -143,11 +160,110 @@
      * 
      * @return A new builder.
      */
+    @Override
     public Builder newBuilder(I${modelJavaClassName}Entity initial)
     {
       return new Builder(this, initial);
     }
+    
+    @Override
+    public I${model.camelCapitalizedName} newInstance(I${modelJavaClassName}Entity builder)<@checkLimitsClassThrows model/>
+    {
+      return intern(super.newInstance(builder));
+    }
+    
+    @Override
+    public I${model.camelCapitalizedName} newInstance(ImmutableJsonObject jsonObject) throws InvalidValueException
+    {
+      return intern(super.newInstance(jsonObject));
+    }
+  }
   
+<#------------------------------------------------------------------------------------------------------------------------------
+
+ Abstract Factory
+ 
+-------------------------------------------------------------------------------------------------------------------------------> 
+  public static abstract class AbstractFactory<E extends IEntity, S extends IEntity, B extends AbstractBuilder<?>>
+  <#if model.superSchema??>
+    extends ${model.superSchema.baseSchema.camelCapitalizedName}.AbstractFactory<E,S,B>
+  <#else>
+    extends EntityFactory<E, S, B>
+  </#if>
+  {
+    private I${model.model.camelCapitalizedName} ${model.model.camelName}Model_;
+    
+    public AbstractFactory(I${model.model.camelCapitalizedName} model)
+    {
+  <#if model.superSchema??>
+      super(model.get${model.superSchema.baseSchema.model.camelCapitalizedName}Model());
+  </#if>
+      ${model.model.camelName}Model_ = model;
+    }
+    
+    public I${model.model.camelCapitalizedName} get${model.model.camelCapitalizedName}Model()
+    {
+      return ${model.model.camelName}Model_;
+    }
+  
+  <#if model.superSchema??>
+    <#if model.baseSchema.model != model.superSchema.baseSchema.model>
+    /**
+     * Intern the given instance.
+     * 
+     * Entities created by a factory are interned before returning them to the caller.
+     * 
+     * This method is therefore called after Factory.newInstance(), which itself calls the entity facade
+     * constructor, but before the object is returned to the caller. The intern method can replace the 
+     * object returned if it so wishes.
+     * 
+     * The default implementation calls the model wide intern method, the default implementation of which
+     * returns the given instance without any change or side effect, however this may be overridden in the
+     * model facade, and the facade of any type may be overridden to do something else entirely.
+     *
+     * Since this object is a sub-class of an object defined in another model we need to call super.intern()
+     * to perform the intern in the super class model and then explicitly call the intern in our local model.
+     * 
+     * The intention is that the developer has the option to implement intern functionality either at the
+     * model level or separately for each type in the model.
+     * 
+     * @param instance A model object to be interned.
+     * 
+     * @return The interned instance of the given object.
+     */
+    public <T extends I${model.camelCapitalizedName}> T intern(T instance)
+    {
+      return get${model.model.camelCapitalizedName}Model().intern(super.intern(instance));
+    }
+    </#if>
+  <#else>
+    /**
+     * Intern the given instance.
+     * 
+     * Entities created by a factory are interned before returning them to the caller.
+     * 
+     * This method is therefore called after Factory.newInstance(), which itself calls the entity facade
+     * constructor, but before the object is returned to the caller. The intern method can replace the 
+     * object returned if it so wishes.
+     * 
+     * The default implementation calls the model wide intern method, the default implementation of which
+     * returns the given instance without any change or side effect, however this may be overridden in the
+     * model facade, and the facade of any type may be overridden to do something else entirely.
+     * 
+     * The intention is that the developer has the option to implement intern functionality either at the
+     * model level or separately for each type in the model.
+     * 
+     * @param instance A model object to be interned.
+     * 
+     * @return The interned instance of the given object.
+     */
+    public <T extends I${model.camelCapitalizedName}> T intern(T instance)
+    {
+      return get${model.model.camelCapitalizedName}Model().intern(instance);
+    }
+  </#if>
+ 
+ <#--      
     /**
      * Return a new entity instance created from the given other instance.
      * This is used to construct an entity from its builder as the builder also
@@ -160,8 +276,14 @@
 <@javadocLimitsClassThrows model/>
      */
     public abstract I${model.camelCapitalizedName} newInstance(I${modelJavaClassName}Entity builder)<@checkLimitsClassThrows model/>;
+-->
   }
   
+<#------------------------------------------------------------------------------------------------------------------------------
+
+ Builder
+ 
+-------------------------------------------------------------------------------------------------------------------------------> 
   /**
    * Builder for ${modelJavaClassName}
    * 
@@ -199,6 +321,11 @@
     }
   }
   
+<#------------------------------------------------------------------------------------------------------------------------------
+
+ Abstract Builder
+ 
+-------------------------------------------------------------------------------------------------------------------------------> 
   public static class AbstractBuilder<B extends AbstractBuilder<?>>
   <#if model.superSchema??>
     extends ${model.superSchema.baseSchema.camelCapitalizedName}.AbstractBuilder<B>

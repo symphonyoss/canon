@@ -42,31 +42,13 @@ import com.google.common.collect.ImmutableSet;
  * 
  * @author Bruce Skingle
  *
- * @param <E> The type of the entity produced by this factory.
- * @param <B> The interface type of the entity.
- * @param <M> The type of the model to which the enclosing entity type belongs.
+ * @param <E> The type of the entity produced by this factory, i.e. the facade.
+ * @param <S> The super type of the entity, i.e. the generated super class.
+ * @param <B> The builder type of the entity.
  */
-public abstract class EntityFactory<E extends IEntity, B extends IEntity, M extends IModel>
-implements IEntityFactory<E,B,M>
+public abstract class EntityFactory<E extends IEntity, S extends IEntity, B extends EntityBuilder>
+implements IEntityFactory<E,S,B>
 {
-  private final M model_;
-  
-  /**
-   * Constructor.
-   * 
-   * @param model the model to which this factory belongs.
-   */
-  public EntityFactory(M model)
-  {
-    model_ = model;
-  }
-  
-  @Override
-  public M getModel()
-  {
-    return model_;
-  }
-
   @Override
   public List<E> newMutableList(JsonArray<?> jsonArray) throws InvalidValueException
   {

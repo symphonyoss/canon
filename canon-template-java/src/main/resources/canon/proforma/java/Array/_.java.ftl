@@ -3,6 +3,7 @@
 <@setPrologueJavaType model/>
 import javax.annotation.concurrent.Immutable;
 
+import org.symphonyoss.s2.canon.runtime.IEntity;
 import org.symphonyoss.s2.canon.runtime.IEntity${modelJavaCardinality};
 import org.symphonyoss.s2.common.dom.json.ImmutableJsonList;
 import org.symphonyoss.s2.common.dom.json.ImmutableJsonSet;

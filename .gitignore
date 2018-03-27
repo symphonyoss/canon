@@ -41,3 +41,4 @@ workspace/**
 /.recommenders/
 
 **/*.yaml
+**/.gitignore
