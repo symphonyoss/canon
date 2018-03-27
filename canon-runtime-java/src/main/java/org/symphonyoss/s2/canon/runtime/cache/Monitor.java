@@ -20,8 +20,8 @@ import org.symphonyoss.s2.canon.runtime.IConsumer;
 import org.symphonyoss.s2.canon.runtime.SynchronousProducer;
 
 /**
- * An implementation of IMonitor<K,V> based upon an 
- * IProducer<V> which calls listeners in the current thread.
+ * An implementation of IMonitor based upon an 
+ * IProducer which calls listeners in the current thread.
  * 
  * Listeners are obliged to return quickly and should not block.
  * 
