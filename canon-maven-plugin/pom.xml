@@ -30,7 +30,6 @@
   </parent>
   
   <artifactId>canon-maven-plugin</artifactId>
-  <version>0.0.9</version>
   <packaging>maven-plugin</packaging>
   
   <dependencies>
