@@ -26,9 +26,10 @@
   <parent>
     <groupId>org.symphonyoss.s2.canon</groupId>
     <artifactId>canon</artifactId>
-    <version>0.0.10</version>
+    <version>0.0.11-SNAPSHOT</version>
   </parent>
   <artifactId>canon-runtime-java</artifactId>
+  <version>0.0.9</version>
   
   <dependencies>
     <dependency>
@@ -107,8 +108,4 @@
         <scope>test</scope>
     </dependency>
   </dependencies>
-
-  <scm>
-    <tag>canon-0.0.10</tag>
-  </scm>
 </project>
