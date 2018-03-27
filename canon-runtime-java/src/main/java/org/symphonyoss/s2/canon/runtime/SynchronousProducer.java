@@ -24,7 +24,7 @@ import org.slf4j.LoggerFactory;
 import org.symphonyoss.s2.common.fault.TransactionFault;
 
 /**
- * A simple implementation of IProducer<V> which calls
+ * A simple implementation of IProducer which calls
  * listeners in the current thread.
  * 
  * If listener implementations block then there may be
