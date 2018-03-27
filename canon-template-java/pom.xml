@@ -26,7 +26,7 @@
   <parent>
     <groupId>org.symphonyoss.s2.canon</groupId>
     <artifactId>canon</artifactId>
-    <version>0.0.9</version>
+    <version>0.0.10</version>
   </parent>
   
   <artifactId>canon-template-java</artifactId>
@@ -38,4 +38,8 @@
 	    <version>${project.version}</version>
     </dependency>
   </dependencies> -->
+
+  <scm>
+    <tag>canon-0.0.10</tag>
+  </scm>
 </project>
