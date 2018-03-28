@@ -7,7 +7,7 @@
       "name": "Apache2"
     }
   },
-  "id": "https://github.com/bruceskingle/canon/blob/master/canon-test/src/main/resources/test/oneOfEverything.json",
+  "id": "org.symphonyoss.s2.canon.test.oneOfEverything",
   "model": {
     "javaGenPackage":  "org.symphonyoss.s2.canon.test.oneofeverything",
     "javaFacadePackage":  "org.symphonyoss.s2.canon.test.oneofeverything.facade"

@@ -7,7 +7,7 @@
       "name": "Apache2"
     }
   },
-  "id": "https://github.com/bruceskingle/canon/blob/master/canon-test/src/main/resources/test/typeCheck.json",
+  "id": "org.symphonyoss.s2.canon.test.typeCheck",
   "model": {
     "javaGenPackage":  "org.symphonyoss.s2.canon.test.typeCheck",
     "javaFacadePackage":  "org.symphonyoss.s2.canon.test.typeCheck.facade"
