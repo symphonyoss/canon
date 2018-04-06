@@ -79,7 +79,7 @@
 		<maven.compiler.source>1.8</maven.compiler.source>
 		<maven.compiler.target>1.8</maven.compiler.target>
 		<s2.common.version>0.1.17</s2.common.version>
-		<fugue.version>0.0.5</fugue.version>
+		<fugue.version>0.0.6</fugue.version>
 	</properties>
 
 	<repositories>
@@ -140,12 +140,6 @@
 				<artifactId>jsr305</artifactId>
 				<version>3.0.2</version>
 			</dependency>
-			
-			<!-- <dependency>
-			  <groupId>com.networknt</groupId>
-			  <artifactId>json-schema-validator</artifactId>
-			  <version>0.1.11</version>
-			</dependency> -->
 			
 			<dependency>
 		    <groupId>com.github.java-json-tools</groupId>
