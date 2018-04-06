@@ -42,6 +42,15 @@ public abstract class EntityBuilder implements IJsonDomNodeProvider, IBaseEntity
   protected static final DomSerializer SERIALIZER = DomSerializer.newBuilder().withCanonicalMode(true).build();
 
   /**
+   * Constructor.
+   * 
+   * @param factory The factory with which this builder is associated.
+   */
+  public EntityBuilder(EntityFactory<?,?,?> factory)
+  {
+  }
+
+  /**
    * Return the JSON representation of the current state of this builder.
    * 
    * @return the JSON representation of the current state of this builder.

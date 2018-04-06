@@ -23,9 +23,29 @@
 
 package org.symphonyoss.s2.canon.runtime;
 
+import javax.annotation.Nonnull;
+
 import org.symphonyoss.s2.common.dom.json.ImmutableJsonObject;
 
+/**
+ * Interface representing a generated object type from a Canon model.
+ * 
+ * @author Bruce Skingle
+ *
+ */
 public interface IEntity extends IBaseEntity
 {
-  ImmutableJsonObject getJsonObject();
+  /**
+   * Return the JSON object from which this entity was created.
+   * 
+   * @return the JSON object from which this entity was created.
+   */
+  @Nonnull ImmutableJsonObject getJsonObject();
+
+  /**
+   * Return the type identifier (_type JSON attribute) for this entity.
+   * 
+   * @return The type identifier for this object.
+   */
+  @Nonnull String getCanonType();
 }

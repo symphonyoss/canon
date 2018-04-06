@@ -74,8 +74,10 @@ implements IEntityFactory<E,S,B>
     {
       if(node instanceof JsonObject)
       {
-        if(!list.add(newInstance((ImmutableJsonObject) node.immutify())))
-          throw new InvalidValueException("Duplicate value " + node + " encountered in Set.");
+        list.add(newInstance((ImmutableJsonObject) node.immutify()));
+// there isnt a lot of point in this I think....
+//        if(!list.add(newInstance((ImmutableJsonObject) node.immutify())))
+//          throw new InvalidValueException("Duplicate value " + node + " encountered in Set.");
       }
       else
       {

@@ -35,7 +35,7 @@ public class OneOfEverythingServer extends FugueServer
   
   public OneOfEverythingServer()
   {
-    super("OneOfEverythingServer", 8080);
+    super("OneOfEverythingServer", 7009);
   }
 
 

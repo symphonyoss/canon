@@ -11,12 +11,12 @@
  Constructor from fields
  
 ------------------------------------------------------------------------------------------------------------------------------->
-  protected ${modelJavaClassName}Entity(${modelJavaClassName}.AbstractFactory<?,?,?> factory, I${model.camelCapitalizedName}Entity canonOther)<@checkLimitsClassThrows model/>
+  protected ${modelJavaClassName}Entity(${modelJavaClassName}.AbstractFactory<?,?,?> factory, I${model.camelCapitalizedName}Builder canonOther)<@checkLimitsClassThrows model/>
   {
 <#if model.superSchema??>
-    super(factory.get${model.model.camelCapitalizedName}Model().get${model.superSchema.baseSchema.model.camelCapitalizedName}Model().get${model.superSchema.baseSchema.camelCapitalizedName}Factory(), canonOther.getJsonObject());
+    super(factory.get${model.model.camelCapitalizedName}Model().get${model.superSchema.baseSchema.model.camelCapitalizedName}Model().get${model.superSchema.baseSchema.camelCapitalizedName}Factory(), canonOther);
 <#else>
-    super(canonOther.getJsonObject());
+    super(canonOther);
 </#if>
     
     canonFactory_ = factory;
@@ -161,13 +161,13 @@
      * @return A new builder.
      */
     @Override
-    public Builder newBuilder(I${modelJavaClassName}Entity initial)
+    public Builder newBuilder(I${modelJavaClassName}Builder initial)
     {
       return new Builder(this, initial);
     }
     
     @Override
-    public I${model.camelCapitalizedName} newInstance(I${modelJavaClassName}Entity builder)<@checkLimitsClassThrows model/>
+    public I${model.camelCapitalizedName} newInstance(I${modelJavaClassName}Builder builder)<@checkLimitsClassThrows model/>
     {
       return intern(super.newInstance(builder));
     }
@@ -275,7 +275,7 @@
      * 
 <@javadocLimitsClassThrows model/>
      */
-    public abstract I${model.camelCapitalizedName} newInstance(I${modelJavaClassName}Entity builder)<@checkLimitsClassThrows model/>;
+    public abstract I${model.camelCapitalizedName} newInstance(I${modelJavaClassName}Builder builder)<@checkLimitsClassThrows model/>;
 -->
   }
   
@@ -298,13 +298,13 @@
 
     private Builder(${modelJavaClassName}Entity.Factory factory)
     {
-      super();
+      super(factory);
       canonFactory_ = factory;
     }
     
-    private Builder(${modelJavaClassName}Entity.Factory factory, I${modelJavaClassName}Entity initial)
+    private Builder(${modelJavaClassName}Entity.Factory factory, I${modelJavaClassName}Builder initial)
     {
-      super(initial);
+      super(factory, initial);
       canonFactory_ = factory;
     }
          
@@ -326,25 +326,27 @@
  Abstract Builder
  
 -------------------------------------------------------------------------------------------------------------------------------> 
-  public static class AbstractBuilder<B extends AbstractBuilder<?>>
+  public static abstract class AbstractBuilder<B extends AbstractBuilder<?>>
   <#if model.superSchema??>
     extends ${model.superSchema.baseSchema.camelCapitalizedName}.AbstractBuilder<B>
   <#else>
     extends EntityBuilder
   </#if>
-    implements I${modelJavaClassName}Entity
+    implements I${modelJavaClassName}Builder
   {
   <#list model.fields as field>
     <@setJavaType field/>
     private ${fieldType?right_pad(25)}  ${field.camelName}_${javaBuilderTypeNew};
   </#list>
     
-    protected AbstractBuilder()
+    protected AbstractBuilder(AbstractFactory<?,?,B> factory)
     {
+      super(factory);
     }
     
-    protected AbstractBuilder(I${modelJavaClassName}Entity initial)
+    protected AbstractBuilder(AbstractFactory<?,?,B> factory, I${modelJavaClassName}Builder initial)
     {
+      super(factory);
   <#list model.fields as field>
   <@setJavaType field/>
       ${field.camelName}_${javaBuilderTypeCopyPrefix}initial.get${field.camelCapitalizedName}()${javaBuilderTypeCopyPostfix};
@@ -425,6 +427,12 @@
         <@generateCreateJsonDomNodeFromField "          " field "jsonObject"/>
       }
   </#list>
+    }
+    
+    @Override
+    public String getCanonType()
+    {
+      return TYPE_ID;
     }
     
     public void validate() throws InvalidValueException

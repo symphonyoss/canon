@@ -23,22 +23,59 @@
 
 package org.symphonyoss.s2.canon.runtime;
 
+import javax.annotation.Nonnull;
+
+import org.symphonyoss.s2.common.dom.json.IImmutableJsonDomNode;
 import org.symphonyoss.s2.common.dom.json.ImmutableJsonObject;
 
+/**
+ * Base class for all generated object classes in a Canon model.
+ * 
+ * @author Bruce Skingle
+ *
+ */
 public class Entity extends BaseEntity implements IEntity
 {
-  private final ImmutableJsonObject        jsonObject_;
-    
+  private final ImmutableJsonObject jsonObject_;
+  private final String              type_;
+  
+  /**
+   * Constructor from serialized form.
+   * 
+   * @param jsonObject A parse tree of the serialized form.
+   */
   public Entity(ImmutableJsonObject jsonObject)
   {
     super(jsonObject);
     
     jsonObject_ = jsonObject;
+    IImmutableJsonDomNode typeNode = jsonObject_.get(CanonRuntime.JSON_TYPE);
+    
+    if(typeNode == null)
+      type_ = "UNKNONWN";
+    else
+      type_ = typeNode.toString();
+  }
+
+  /**
+   * Constructor from another instance, usually a Builder.
+   * 
+   * @param canonOther Another entity containing all values for the required object. This is usually a Builder.
+   */
+  public Entity(IEntity canonOther)
+  {
+    this(canonOther.getJsonObject());
   }
 
   @Override
   public ImmutableJsonObject getJsonObject()
   {
     return jsonObject_;
+  }
+  
+  @Override
+  public @Nonnull String getCanonType()
+  {
+    return type_;
   }
 }

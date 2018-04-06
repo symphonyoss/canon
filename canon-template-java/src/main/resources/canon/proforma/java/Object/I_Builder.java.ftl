@@ -8,11 +8,11 @@ import ${javaGenPackage}.I${model.camelCapitalizedName}Entity;
 
 <#include "../../../template/java/Object/Object.ftl">
 @Immutable
-public interface I${model.camelCapitalizedName}
+public interface I${model.camelCapitalizedName}Builder
 <#if model.superSchema??>
-  extends I${model.superSchema.baseSchema.camelCapitalizedName}, I${model.camelCapitalizedName}Builder
+  extends I${model.superSchema.baseSchema.camelCapitalizedName}Builder, I${model.camelCapitalizedName}Entity
 <#else>
-  extends I${model.camelCapitalizedName}Builder
+  extends I${model.camelCapitalizedName}Entity
 </#if>
 {
 }

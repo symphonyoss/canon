@@ -4,7 +4,7 @@
 public class ${model.camelCapitalizedName} extends ${model.camelCapitalizedName}Entity implements I${model.camelCapitalizedName}
 {
 <#-- Constrictor from fields --> 
-  protected ${model.camelCapitalizedName}(${modelJavaClassName}.AbstractFactory<?,?,?> factory, I${model.camelCapitalizedName}Entity other)<@checkLimitsClassThrows model/>
+  protected ${model.camelCapitalizedName}(${modelJavaClassName}.AbstractFactory<?,?,?> factory, I${model.camelCapitalizedName}Builder other)<@checkLimitsClassThrows model/>
   {
     super(factory, other);
   }
@@ -25,8 +25,8 @@ public class ${model.camelCapitalizedName} extends ${model.camelCapitalizedName}
    * so you cannot usefully override anything here, do that in AbstractFactory below.
    *
    */
-  public static abstract class Factory extends AbstractFactory<I${modelJavaClassName}, I${modelJavaClassName}Entity, ${modelJavaClassName}Entity.Builder>
-    implements I${model.model.camelCapitalizedName}ModelEntityFactory<I${modelJavaClassName}, I${modelJavaClassName}Entity, ${modelJavaClassName}Entity.Builder>
+  public static abstract class Factory extends AbstractFactory<I${modelJavaClassName}, I${modelJavaClassName}Builder, ${modelJavaClassName}Entity.Builder>
+    implements I${model.model.camelCapitalizedName}ModelEntityFactory<I${modelJavaClassName}, I${modelJavaClassName}Builder, ${modelJavaClassName}Entity.Builder>
   {
     public Factory(I${model.model.camelCapitalizedName} model)
     {
@@ -34,7 +34,7 @@ public class ${model.camelCapitalizedName} extends ${model.camelCapitalizedName}
     }
     
     @Override
-    public I${model.camelCapitalizedName} newInstance(I${modelJavaClassName}Entity builder)<@checkLimitsClassThrows model/>
+    public I${model.camelCapitalizedName} newInstance(I${modelJavaClassName}Builder builder)<@checkLimitsClassThrows model/>
     {
       return new ${model.camelCapitalizedName}(this, builder);
     }
@@ -93,15 +93,16 @@ public class ${model.camelCapitalizedName} extends ${model.camelCapitalizedName}
 //  }
   }
   
-  public static class AbstractBuilder<B extends AbstractBuilder<?>> extends ${modelJavaClassName}Entity.AbstractBuilder<B>
+  public static abstract class AbstractBuilder<B extends AbstractBuilder<?>> extends ${modelJavaClassName}Entity.AbstractBuilder<B>
   {
-    public AbstractBuilder()
+    public AbstractBuilder(AbstractFactory<?, ?, B> factory)
     {
+      super(factory);
     }
     
-    public AbstractBuilder(I${modelJavaClassName}Entity initial)
+    public AbstractBuilder(AbstractFactory<?, ?, B> factory, I${modelJavaClassName}Builder initial)
     {
-      super(initial);
+      super(factory, initial);
     }
 
     @Override 
