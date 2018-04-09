@@ -3,13 +3,11 @@
 @Immutable
 public class ${model.camelCapitalizedName} extends ${model.camelCapitalizedName}Entity implements I${model.camelCapitalizedName}
 {
-<#-- Constrictor from fields --> 
   protected ${model.camelCapitalizedName}(${modelJavaClassName}.AbstractFactory<?,?,?> factory, I${model.camelCapitalizedName}Builder other)<@checkLimitsClassThrows model/>
   {
     super(factory, other);
   }
   
-<#-- Constrictor from Json   -->
   protected ${model.camelCapitalizedName}(${modelJavaClassName}.AbstractFactory<?,?,?> factory, ImmutableJsonObject jsonObject) throws InvalidValueException
   {
     super(factory, jsonObject);
@@ -28,6 +26,11 @@ public class ${model.camelCapitalizedName} extends ${model.camelCapitalizedName}
   public static abstract class Factory extends AbstractFactory<I${modelJavaClassName}, I${modelJavaClassName}Builder, ${modelJavaClassName}Entity.Builder>
     implements I${model.model.camelCapitalizedName}ModelEntityFactory<I${modelJavaClassName}, I${modelJavaClassName}Builder, ${modelJavaClassName}Entity.Builder>
   {
+    /**
+     * Constructor.
+     * 
+     * @param model The model of which this factory is a part.
+     */
     public Factory(I${model.model.camelCapitalizedName} model)
     {
       super(model);
@@ -93,13 +96,33 @@ public class ${model.camelCapitalizedName} extends ${model.camelCapitalizedName}
 //  }
   }
   
+  /**
+   * The abstract builder class for ${model.camelCapitalizedName} and any sub-classes. The concrete Builder is in the generated
+   * super-class ${model.camelCapitalizedName}Entity. This is slightly strange but it reduces the amount of code which needs to
+   * be written and maintained in the hand written facade class (here).
+   * 
+   * @author Bruce Skingle
+   *
+   * @param <B> The class of the concrete builder, needed so that the builder API can be fluent. 
+   */
   public static abstract class AbstractBuilder<B extends AbstractBuilder<?>> extends ${modelJavaClassName}Entity.AbstractBuilder<B>
   {
+    /**
+     * Construct a new builder with default values.
+     * 
+     * @param factory The factory with which this builder is associated and which will construct any objects its builds.
+     */
     public AbstractBuilder(AbstractFactory<?, ?, B> factory)
     {
       super(factory);
     }
     
+    /**
+     * Construct a new builder with values taken from the given instance.
+     * 
+     * @param factory The factory with which this builder is associated and which will construct any objects its builds.
+     * @param initial A source of initial values, either a ${model.camelCapitalizedName} or a ${model.camelCapitalizedName}.Builder.
+     */
     public AbstractBuilder(AbstractFactory<?, ?, B> factory, I${modelJavaClassName}Builder initial)
     {
       super(factory, initial);
