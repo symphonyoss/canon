@@ -59,8 +59,7 @@ import com.google.protobuf.ByteString;
 public class TestOneOfEverything extends AbstractModelObjectTest
 {
   private final OneOfEverything                   oneOfEverything_        = new OneOfEverything();
-  private final IModelRegistry                    modelRegistry_          = new ModelRegistry()
-                                                                            .register(oneOfEverything_);
+  private final IModelRegistry                    modelRegistry_          = new ModelRegistry(oneOfEverything_);
   private final ObjectWithOneOfEverything.Factory objectFactory_          = oneOfEverything_
                                                                             .getObjectWithOneOfEverythingFactory();
   

@@ -36,7 +36,6 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.symphonyoss.s2.canon.runtime.http.HttpMethod;
 import org.symphonyoss.s2.canon.runtime.http.RequestContext;
-import org.symphonyoss.s2.fugue.di.ComponentDescriptor;
 
 public abstract class ModelServlet<M extends IModel> extends HttpServlet implements IModelServlet
 {
@@ -58,12 +57,6 @@ public abstract class ModelServlet<M extends IModel> extends HttpServlet impleme
           
           return 0;
         }});
-
-  @Override
-  public ComponentDescriptor getComponentDescriptor()
-  {
-    return new ComponentDescriptor();
-  }
   
   public abstract M getModel();
   
@@ -134,7 +127,4 @@ public abstract class ModelServlet<M extends IModel> extends HttpServlet impleme
   {
     handle(HttpMethod.Delete, req, resp);
   }
-
-
-
 }

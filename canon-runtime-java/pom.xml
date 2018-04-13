@@ -32,11 +32,6 @@
   
   <dependencies>
     <dependency>
-       <groupId>org.symphonyoss.s2.fugue</groupId>
-       <artifactId>fugue-di</artifactId>
-     </dependency>
-      
-    <dependency>
       <groupId>org.symphonyoss.s2.common</groupId>
       <artifactId>S2-common-core</artifactId>
     </dependency>
@@ -64,32 +59,6 @@
        <groupId>com.google.guava</groupId>
        <artifactId>guava</artifactId>
     </dependency>
-     
-    <!-- <dependency>
-      <groupId>org.eclipse.jetty.http2</groupId>
-      <artifactId>http2-server</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>org.eclipse.jetty</groupId>
-      <artifactId>jetty-alpn-server</artifactId>
-    </dependency> -->
-    <!-- <dependency>
-      <groupId>org.eclipse.jetty</groupId>
-      <artifactId>jetty-servlet</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>org.eclipse.jetty</groupId>
-      <artifactId>jetty-servlets</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>javax.servlet</groupId>
-      <artifactId>javax.servlet-api</artifactId>
-    </dependency> -->
-    <!-- <dependency>
-      <groupId>org.mortbay.jetty.alpn</groupId>
-      <artifactId>alpn-boot</artifactId>
-      <scope>provided</scope>
-    </dependency> -->
     
     <dependency>
 	    <groupId>org.apache.httpcomponents</groupId>

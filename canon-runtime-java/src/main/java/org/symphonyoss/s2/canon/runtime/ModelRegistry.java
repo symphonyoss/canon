@@ -28,12 +28,8 @@ import java.io.InputStream;
 import java.io.Reader;
 import java.io.StringReader;
 import java.util.HashMap;
-import java.util.LinkedList;
-import java.util.List;
 import java.util.Map;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.symphonyoss.s2.common.dom.json.IJsonDomNode;
 import org.symphonyoss.s2.common.dom.json.IJsonObject;
 import org.symphonyoss.s2.common.dom.json.ImmutableJsonObject;
@@ -41,67 +37,44 @@ import org.symphonyoss.s2.common.dom.json.JsonValue;
 import org.symphonyoss.s2.common.dom.json.jackson.JacksonAdaptor;
 import org.symphonyoss.s2.common.exception.InvalidValueException;
 import org.symphonyoss.s2.common.fault.TransactionFault;
-import org.symphonyoss.s2.fugue.di.Cardinality;
-import org.symphonyoss.s2.fugue.di.ComponentDescriptor;
-import org.symphonyoss.s2.fugue.di.IBinder;
 
 import com.fasterxml.jackson.core.JsonParser.Feature;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
+/**
+ * A ModelRegistry is a container for IModels which can deserialize objects from any of the contained models.
+ * 
+ * @author Bruce Skingle
+ *
+ */
 public class ModelRegistry implements IModelRegistry
 {
-  private static final Logger LOG = LoggerFactory.getLogger(ModelRegistry.class);
-  
   private Map<String, IEntityFactory<?,?,?>>  factoryMap_ = new HashMap<>();
-//  private Map<String, IUrlPathServlet> servlets_ = new HashMap<>();
-  private List<IModel>   models_ = new LinkedList<>();
 
-  @Override
-  public ComponentDescriptor getComponentDescriptor()
+  /**
+   * Create a registry with the given models.
+   * 
+   * @param firstModel        At least one model to be registered.
+   * @param additionalModels  Additional models to be registered.
+   */
+  public ModelRegistry(IModel firstModel, IModel ...additionalModels)
   {
-    return new ComponentDescriptor()
-        .addProvidedInterface(IModelRegistry.class)
-        .addDependency(IModel.class, new IBinder<IModel>()
-          {
-            @Override
-            public void bind(IModel v)
-            {
-              register(v);
-            }
-        }, Cardinality.oneOrMore);
+    add(firstModel);
+    
+    for(IModel model : additionalModels)
+    {
+      add(model);
+    }
   }
   
-  @Override
-  public IModelRegistry register(IModel factory)
+  private void add(IModel model)
   {
-    models_.add(factory);
-    factory.registerWith(this);
-    return this;
+    for(IEntityFactory<?, ?, ?> factory : model.getFactories())
+    {
+      factoryMap_.put(factory.getCanonType(), factory);
+    }
   }
-  
-  @Override
-  public IModelRegistry register(String name, IEntityFactory<?,?,?> factory)
-  {
-    factoryMap_.put(name, factory);
-    return this;
-  }
-  
-//  @Override
-//  public void register(IUrlPathServlet servlet)
-//  {
-//    IUrlPathServlet other = servlets_.put(servlet.getUrlPath(), servlet);
-//    
-//    if(other != null)
-//        throw new IllegalArgumentException("Duplicate path " + servlet.getUrlPath() + " with " + other);
-//  }
-//
-//  @Override
-//  public void registerServlets(IServletContainer servletContainer)
-//  {
-//    for(IUrlPathServlet servlet : servlets_.values())
-//      servletContainer.addServlet(servlet);
-//  }
 
   @Override
   public IEntity newInstance(ImmutableJsonObject jsonObject) throws InvalidValueException
@@ -115,6 +88,17 @@ public class ModelRegistry implements IModelRegistry
     return factory.newInstance(jsonObject);
   }
   
+  /**
+   * Parse a single JSON object from the given Reader.
+   * 
+   * This method does not do a partial read, it is expected that the contents of the Reader
+   * are a single object.
+   * 
+   * @param reader  The source of a JSON object.
+   * @return  The parsed object as an ImmutableJsonObject.
+   * 
+   * @throws InvalidValueException If the input cannot be parsed or does not contain a single object.
+   */
   public static ImmutableJsonObject parseOneJsonObject(Reader reader) throws InvalidValueException
   {
     ObjectMapper  mapper = new ObjectMapper().configure(Feature.AUTO_CLOSE_SOURCE, false);
@@ -140,6 +124,17 @@ public class ModelRegistry implements IModelRegistry
     }
   }
   
+  /**
+   * Parse a single JSON value from the given Reader.
+   * 
+   * This method does not do a partial read, it is expected that the contents of the Reader
+   * are a single value.
+   * 
+   * @param reader  The source of a JSON value.
+   * @return  The parsed value as an (Immutable) JsonValue.
+   * 
+   * @throws InvalidValueException If the input cannot be parsed or does not contain a single object.
+   */
   public static JsonValue<?,?> parseOneJsonValue(Reader reader) throws InvalidValueException
   {
     ObjectMapper  mapper = new ObjectMapper().configure(Feature.AUTO_CLOSE_SOURCE, false);
@@ -208,11 +203,4 @@ public class ModelRegistry implements IModelRegistry
       arrayParser.close();
     }
   }
-
-//  @Override
-//  public Collection<IUrlPathServlet> getServlets()
-//  {
-//    return servlets_.values();
-//  }
-
 }

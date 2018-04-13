@@ -34,7 +34,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.symphonyoss.s2.canon.runtime.exception.CanonException;
 import org.symphonyoss.s2.canon.runtime.http.RequestContext;
-import org.symphonyoss.s2.fugue.di.ComponentDescriptor;
 
 public abstract class PathHandler<M extends IModel> implements IEntityHandler
 {
@@ -58,12 +57,6 @@ public abstract class PathHandler<M extends IModel> implements IEntityHandler
   }
 
   public abstract M getModel();
-
-  @Override
-  public ComponentDescriptor getComponentDescriptor()
-  {
-    return new ComponentDescriptor();
-  }
 
   @Override
   public boolean handle(RequestContext context) throws IOException

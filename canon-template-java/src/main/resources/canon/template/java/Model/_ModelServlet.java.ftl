@@ -5,8 +5,6 @@ import javax.annotation.concurrent.Immutable;
 
 import org.symphonyoss.s2.canon.runtime.ModelServlet;
 import org.symphonyoss.s2.common.http.IUrlPathServlet;
-import org.symphonyoss.s2.fugue.di.Cardinality;
-import org.symphonyoss.s2.fugue.di.ComponentDescriptor;
 
 import ${javaFacadePackage}.I${model.model.camelCapitalizedName};
 
@@ -15,11 +13,12 @@ public class ${modelJavaClassName}ModelServlet extends ModelServlet<I${model.mod
 {
   private static final long serialVersionUID = 1L;
   
-  private I${model.model.camelCapitalizedName} model_;
+  private final I${model.model.camelCapitalizedName} model_;
 
-  public ${modelJavaClassName}ModelServlet(
+  public ${modelJavaClassName}ModelServlet(I${model.model.camelCapitalizedName} model,
     I${model.model.camelCapitalizedName}EntityHandler ...handlers)
   {
+    model_ = model;
     for(I${model.model.camelCapitalizedName}EntityHandler handler : handlers)
       register(handler);
   }
@@ -28,15 +27,6 @@ public class ${modelJavaClassName}ModelServlet extends ModelServlet<I${model.mod
   public I${model.model.camelCapitalizedName} getModel()
   {
     return model_;
-  }
-
-  @Override
-  public ComponentDescriptor getComponentDescriptor()
-  {
-    return super.getComponentDescriptor()
-        .addDependency(I${model.model.camelCapitalizedName}.class, (v) -> model_ = v)
-        .addDependency(I${model.model.camelCapitalizedName}EntityHandler.class, (v) -> register(v), Cardinality.oneOrMore)
-        .addProvidedInterface(IUrlPathServlet.class);
   }
  
   @Override

@@ -6,12 +6,10 @@ import org.symphonyoss.s2.common.dom.json.IImmutableJsonDomNode;
 import org.symphonyoss.s2.common.dom.json.ImmutableJsonObject;
 import org.symphonyoss.s2.common.exception.InvalidValueException;
 
-import org.symphonyoss.s2.canon.runtime.IModelRegistry;
 import org.symphonyoss.s2.canon.runtime.CanonRuntime;
 import org.symphonyoss.s2.canon.runtime.Entity;
+import org.symphonyoss.s2.canon.runtime.IEntityFactory;
 import org.symphonyoss.s2.canon.runtime.Model;
-
-import org.symphonyoss.s2.fugue.di.ComponentDescriptor;
 
 import ${javaFacadePackage}.I${model.camelCapitalizedName};
 import ${javaFacadePackage}.I${model.camelCapitalizedName}ModelEntity;
@@ -63,22 +61,18 @@ public abstract class ${model.camelCapitalizedName}Model extends Model implement
   }
   
   @Override
-  public ComponentDescriptor getComponentDescriptor()
+  public IEntityFactory<?,?,?>[] getFactories()
   {
-    return super.getComponentDescriptor()
-        .addProvidedInterface(I${model.camelCapitalizedName}.class);
-  }
-  
-  @Override
-  public void registerWith(IModelRegistry registry)
-  {
+    return new IEntityFactory<?,?,?>[]
+    {
 <#list model.schemas as object>
   <#if object.isAbstract?? && object.isAbstract>
     //ABSTRACT ${object.camelName}
   <#else>
-    registry.register(${(object.camelCapitalizedName + ".TYPE_ID,")?right_pad(45)} ${object.camelName}Factory_);
+      ${object.camelName}Factory_<#sep>,</#sep>
   </#if>
 </#list>
+    };
   }
   
   @Override

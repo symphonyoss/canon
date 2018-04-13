@@ -35,8 +35,6 @@ import org.symphonyoss.s2.canon.runtime.exception.ServerErrorException;
 import org.symphonyoss.s2.canon.runtime.http.ParameterLocation;
 import org.symphonyoss.s2.canon.runtime.http.RequestContext;
 
-import org.symphonyoss.s2.fugue.di.ComponentDescriptor;
-
 <@importFieldTypes model true/>
 <@importFacadePackages model/>
 
@@ -44,9 +42,10 @@ import org.symphonyoss.s2.fugue.di.ComponentDescriptor;
 @Immutable
 public abstract class ${modelJavaClassName}AsyncPathHandler extends AsyncPathHandler<I${model.model.camelCapitalizedName}> implements I${modelJavaClassName}AsyncPathHandler
 {
-  private I${model.model.camelCapitalizedName} model_;
+  private final I${model.model.camelCapitalizedName} model_;
   
   public ${modelJavaClassName}AsyncPathHandler(
+    I${model.model.camelCapitalizedName} model,
     ExecutorService processExecutor,
     ExecutorService responseExecutor)
   {
@@ -56,21 +55,14 @@ public abstract class ${modelJavaClassName}AsyncPathHandler extends AsyncPathHan
 </#list>
       }
     );
+      
+      model_ = model;
   }
   
   @Override
   public I${model.model.camelCapitalizedName} getModel()
   {
     return model_;
-  }
-
-  @Override
-  public ComponentDescriptor getComponentDescriptor()
-  {
-    return super.getComponentDescriptor()
-        .addDependency(I${model.model.camelCapitalizedName}.class, (v) -> model_ = v)
-        .addProvidedInterface(I${modelJavaClassName}AsyncPathHandler.class)
-        .addProvidedInterface(I${model.model.camelCapitalizedName}EntityHandler.class);
   }
 
   @Override
