@@ -26,6 +26,8 @@ package org.symphonyoss.s2.canon.runtime;
 import java.util.List;
 import java.util.Set;
 
+import javax.annotation.Nonnull;
+
 import org.symphonyoss.s2.common.dom.json.ImmutableJsonObject;
 import org.symphonyoss.s2.common.dom.json.JsonArray;
 import org.symphonyoss.s2.common.exception.InvalidValueException;
@@ -44,6 +46,13 @@ import com.google.common.collect.ImmutableSet;
  */
 public interface IEntityFactory<E extends IEntity, S extends IEntity, B extends EntityBuilder>
 {
+  /**
+   * Return the type identifier (_type JSON attribute) for entities created by this factory.
+   * 
+   * @return The type identifier for entities created by this factory.
+   */
+  @Nonnull String getCanonType();
+  
   /**
    * Create a new builder with all fields initialized to default values.
    * 

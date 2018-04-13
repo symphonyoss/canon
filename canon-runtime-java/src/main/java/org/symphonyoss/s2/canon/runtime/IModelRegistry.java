@@ -29,13 +29,12 @@ import java.io.Reader;
 
 import org.symphonyoss.s2.common.dom.json.ImmutableJsonObject;
 import org.symphonyoss.s2.common.exception.InvalidValueException;
-import org.symphonyoss.s2.fugue.di.IComponent;
 
-public interface IModelRegistry extends IComponent
+public interface IModelRegistry
 {
-  IModelRegistry register(IModel factory);
-
-  IModelRegistry register(String name, IEntityFactory<?,?,?> factory);
+//  IModelRegistry register(IModel factory);
+//
+//  IModelRegistry register(String name, IEntityFactory<?,?,?> factory);
 
   IEntity newInstance(ImmutableJsonObject jsonObject) throws InvalidValueException;
 

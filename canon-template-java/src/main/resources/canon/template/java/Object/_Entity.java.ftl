@@ -140,6 +140,12 @@
       super(model);
     }
     
+    @Override
+    public String getCanonType()
+    {
+      return TYPE_ID;
+    }
+    
     /**
      * Create a new builder with all fields initialized to default values.
      * 

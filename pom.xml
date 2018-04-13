@@ -79,7 +79,7 @@
 		<maven.compiler.source>1.8</maven.compiler.source>
 		<maven.compiler.target>1.8</maven.compiler.target>
 		<s2.common.version>0.1.17</s2.common.version>
-		<fugue.version>0.0.6</fugue.version>
+		<fugue.version>0.0.7</fugue.version>
 	</properties>
 
 	<repositories>
@@ -97,11 +97,6 @@
 	
 	<dependencyManagement>
 		<dependencies>
-		  <dependency>
-	      <groupId>org.symphonyoss.s2.fugue</groupId>
-	      <artifactId>fugue-di</artifactId>
-	      <version>${fugue.version}</version>
-	    </dependency>
 	    <dependency>
 	      <groupId>org.symphonyoss.s2.fugue</groupId>
 	      <artifactId>fugue-core</artifactId>

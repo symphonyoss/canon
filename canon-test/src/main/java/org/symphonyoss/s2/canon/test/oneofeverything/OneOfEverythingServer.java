@@ -27,7 +27,6 @@ import java.io.IOException;
 
 import org.symphonyoss.s2.canon.test.oneofeverything.facade.OneOfEverything;
 import org.symphonyoss.s2.fugue.FugueServer;
-import org.symphonyoss.s2.fugue.di.IDIContext;
 
 public class OneOfEverythingServer extends FugueServer
 {
@@ -36,13 +35,6 @@ public class OneOfEverythingServer extends FugueServer
   public OneOfEverythingServer()
   {
     super("OneOfEverythingServer", 7009);
-  }
-
-
-  @Override
-  protected void registerComponents(IDIContext diContext)
-  {
-    diContext.register(model_);
   }
 
 

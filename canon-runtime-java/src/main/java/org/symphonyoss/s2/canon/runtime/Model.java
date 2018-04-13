@@ -23,16 +23,6 @@
 
 package org.symphonyoss.s2.canon.runtime;
 
-import org.symphonyoss.s2.fugue.di.ComponentDescriptor;
-
 public abstract class Model implements IModel
 {
-
-  @Override
-  public ComponentDescriptor getComponentDescriptor()
-  {
-    return new ComponentDescriptor()
-        .addProvidedInterface(IModel.class);
-  }
-
 }

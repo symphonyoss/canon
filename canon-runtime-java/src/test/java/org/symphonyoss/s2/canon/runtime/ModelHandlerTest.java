@@ -29,7 +29,6 @@ import java.util.List;
 
 import org.junit.Test;
 import org.symphonyoss.s2.canon.runtime.http.RequestContext;
-import org.symphonyoss.s2.fugue.di.ComponentDescriptor;
 
 public class ModelHandlerTest
 {
@@ -82,33 +81,12 @@ public class ModelHandlerTest
   
   class TestModel extends Model
   {
-    @Override
-    public ComponentDescriptor getComponentDescriptor()
-    {
-      return new ComponentDescriptor();
-    }
 
     @Override
-    public void registerWith(IModelRegistry registry)
+    public IEntityFactory<?, ?, ?>[] getFactories()
     {
-      // TODO Auto-generated method stub
-      
+      return new IEntityFactory<?, ?, ?>[0];
     }
-//
-//    @Override
-//    public void start()
-//    {
-//      // TODO Auto-generated method stub
-//      
-//    }
-//
-//    @Override
-//    public void stop()
-//    {
-//      // TODO Auto-generated method stub
-//      
-//    }
-
     
   }
 
