@@ -36,12 +36,16 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.symphonyoss.s2.canon.runtime.http.HttpMethod;
 import org.symphonyoss.s2.canon.runtime.http.RequestContext;
+import org.symphonyoss.s2.fugue.core.trace.ITraceContext;
+import org.symphonyoss.s2.fugue.core.trace.ITraceContextFactory;
+import org.symphonyoss.s2.fugue.core.trace.log.LoggerTraceContextFactory;
 
 public abstract class ModelServlet<M extends IModel> extends HttpServlet implements IModelServlet
 {
   private static final long serialVersionUID = 1L;
 
-  private TreeMap<Integer, List<IEntityHandler>>  handlerMap_ = new TreeMap<>(new Comparator<Integer>()
+  private ITraceContextFactory                    traceFactory_ = new LoggerTraceContextFactory();
+  private TreeMap<Integer, List<IEntityHandler>>  handlerMap_   = new TreeMap<>(new Comparator<Integer>()
       {
         /*
          * We want the map in descending order.
@@ -75,7 +79,7 @@ public abstract class ModelServlet<M extends IModel> extends HttpServlet impleme
   
   private void handle(HttpMethod method, HttpServletRequest req, HttpServletResponse resp) throws IOException
   {
-    RequestContext context = new RequestContext(method, req, resp);
+    RequestContext context = new RequestContext(method, req, resp, createTraceContext(method + " " + req.getRequestURI()));
     
     for(List<IEntityHandler> list : handlerMap_.values())
     {
@@ -90,6 +94,11 @@ public abstract class ModelServlet<M extends IModel> extends HttpServlet impleme
     context.sendErrorResponse(HttpServletResponse.SC_NOT_FOUND);
   }
   
+  protected ITraceContext createTraceContext(String request)
+  {
+    return traceFactory_.createTransaction("HTTP Request", request);
+  }
+
   @Override
   protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException
   {

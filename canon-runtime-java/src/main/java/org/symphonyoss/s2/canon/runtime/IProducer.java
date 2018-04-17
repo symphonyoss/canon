@@ -16,6 +16,8 @@
 
 package org.symphonyoss.s2.canon.runtime;
 
+import org.symphonyoss.s2.fugue.pipeline.IConsumer;
+
 /**
  * An interface for an entity which produces objects for which listeners may be registered.
  * 

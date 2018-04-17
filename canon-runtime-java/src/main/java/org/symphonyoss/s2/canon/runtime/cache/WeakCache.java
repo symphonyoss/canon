@@ -10,6 +10,7 @@ import java.util.Map;
 
 import org.symphonyoss.s2.canon.runtime.IProducerImpl;
 import org.symphonyoss.s2.canon.runtime.SynchronousProducer;
+import org.symphonyoss.s2.fugue.core.trace.ITraceContext;
 
 public class WeakCache<K,V>
 {
@@ -107,11 +108,11 @@ public class WeakCache<K,V>
 	 * threads call this method.
 	 * @param key    The key.
 	 * @param value  The object.
-	 * @param notify If true then notify all listeners.
+	 * @param notify If non-null then notify all listeners using the given trace context.
 	 * 
 	 * @return The "one true instance" of that object.
 	 */
-	public synchronized V cache(K key, V value, boolean notify)
+	public synchronized V cache(K key, V value, ITraceContext trace)
   {
 	  V existing = fetch(key);
     
@@ -121,16 +122,16 @@ public class WeakCache<K,V>
     }
     else
     {
-      put(key, value, notify);
+      put(key, value, trace);
 
       return value;
     }
   }
 
-  protected void put(K key, V value, boolean notify)
+  protected void put(K key, V value, ITraceContext trace)
   {
-    if(notify && producer_ != null)
-      producer_.produce(value);
+    if(trace != null && producer_ != null)
+      producer_.produce(value, trace);
     
     map_.put(key, new WeakCacheReference<K,V>(key, value, queue_));
   }

@@ -46,6 +46,7 @@ import org.symphonyoss.s2.canon.runtime.TypeDefBuilder;
 import org.symphonyoss.s2.common.dom.json.ImmutableJsonObject;
 import org.symphonyoss.s2.common.dom.json.JsonValue;
 import org.symphonyoss.s2.common.exception.InvalidValueException;
+import org.symphonyoss.s2.fugue.core.trace.ITraceContext;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ArrayNode;
@@ -53,22 +54,26 @@ import com.google.protobuf.ByteString;
 
 public class RequestContext
 {
-  public static final String JSON_CONTENT_TYPE = "application/json; charset=utf-8";
+  public static final String        JSON_CONTENT_TYPE = "application/json; charset=utf-8";
 
-  private static Logger log_ = LoggerFactory.getLogger(RequestContext.class);
-  
+  private static Logger             log_              = LoggerFactory.getLogger(RequestContext.class);
+
   private final HttpMethod          method_;
   private final HttpServletRequest  request_;
   private final HttpServletResponse response_;
-  private Map<String, Cookie> cookieMap_;
-  private Map<String, String> pathMap_;
-  private List<String>        errors_           = new LinkedList<>();
+  private final ITraceContext       trace_;
+  
+  private Map<String, Cookie>       cookieMap_;
+  private Map<String, String>       pathMap_;
+  private List<String>              errors_           = new LinkedList<>();
 
-  public RequestContext(HttpMethod method, HttpServletRequest request, HttpServletResponse response)
+
+  public RequestContext(HttpMethod method, HttpServletRequest request, HttpServletResponse response, ITraceContext trace)
   {
     method_ = method;
     request_ = request;
     response_ = response;
+    trace_ = trace;
   }
 
   public HttpMethod getMethod()
@@ -84,6 +89,11 @@ public class RequestContext
   public HttpServletResponse getResponse()
   {
     return response_;
+  }
+
+  public ITraceContext getTrace()
+  {
+    return trace_;
   }
 
   public @Nullable Long  getParameterAsLong(String name, ParameterLocation location, boolean required)

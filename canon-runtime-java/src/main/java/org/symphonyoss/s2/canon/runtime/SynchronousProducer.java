@@ -22,6 +22,8 @@ import java.util.List;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.symphonyoss.s2.common.fault.TransactionFault;
+import org.symphonyoss.s2.fugue.core.trace.ITraceContext;
+import org.symphonyoss.s2.fugue.pipeline.IConsumer;
 
 /**
  * A simple implementation of IProducer which calls
@@ -59,22 +61,22 @@ public class SynchronousProducer<V> implements IProducerImpl<V>
   }
   
   @Override
-  public void produce(V value)
+  public void produce(V value, ITraceContext trace)
   {
     if(listeners_ != null)
     {
       for(IConsumer<V> listener : listeners_)
       {
-        notify(listener, value);
+        notify(listener, value, trace);
       }
     }
   }
 
-  protected void notify(IConsumer<V> listener, V value)
+  protected void notify(IConsumer<V> listener, V value, ITraceContext trace)
   {
     try
     {
-      listener.consume(value);
+      listener.consume(value, trace);
     }
     catch(TransactionFault e)
     {

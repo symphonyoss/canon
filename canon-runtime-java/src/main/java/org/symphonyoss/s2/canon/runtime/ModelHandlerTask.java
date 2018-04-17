@@ -29,6 +29,9 @@ import java.util.concurrent.ExecutorService;
 
 import javax.annotation.Nullable;
 
+import org.symphonyoss.s2.fugue.core.trace.ITraceContext;
+import org.symphonyoss.s2.fugue.pipeline.IConsumer;
+
 public abstract class ModelHandlerTask<T> implements Runnable, IConsumer<T>
 {
   private final ExecutorService executor_;
@@ -42,7 +45,7 @@ public abstract class ModelHandlerTask<T> implements Runnable, IConsumer<T>
   }
 
   @Override
-  public synchronized void  consume(T item)
+  public synchronized void  consume(T item, ITraceContext trace)
   {
     if(closed_)
       throw new IllegalStateException("Task is closed");

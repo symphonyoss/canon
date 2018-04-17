@@ -31,16 +31,19 @@ import javax.servlet.ServletOutputStream;
 
 import org.symphonyoss.s2.canon.runtime.exception.CanonException;
 import org.symphonyoss.s2.common.exception.InvalidValueException;
+import org.symphonyoss.s2.fugue.core.trace.ITraceContext;
 
 public abstract class EmptyRequestManager
 extends AbstractRequestManager<Void,IBaseEntity>
 implements IEmptyRequestManager
 {
+  private final ITraceContext trace_;
 
-  public EmptyRequestManager(ServletInputStream in, ServletOutputStream out, AsyncContext async,
+  public EmptyRequestManager(ServletInputStream in, ServletOutputStream out, ITraceContext trace, AsyncContext async,
       ExecutorService processExecutor)
   {
-    super(in, out, async, processExecutor, null);
+    super(in, out, trace, async, processExecutor, null);
+    trace_ = trace;
   }
   
   @Override
@@ -52,13 +55,13 @@ implements IEmptyRequestManager
   @Override
   protected void finishRequest()
   {
-    System.err.println("Request finish()");
+    trace_.trace("Request complete");
     getAsync().complete();
   }
   
   public void start()
   {
-    getProcessTask().consume("");
+    getProcessTask().consume("", trace_);
     getProcessTask().close();
   }
 }

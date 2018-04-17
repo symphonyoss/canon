@@ -24,6 +24,7 @@
 package org.symphonyoss.s2.canon.runtime;
 
 import org.symphonyoss.s2.canon.runtime.exception.CanonException;
+import org.symphonyoss.s2.fugue.pipeline.IConsumer;
 
 /**
  * A handler for some async method which takes a payload and returns a response.

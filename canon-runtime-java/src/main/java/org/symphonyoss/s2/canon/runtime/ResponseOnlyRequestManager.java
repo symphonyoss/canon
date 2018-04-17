@@ -8,16 +8,19 @@ import javax.servlet.ServletOutputStream;
 import javax.servlet.WriteListener;
 
 import org.symphonyoss.s2.canon.runtime.exception.CanonException;
+import org.symphonyoss.s2.fugue.core.trace.ITraceContext;
 
 public abstract class ResponseOnlyRequestManager<R extends IBaseEntity>
 extends AbstractRequestManager<Void,R>
 implements WriteListener, IResponseOnlyRequestManager<R>
 {
+  private ITraceContext trace_;
 
-  public ResponseOnlyRequestManager(ServletInputStream in, ServletOutputStream out, AsyncContext async,
+  public ResponseOnlyRequestManager(ServletInputStream in, ServletOutputStream out, ITraceContext trace, AsyncContext async,
       ExecutorService processExecutor, ExecutorService responseExecutor)
   {
-    super(in, out, async, processExecutor, responseExecutor);
+    super(in, out, trace, async, processExecutor, responseExecutor);
+    trace_ = trace;
   }
 
   @Override
@@ -35,6 +38,6 @@ implements WriteListener, IResponseOnlyRequestManager<R>
   
   public void start()
   {
-    getProcessTask().consume("");
+    getProcessTask().consume("", trace_);
   }
 }

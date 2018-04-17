@@ -16,25 +16,26 @@
 
 package org.symphonyoss.s2.canon.runtime.cache;
 
-import org.symphonyoss.s2.canon.runtime.IConsumer;
 import org.symphonyoss.s2.canon.runtime.IProducer;
+import org.symphonyoss.s2.fugue.core.trace.ITraceContext;
+import org.symphonyoss.s2.fugue.pipeline.IConsumer;
 
 public interface IMonitor<V> extends IProducer<V>
 {
   V getValue();
 
-  IMonitor<V> setValueIfGreater(V value);
+  IMonitor<V> setValueIfGreater(V value, ITraceContext trace);
 
-  IMonitor<V> setValue(V value);
+  IMonitor<V> setValue(V value, ITraceContext trace);
 
   /**
    * Add the given listener and optionally call back immediately with the
    * current value.
    * 
-   * @param initialize  If true then call the listener with the current value.
    * @param listener    A listener which will be called whenever the value
    * of this monitor changes.
+   * @param trace  If non-null then call the listener with the current value and the given trace context.
    */
-  void addListener(boolean initialize, IConsumer<V> listener);
+  void addListener(IConsumer<V> listener, ITraceContext trace);
 
 }
