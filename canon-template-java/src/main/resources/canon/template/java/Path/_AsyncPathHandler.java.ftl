@@ -21,7 +21,7 @@ import org.symphonyoss.s2.common.dom.json.JsonValue;
 import org.symphonyoss.s2.common.exception.InvalidValueException;
 
 import org.symphonyoss.s2.canon.runtime.AsyncPathHandler;
-import org.symphonyoss.s2.canon.runtime.IConsumer;
+import org.symphonyoss.s2.fugue.pipeline.IConsumer;
 import org.symphonyoss.s2.canon.runtime.EmptyRequestManager;
 import org.symphonyoss.s2.canon.runtime.PayloadOnlyRequestManager;
 import org.symphonyoss.s2.canon.runtime.PayloadResponseRequestManager;
@@ -117,7 +117,7 @@ public abstract class ${modelJavaClassName}AsyncPathHandler extends AsyncPathHan
     <#case "PayloadResponse">
       // Method has both Payload and Response
       PayloadResponseRequestManager<${methodPayloadType}, ${methodResponseType}> manager =
-        new PayloadResponseRequestManager<${methodPayloadType}, ${methodResponseType}>(in, out, async, getProcessExecutor(), getResponseExecutor())
+        new PayloadResponseRequestManager<${methodPayloadType}, ${methodResponseType}>(in, out, context.getTrace(), async, getProcessExecutor(), getResponseExecutor())
       {
         @Override
         public void handle(${methodPayloadDecl} payload, IConsumer<${methodResponseType}> consumer) throws CanonException
@@ -151,7 +151,7 @@ public abstract class ${modelJavaClassName}AsyncPathHandler extends AsyncPathHan
     <#case "Payload">
       // Method has a Payload but no Response
       PayloadOnlyRequestManager<${methodPayloadType}> manager =
-        new PayloadOnlyRequestManager<${methodPayloadType}>(in, out, async, getProcessExecutor())
+        new PayloadOnlyRequestManager<${methodPayloadType}>(in, out, context.getTrace(), async, getProcessExecutor())
       {
         @Override
         public void handle(${methodPayloadDecl} payload) throws CanonException
@@ -184,7 +184,7 @@ public abstract class ${modelJavaClassName}AsyncPathHandler extends AsyncPathHan
     <#case "Response">
       // Method has no Payload but does have a Response
       ResponseOnlyRequestManager<${methodResponseType}> manager =
-        new ResponseOnlyRequestManager<${methodResponseType}>(in, out, async, getProcessExecutor(), getResponseExecutor())
+        new ResponseOnlyRequestManager<${methodResponseType}>(in, out, context.getTrace(), async, getProcessExecutor(), getResponseExecutor())
       {
         @Override
         public void handle(IConsumer<${methodResponseType}> consumer) throws CanonException

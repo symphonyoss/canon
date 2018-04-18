@@ -1,6 +1,7 @@
 package org.symphonyoss.s2.canon.runtime.cache;
 
 import org.symphonyoss.s2.canon.runtime.SynchronousProducer;
+import org.symphonyoss.s2.fugue.core.trace.ITraceContext;
 
 public class WeakMonitorCache<K,V extends Comparable<V>>
 extends WeakCache<K, IMonitor<V>>
@@ -27,23 +28,23 @@ extends WeakCache<K, IMonitor<V>>
 	 * 
    * @param key    The key.
    * @param value  The object.
-   * @param notify If true then notify all listeners.
+   * @param trace If true then notify all listeners using the given trace context.
 	 * 
 	 * @return The "one true instance" of that object.
 	 */
-	public synchronized IMonitor<V> cache(K key, V value, boolean notify)
+	public synchronized IMonitor<V> cache(K key, V value, ITraceContext trace)
   {
 	  IMonitor<V> existing = fetch(key);
     
     if(existing != null)
     {
-      return existing.setValueIfGreater(value);
+      return existing.setValueIfGreater(value, trace);
     }
     else
     {
       IMonitor<V> monitor = monitorFactory_.create(key, value);
       
-      put(key, monitor, notify);
+      put(key, monitor, trace);
       
       return monitor;
     }

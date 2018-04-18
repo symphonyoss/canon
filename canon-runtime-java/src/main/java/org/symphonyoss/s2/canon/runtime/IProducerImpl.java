@@ -23,6 +23,8 @@
 
 package org.symphonyoss.s2.canon.runtime;
 
+import org.symphonyoss.s2.fugue.core.trace.ITraceContext;
+
 /**
  * The implementation side of a producer which has the additional method to notify listeners of the
  * production of an item.
@@ -37,6 +39,7 @@ public interface IProducerImpl<V> extends IProducer<V>
    * Notify all registered listeners that the given item has been produced.
    * 
    * @param item An item which has been produced.
+   * @param trace A trace context.
    */
-  void produce(V item);
+  void produce(V item, ITraceContext trace);
 }

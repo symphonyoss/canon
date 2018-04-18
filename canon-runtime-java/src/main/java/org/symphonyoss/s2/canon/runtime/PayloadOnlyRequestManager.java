@@ -32,16 +32,17 @@ import javax.servlet.ServletOutputStream;
 
 import org.symphonyoss.s2.canon.runtime.exception.CanonException;
 import org.symphonyoss.s2.common.exception.InvalidValueException;
+import org.symphonyoss.s2.fugue.core.trace.ITraceContext;
 
 public abstract class PayloadOnlyRequestManager<P>
 extends AbstractRequestManager<P,IBaseEntity>
 implements ReadListener, IPayloadOnlyRequestManager<P>
 {
 
-  public PayloadOnlyRequestManager(ServletInputStream in, ServletOutputStream out, AsyncContext async,
+  public PayloadOnlyRequestManager(ServletInputStream in, ServletOutputStream out, ITraceContext trace, AsyncContext async,
       ExecutorService processExecutor)
   {
-    super(in, out, async, processExecutor, null);
+    super(in, out, trace, async, processExecutor, null);
   }
 
   protected abstract P parsePayload(String payload) throws InvalidValueException;

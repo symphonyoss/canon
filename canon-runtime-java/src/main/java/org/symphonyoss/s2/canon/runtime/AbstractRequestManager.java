@@ -10,11 +10,13 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.symphonyoss.s2.canon.runtime.exception.CanonException;
 import org.symphonyoss.s2.common.exception.InvalidValueException;
+import org.symphonyoss.s2.fugue.core.trace.ITraceContext;
 
 public abstract class AbstractRequestManager<P,R extends IBaseEntity>
 {
   private final ServletInputStream  in_;
   private final ServletOutputStream out_;
+  private final ITraceContext       trace_;
   private final AsyncContext        async_;
   private final ExecutorService     processExecutor_;
   private final ExecutorService     responseExecutor_;
@@ -24,11 +26,12 @@ public abstract class AbstractRequestManager<P,R extends IBaseEntity>
   private byte[]                    inputBuffer_ = new byte[1024];
   private JsonArrayParser           arrayParser_;
   
-  public AbstractRequestManager(ServletInputStream in, ServletOutputStream out, AsyncContext async,
+  public AbstractRequestManager(ServletInputStream in, ServletOutputStream out, ITraceContext trace, AsyncContext async,
       ExecutorService processExecutor, ExecutorService responseExecutor)
   {
     in_ = in;
     out_ = out;
+    trace_ = trace;
     async_ = async;
     processExecutor_ = processExecutor;
     responseExecutor_ = responseExecutor;
@@ -143,7 +146,7 @@ public abstract class AbstractRequestManager<P,R extends IBaseEntity>
       @Override
       protected void handle(String input)
       {
-        processTask_.consume(input);
+        processTask_.consume(input, trace_);
       }
     };
   }

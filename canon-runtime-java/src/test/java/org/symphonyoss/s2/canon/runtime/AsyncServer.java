@@ -26,17 +26,12 @@ package org.symphonyoss.s2.canon.runtime;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
-import java.util.Deque;
 import java.util.Enumeration;
-import java.util.LinkedList;
-import java.util.concurrent.Executor;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
-import javax.annotation.Nullable;
 import javax.servlet.AsyncContext;
 import javax.servlet.ReadListener;
-import javax.servlet.ServletConfig;
 import javax.servlet.ServletException;
 import javax.servlet.ServletInputStream;
 import javax.servlet.ServletOutputStream;
@@ -45,9 +40,11 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import org.symphonyoss.s2.canon.runtime.ModelHandlerTask;
 import org.symphonyoss.s2.common.http.HttpServer;
 import org.symphonyoss.s2.common.http.HttpServerBuilder;
+import org.symphonyoss.s2.fugue.core.trace.ITraceContext;
+import org.symphonyoss.s2.fugue.core.trace.ITraceContextFactory;
+import org.symphonyoss.s2.fugue.core.trace.log.LoggerTraceContextFactory;
 
 public class AsyncServer
 {
@@ -88,8 +85,7 @@ class AsyncServlet extends HttpServlet
 {
   private static final long serialVersionUID = 1L;
   private ExecutorService executor_;
-
-  
+  private ITraceContextFactory                    traceFactory_ = new LoggerTraceContextFactory();
 
   public AsyncServlet(ExecutorService executor)
   {
@@ -132,12 +128,17 @@ class AsyncServlet extends HttpServlet
     ServletOutputStream out = response.getOutputStream();
     AsyncContext async=request.startAsync();
     
-    RequestHandler handler = new RequestHandler(executor_, in, out, async);
+    RequestHandler handler = new RequestHandler(executor_, in, out, async, createTraceContext(request.getMethod() + " " + request.getRequestURI()));
     
     out.setWriteListener(handler);
     in.setReadListener(handler);
     
     System.err.println("isReady=" + in.isReady());
+  }
+  
+  protected ITraceContext createTraceContext(String request)
+  {
+    return traceFactory_.createTransaction("HTTP Request", request);
   }
 }
   
@@ -148,6 +149,7 @@ class AsyncServlet extends HttpServlet
   private ServletInputStream    in_;
   private ServletOutputStream   out_;
   private AsyncContext          async_;
+  private ITraceContext         trace_;
 
   private int                   cnt_               = 0;
   private ByteArrayOutputStream inputBufferStream_ = new ByteArrayOutputStream();
@@ -165,12 +167,13 @@ class AsyncServlet extends HttpServlet
   }
   
   
-  public RequestHandler(ExecutorService executor, ServletInputStream in, ServletOutputStream out, AsyncContext async)
+  public RequestHandler(ExecutorService executor, ServletInputStream in, ServletOutputStream out, AsyncContext async, ITraceContext trace)
   {
     executor_ = executor;
     in_ = in;
     out_ = out;
     async_ = async;
+    trace_ = trace;
     
     responseTask_ = new ModelHandlerTask<String>(executor_)
     {
@@ -212,7 +215,7 @@ class AsyncServlet extends HttpServlet
       @Override
       protected void handleTask(String request)
       {
-        responseTask_.consume(handleRequest(request));
+        responseTask_.consume(handleRequest(request), trace_);
       }
 
       @Override
@@ -295,7 +298,7 @@ class AsyncServlet extends HttpServlet
           String input = new String(inputBufferStream_.toByteArray(), StandardCharsets.UTF_8);
           
           System.err.println("Got input " + input);
-          requestTask_.consume(input);
+          requestTask_.consume(input, trace_);
           
           inputBufferStream_.reset();
           
@@ -329,7 +332,7 @@ class AsyncServlet extends HttpServlet
       String input = new String(inputBufferStream_.toByteArray(), StandardCharsets.UTF_8);
       
       System.err.println("Got input " + input);
-      requestTask_.consume(input);
+      requestTask_.consume(input, trace_);
     }
     requestTask_.close();
   }

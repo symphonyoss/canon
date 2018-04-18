@@ -16,8 +16,9 @@
 
 package org.symphonyoss.s2.canon.runtime.cache;
 
-import org.symphonyoss.s2.canon.runtime.IConsumer;
 import org.symphonyoss.s2.canon.runtime.SynchronousProducer;
+import org.symphonyoss.s2.fugue.core.trace.ITraceContext;
+import org.symphonyoss.s2.fugue.pipeline.IConsumer;
 
 /**
  * An implementation of IMonitor based upon an 
@@ -48,30 +49,30 @@ implements IMonitor<V>
   }
   
   @Override
-  public synchronized Monitor<K,V> setValueIfGreater(V value)
+  public synchronized Monitor<K,V> setValueIfGreater(V value, ITraceContext trace)
   {
     if(value.compareTo(value_) > 0)
-      setValue(value);
+      setValue(value, trace);
     
     return this;
   }
   
   @Override
-  public synchronized Monitor<K,V> setValue(V value)
+  public synchronized Monitor<K,V> setValue(V value, ITraceContext trace)
   {
     value_ = value;
     
-    produce(value);
+    produce(value, trace);
     
     return this;
   }
   
   @Override
-  public synchronized void addListener(boolean initialize, IConsumer<V> listener)
+  public synchronized void addListener(IConsumer<V> listener, ITraceContext trace)
   {
     addListener(listener);
     
-    if(initialize)
-      listener.consume(value_);
+    if(trace != null)
+      listener.consume(value_, trace);
   }
 }

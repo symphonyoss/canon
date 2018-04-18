@@ -21,6 +21,8 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
 import org.symphonyoss.s2.common.concurrent.NamedThreadFactory;
+import org.symphonyoss.s2.fugue.core.trace.ITraceContext;
+import org.symphonyoss.s2.fugue.pipeline.IConsumer;
 
 /**
  * An implementation of IProducer which calls
@@ -39,11 +41,11 @@ public class AsynchronousProducer<V> extends SynchronousProducer<V>
   private ExecutorService              notifier_      = Executors
       .newCachedThreadPool(new NamedThreadFactory("Producer"));
 
-  protected void notify(IConsumer<V> listener, V value)
+  protected void notify(IConsumer<V> listener, V value, ITraceContext trace)
   {
     notifier_.submit(() ->
     {
-      super.notify(listener, value);
+      super.notify(listener, value, trace);
     });
   }
 

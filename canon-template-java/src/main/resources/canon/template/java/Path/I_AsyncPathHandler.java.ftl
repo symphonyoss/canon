@@ -4,7 +4,7 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
 import org.symphonyoss.s2.canon.runtime.exception.CanonException;
-import org.symphonyoss.s2.canon.runtime.IConsumer;
+import org.symphonyoss.s2.fugue.pipeline.IConsumer;
 
 <@importFieldTypes model true/>
 <@importFacadePackages model/>
