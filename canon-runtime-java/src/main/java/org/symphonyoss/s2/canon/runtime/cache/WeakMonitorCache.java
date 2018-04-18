@@ -28,7 +28,7 @@ extends WeakCache<K, IMonitor<V>>
 	 * 
    * @param key    The key.
    * @param value  The object.
-   * @param notify If true then notify all listeners.
+   * @param trace If true then notify all listeners using the given trace context.
 	 * 
 	 * @return The "one true instance" of that object.
 	 */

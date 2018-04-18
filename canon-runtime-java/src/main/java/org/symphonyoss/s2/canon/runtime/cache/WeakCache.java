@@ -108,7 +108,7 @@ public class WeakCache<K,V>
 	 * threads call this method.
 	 * @param key    The key.
 	 * @param value  The object.
-	 * @param notify If non-null then notify all listeners using the given trace context.
+	 * @param trace If non-null then notify all listeners using the given trace context.
 	 * 
 	 * @return The "one true instance" of that object.
 	 */
