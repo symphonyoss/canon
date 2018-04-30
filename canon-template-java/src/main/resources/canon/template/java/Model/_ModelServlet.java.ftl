@@ -5,6 +5,7 @@ import javax.annotation.concurrent.Immutable;
 
 import org.symphonyoss.s2.canon.runtime.ModelServlet;
 import org.symphonyoss.s2.common.http.IUrlPathServlet;
+import org.symphonyoss.s2.fugue.core.trace.ITraceContextFactory;
 
 import ${javaFacadePackage}.I${model.model.camelCapitalizedName};
 
@@ -15,9 +16,10 @@ public class ${modelJavaClassName}ModelServlet extends ModelServlet<I${model.mod
   
   private final I${model.model.camelCapitalizedName} model_;
 
-  public ${modelJavaClassName}ModelServlet(I${model.model.camelCapitalizedName} model,
+  public ${modelJavaClassName}ModelServlet(I${model.model.camelCapitalizedName} model, ITraceContextFactory traceFactory,
     I${model.model.camelCapitalizedName}EntityHandler ...handlers)
   {
+    super(traceFactory);
     model_ = model;
     for(I${model.model.camelCapitalizedName}EntityHandler handler : handlers)
       register(handler);

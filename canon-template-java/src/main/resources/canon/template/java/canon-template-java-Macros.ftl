@@ -1129,12 +1129,13 @@ ${indent}    ${var}.add(${model.camelCapitalizedName}.newBuilder().build(${value
    * ${description}
   <#if operation.payload??>
   <@setJavaType operation.payload.schema/>
-   * @param _payload The request payload
+   * @param canonPayload The request payload
   </#if>
   <#if isAsync && operation.response??>
   <@setJavaType operation.response.schema/>
-  * @param _consumer A consumer into which responses may be passed.
+   * @param canonConsumer A consumer into which responses may be passed.
   </#if>
+   * @param canonTrace A trace context.
   <#list operation.parameters as parameter>
     <@setJavaType parameter.schema/>
    * @param ${parameter.camelName?right_pad(25)} ${summary}

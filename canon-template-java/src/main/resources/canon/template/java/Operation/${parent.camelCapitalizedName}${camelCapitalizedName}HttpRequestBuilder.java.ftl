@@ -29,9 +29,9 @@ public class ${javaModelClassName} extends ${model.parent.camelCapitalizedName}$
 {
   <#if model.payload??>
     <#if model.payload.isMultiple>
-  private ${"MutableJsonList"?right_pad(25)          } japiPayload_ = new MutableJsonList();
+  private ${"MutableJsonList"?right_pad(25)          } canonPayload_ = new MutableJsonList();
     <#else>
-  private ${methodPayloadType?right_pad(25)           } japiPayload_;
+  private ${methodPayloadType?right_pad(25)           } canonPayload_;
     </#if>
   </#if>
   <#list model.parameters as parameter>
@@ -39,9 +39,9 @@ public class ${javaModelClassName} extends ${model.parent.camelCapitalizedName}$
   private ${("HttpParameter<" + javaClassName + ">")?right_pad(25)} ${parameter.camelName}_;
   </#list>
   
-  public ${javaModelClassName}(${model.model.camelCapitalizedName}HttpModelClient japiClient)
+  public ${javaModelClassName}(${model.model.camelCapitalizedName}HttpModelClient canonClient)
   {
-    super(japiClient);
+    super(canonClient);
     
   <#list model.parameters as parameter>
     <@setJavaType parameter.schema/>  
@@ -53,34 +53,34 @@ public class ${javaModelClassName} extends ${model.parent.camelCapitalizedName}$
   <#if model.payload.isMultiple>
   <@setJavaType model.payload.schema/>
   @Override
-  public MutableJsonList getJapiPayload()
+  public MutableJsonList getCanonPayload()
   {
-    return japiPayload_;
+    return canonPayload_;
   }
   
-  public ${javaModelClassName} withJapiPayload(${methodPayloadType} japiPayload)
+  public ${javaModelClassName} withCanonPayload(${methodPayloadType} canonPayload)
   {
-    japiPayload_.add(${javaGetValuePrefix}japiPayload${javaGetValuePostfix});
+    canonPayload_.add(${javaGetValuePrefix}canonPayload${javaGetValuePostfix});
     return this;
   }
   
-  public ${javaModelClassName} withJapiPayload(Collection<${methodPayloadType}> japiPayload)
+  public ${javaModelClassName} withCanonPayload(Collection<${methodPayloadType}> canonPayload)
   {
-    for(${methodPayloadType} item : japiPayload)
-      japiPayload_.add(${javaGetValuePrefix}item${javaGetValuePostfix});
+    for(${methodPayloadType} item : canonPayload)
+      canonPayload_.add(${javaGetValuePrefix}item${javaGetValuePostfix});
       
     return this;
   }
     <#else>
   @Override
-  public ${methodPayloadType} getJapiPayload()
+  public ${methodPayloadType} getCanonPayload()
   {
-    return japiPayload_;
+    return canonPayload_;
   }
   
-  public ${javaModelClassName} withJapiPayload(${methodPayloadType} japiPayload)
+  public ${javaModelClassName} withCanonPayload(${methodPayloadType} canonPayload)
   {
-    japiPayload_ = japiPayload;
+    canonPayload_ = canonPayload;
     return this;
   }
     </#if>
