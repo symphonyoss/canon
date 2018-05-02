@@ -44,7 +44,7 @@ import com.google.common.collect.ImmutableSet;
  * @param <S> The super type of the entity, i.e. the generated super class.
  * @param <B> The builder type of the entity.
  */
-public interface IEntityFactory<E extends IEntity, S extends IEntity, B extends EntityBuilder>
+public interface IEntityFactory<E extends IEntity, S extends IEntity, B extends IEntityBuilder>
 {
   /**
    * Return the type identifier (_type JSON attribute) for entities created by this factory.
@@ -93,7 +93,7 @@ public interface IEntityFactory<E extends IEntity, S extends IEntity, B extends 
    * 
    * @throws InvalidValueException If the given values are not valid.
    */
-  E newInstance(S builder) throws InvalidValueException;
+  E newInstance(B builder) throws InvalidValueException;
 
   /**
    * Return a list of new entity instances created from the given JSON array.

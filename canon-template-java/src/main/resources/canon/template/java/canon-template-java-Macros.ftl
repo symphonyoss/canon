@@ -950,16 +950,15 @@ ${indent}${var}.addIfNotNull("${field.camelName}", ${field.camelName}_);
  # @param field         A model element representing the field to generate for
  # @param var           The name of a variable to which the extracted value will be assigned 
  # @param ifValidation  If set then an if statement which guards validation checks
- # @param factoryName   Name of the model factory
  # @param mutable       "Mutable" for builders and "Immutable" for objects
  #----------------------------------------------------------------------------------------------------->
-<#macro generateCreateFieldFromJsonDomNode indent field var ifValidation factoryName mutable>
+<#macro generateCreateFieldFromJsonDomNode indent field var ifValidation mutable>
   <@setJavaType field/>
   <#if field.isComponent>
     <#if field.isObjectSchema>
 ${indent}if(node instanceof ImmutableJsonObject)
 ${indent}{
-${indent}  ${var} = ${factoryName}.get${field.model.camelCapitalizedName}Model().get${field.elementSchema.camelCapitalizedName}Factory().newInstance((ImmutableJsonObject)node);
+${indent}  ${var} = ${field.elementSchema.camelCapitalizedName}.FACTORY.newInstance((ImmutableJsonObject)node);
 ${indent}}
 ${indent}else ${ifValidation}
 ${indent}{
@@ -1016,7 +1015,7 @@ ${indent}}
 ${indent}    ${var} = ${javaTypeCopyPrefix}list${javaTypeCopyPostfix};
     <#else>
       <#if field.baseSchema.items.isComponent>
-${indent}  ${var} = ${factoryName}.get${field.model.camelCapitalizedName}Model().get${field.elementSchema.camelCapitalizedName}Factory().new${mutable}${fieldCardinality}((JsonArray<?>)node);
+${indent}  ${var} = ${field.elementSchema.camelCapitalizedName}.FACTORY.new${mutable}${fieldCardinality}((JsonArray<?>)node);
 
       <#else>
 ${indent}  ${var} = ((JsonArray<?>)node).asImmutable${fieldCardinality}Of(${javaElementFieldClassName}.class);

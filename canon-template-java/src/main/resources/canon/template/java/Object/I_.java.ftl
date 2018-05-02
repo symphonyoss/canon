@@ -10,9 +10,9 @@ import javax.annotation.concurrent.Immutable;
 @Immutable
 public interface I${model.camelCapitalizedName}
 <#if model.superSchema??>
-  extends I${model.superSchema.baseSchema.camelCapitalizedName}, I${model.camelCapitalizedName}Builder
+  extends I${model.superSchema.baseSchema.camelCapitalizedName}, I${model.camelCapitalizedName}Entity
 <#else>
-  extends I${model.camelCapitalizedName}Builder
+  extends I${model.camelCapitalizedName}Entity
 </#if>
 {
 }

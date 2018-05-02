@@ -25,11 +25,10 @@ import org.symphonyoss.s2.canon.runtime.http.RequestContext;
 
 <#include "Path.ftl">
 @Immutable
-public abstract class ${modelJavaClassName}PathHandler extends PathHandler<I${model.model.camelCapitalizedName}> implements I${modelJavaClassName}PathHandler
+@SuppressWarnings("unused")
+public abstract class ${modelJavaClassName}PathHandler extends PathHandler implements I${modelJavaClassName}PathHandler
 {
-  private final I${model.model.camelCapitalizedName} model_;
-  
-  public ${modelJavaClassName}PathHandler(I${model.model.camelCapitalizedName} model)
+  public ${modelJavaClassName}PathHandler()
   {
     super(${model.pathParamCnt}, new String[] {
 <#list model.partList as part>
@@ -37,14 +36,6 @@ public abstract class ${modelJavaClassName}PathHandler extends PathHandler<I${mo
 </#list>
       }
     );
-    
-    model_ = model;
-  }
-  
-  @Override
-  public I${model.model.camelCapitalizedName} getModel()
-  {
-    return model_;
   }
 
   @Override
@@ -86,7 +77,7 @@ public abstract class ${modelJavaClassName}PathHandler extends PathHandler<I${mo
     <#if operation.payload.schema.isTypeDef>
     ${fieldType} canonPayload = context.parsePayload(${javaClassName}.newBuilder());
     <#else>
-    ${fieldType} canonPayload = context.parsePayload(getModel().get${javaClassName}Factory());
+    ${fieldType} canonPayload = context.parsePayload(${javaClassName}.FACTORY);
     </#if>
   </#if>
   

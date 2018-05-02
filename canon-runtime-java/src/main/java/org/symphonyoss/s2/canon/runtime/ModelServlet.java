@@ -39,9 +39,8 @@ import org.symphonyoss.s2.canon.runtime.http.HttpMethod;
 import org.symphonyoss.s2.canon.runtime.http.RequestContext;
 import org.symphonyoss.s2.fugue.core.trace.ITraceContext;
 import org.symphonyoss.s2.fugue.core.trace.ITraceContextFactory;
-import org.symphonyoss.s2.fugue.core.trace.log.LoggerTraceContextFactory;
 
-public abstract class ModelServlet<M extends IModel> extends HttpServlet implements IModelServlet
+public abstract class ModelServlet extends HttpServlet implements IModelServlet
 {
   private static final long serialVersionUID = 1L;
 
@@ -67,8 +66,6 @@ public abstract class ModelServlet<M extends IModel> extends HttpServlet impleme
   {
     traceFactory_ = traceFactory;
   }
-
-  public abstract M getModel();
   
   public void register(IEntityHandler handler)
   {

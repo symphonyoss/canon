@@ -26,8 +26,8 @@ package org.symphonyoss.s2.canon.runtime;
 import org.symphonyoss.s2.common.dom.DomSerializer;
 import org.symphonyoss.s2.common.dom.json.IJsonDomNodeProvider;
 
-public abstract class EntityArrayFactory<M extends IEntityArray, F extends IModel>
-implements IEntityArrayFactory<M,F>
+public abstract class EntityArrayFactory<M extends IEntityArray>
+implements IEntityArrayFactory<M>
 {
   protected static final DomSerializer SERIALIZER = DomSerializer.newBuilder().withCanonicalMode(true).build();
   

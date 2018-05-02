@@ -7,28 +7,18 @@ import org.symphonyoss.s2.canon.runtime.ModelServlet;
 import org.symphonyoss.s2.common.http.IUrlPathServlet;
 import org.symphonyoss.s2.fugue.core.trace.ITraceContextFactory;
 
-import ${javaFacadePackage}.I${model.model.camelCapitalizedName};
-
 @Immutable
-public class ${modelJavaClassName}ModelServlet extends ModelServlet<I${model.model.camelCapitalizedName}>
+@SuppressWarnings("unused")
+public class ${modelJavaClassName}ModelServlet extends ModelServlet
 {
   private static final long serialVersionUID = 1L;
-  
-  private final I${model.model.camelCapitalizedName} model_;
 
-  public ${modelJavaClassName}ModelServlet(I${model.model.camelCapitalizedName} model, ITraceContextFactory traceFactory,
+  public ${modelJavaClassName}ModelServlet(ITraceContextFactory traceFactory,
     I${model.model.camelCapitalizedName}EntityHandler ...handlers)
   {
     super(traceFactory);
-    model_ = model;
     for(I${model.model.camelCapitalizedName}EntityHandler handler : handlers)
       register(handler);
-  }
-  
-  @Override
-  public I${model.model.camelCapitalizedName} getModel()
-  {
-    return model_;
   }
  
   @Override

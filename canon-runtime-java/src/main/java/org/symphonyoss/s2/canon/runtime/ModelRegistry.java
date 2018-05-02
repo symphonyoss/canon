@@ -58,19 +58,9 @@ public class ModelRegistry implements IModelRegistry
    * @param firstModel        At least one model to be registered.
    * @param additionalModels  Additional models to be registered.
    */
-  public ModelRegistry(IModel firstModel, IModel ...additionalModels)
+  public ModelRegistry(IEntityFactory<?,?,?> ...factories)
   {
-    add(firstModel);
-    
-    for(IModel model : additionalModels)
-    {
-      add(model);
-    }
-  }
-  
-  private void add(IModel model)
-  {
-    for(IEntityFactory<?, ?, ?> factory : model.getFactories())
+    for(IEntityFactory<?,?,?> factory :factories)
     {
       factoryMap_.put(factory.getCanonType(), factory);
     }

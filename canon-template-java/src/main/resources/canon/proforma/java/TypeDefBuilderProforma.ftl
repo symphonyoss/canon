@@ -13,6 +13,7 @@ import org.symphonyoss.s2.common.exception.InvalidValueException;
 
 import ${modelJavaFullyQualifiedClassName};
 
+@SuppressWarnings("unused")
 public class ${model.camelCapitalizedName}Builder
 {
 <#if model.enum??>

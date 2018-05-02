@@ -11,15 +11,10 @@
  Constructor from fields
  
 ------------------------------------------------------------------------------------------------------------------------------->
-  protected ${modelJavaClassName}Entity(${modelJavaClassName}.AbstractFactory<?,?,?> factory, I${model.camelCapitalizedName}Builder canonOther)<@checkLimitsClassThrows model/>
+  public ${modelJavaClassName}Entity(I${model.camelCapitalizedName}AbstractBuilder<?> canonOther)<@checkLimitsClassThrows model/>
   {
-<#if model.superSchema??>
-    super(factory.get${model.model.camelCapitalizedName}Model().get${model.superSchema.baseSchema.model.camelCapitalizedName}Model().get${model.superSchema.baseSchema.camelCapitalizedName}Factory(), canonOther);
-<#else>
     super(canonOther);
-</#if>
     
-    canonFactory_ = factory;
 <#list model.fields as field>
     <@setJavaType field/>
     ${field.camelName}_ = ${javaTypeCopyPrefix}canonOther.get${field.camelCapitalizedName}()${javaTypeCopyPostfix};
@@ -35,18 +30,13 @@
  Constructor from Json
  
 -------------------------------------------------------------------------------------------------------------------------------> 
-  protected ${modelJavaClassName}Entity(${modelJavaClassName}.AbstractFactory<?,?,?> factory, ImmutableJsonObject jsonObject) throws InvalidValueException
+  public ${modelJavaClassName}Entity(ImmutableJsonObject jsonObject) throws InvalidValueException
   {
-<#if model.superSchema??>
-    super(factory.get${model.model.camelCapitalizedName}Model().get${model.superSchema.baseSchema.model.camelCapitalizedName}Model().get${model.superSchema.baseSchema.camelCapitalizedName}Factory(), jsonObject);
-<#else>
     super(jsonObject);
-</#if>
     
     if(jsonObject == null)
       throw new InvalidValueException("jsonObject is required");
   
-    canonFactory_ = factory;
 <#-- We can't do this because of inheritance, we may be constructing a sub-class and the type will be that of the subclass
     IImmutableJsonDomNode typeNode = jsonObject.get(CanonRuntime.JSON_TYPE);
     if(!(typeNode instanceof IStringProvider && TYPE_ID.equals(((IStringProvider)typeNode).asString())))
@@ -58,7 +48,7 @@
     if(jsonObject.containsKey("${field.camelName}"))
     {
       IJsonDomNode  node = jsonObject.get("${field.camelName}");
-  <@generateCreateFieldFromJsonDomNode "      " field "${field.camelName}_" "" "canonFactory_" "Immutable"/>
+  <@generateCreateFieldFromJsonDomNode "      " field "${field.camelName}_" "" "Immutable"/>
     }
     else
     {
@@ -128,22 +118,35 @@
  Factory
  
 -------------------------------------------------------------------------------------------------------------------------------> 
-  public static class Factory extends ${modelJavaClassName}.Factory
+  public static class Factory
+    extends EntityFactory<I${modelJavaClassName}, I${modelJavaClassName}Entity, I${modelJavaClassName}Builder>
   {
     /**
      * Constructor.
      * 
      * @param model The model of which this factory is a part.
      */
-    public Factory(I${model.model.camelCapitalizedName} model)
+    private Factory()
     {
-      super(model);
     }
     
     @Override
     public String getCanonType()
     {
       return TYPE_ID;
+    }
+    
+    @Override
+    public I${model.camelCapitalizedName} newInstance(I${modelJavaClassName}Builder builder)<@checkLimitsClassThrows model/>
+    {
+      return new ${model.camelCapitalizedName}(builder);
+    }
+    
+    // DELETE ME
+    @Override
+    public I${model.camelCapitalizedName} newInstance(ImmutableJsonObject jsonObject) throws InvalidValueException
+    {
+      return new ${model.camelCapitalizedName}(jsonObject);
     }
     
     /**
@@ -154,7 +157,7 @@
     @Override
     public Builder newBuilder()
     {
-      return new Builder(this);
+      return new Builder();
     }
     
     /**
@@ -167,123 +170,12 @@
      * @return A new builder.
      */
     @Override
-    public Builder newBuilder(I${modelJavaClassName}Builder initial)
+    public Builder newBuilder(I${modelJavaClassName}Entity initial)
     {
-      return new Builder(this, initial);
-    }
-    
-    @Override
-    public I${model.camelCapitalizedName} newInstance(I${modelJavaClassName}Builder builder)<@checkLimitsClassThrows model/>
-    {
-      return intern(super.newInstance(builder));
-    }
-    
-    @Override
-    public I${model.camelCapitalizedName} newInstance(ImmutableJsonObject jsonObject) throws InvalidValueException
-    {
-      return intern(super.newInstance(jsonObject));
+      return new Builder(initial);
     }
   }
-  
-<#------------------------------------------------------------------------------------------------------------------------------
-
- Abstract Factory
  
--------------------------------------------------------------------------------------------------------------------------------> 
-  public static abstract class AbstractFactory<E extends IEntity, S extends IEntity, B extends AbstractBuilder<?>>
-  <#if model.superSchema??>
-    extends ${model.superSchema.baseSchema.camelCapitalizedName}.AbstractFactory<E,S,B>
-  <#else>
-    extends EntityFactory<E, S, B>
-  </#if>
-  {
-    private I${model.model.camelCapitalizedName} ${model.model.camelName}Model_;
-    
-    public AbstractFactory(I${model.model.camelCapitalizedName} model)
-    {
-  <#if model.superSchema??>
-      super(model.get${model.superSchema.baseSchema.model.camelCapitalizedName}Model());
-  </#if>
-      ${model.model.camelName}Model_ = model;
-    }
-    
-    public I${model.model.camelCapitalizedName} get${model.model.camelCapitalizedName}Model()
-    {
-      return ${model.model.camelName}Model_;
-    }
-  
-  <#if model.superSchema??>
-    <#if model.baseSchema.model != model.superSchema.baseSchema.model>
-    /**
-     * Intern the given instance.
-     * 
-     * Entities created by a factory are interned before returning them to the caller.
-     * 
-     * This method is therefore called after Factory.newInstance(), which itself calls the entity facade
-     * constructor, but before the object is returned to the caller. The intern method can replace the 
-     * object returned if it so wishes.
-     * 
-     * The default implementation calls the model wide intern method, the default implementation of which
-     * returns the given instance without any change or side effect, however this may be overridden in the
-     * model facade, and the facade of any type may be overridden to do something else entirely.
-     *
-     * Since this object is a sub-class of an object defined in another model we need to call super.intern()
-     * to perform the intern in the super class model and then explicitly call the intern in our local model.
-     * 
-     * The intention is that the developer has the option to implement intern functionality either at the
-     * model level or separately for each type in the model.
-     * 
-     * @param instance A model object to be interned.
-     * 
-     * @return The interned instance of the given object.
-     */
-    public <T extends I${model.camelCapitalizedName}> T intern(T instance)
-    {
-      return get${model.model.camelCapitalizedName}Model().intern(super.intern(instance));
-    }
-    </#if>
-  <#else>
-    /**
-     * Intern the given instance.
-     * 
-     * Entities created by a factory are interned before returning them to the caller.
-     * 
-     * This method is therefore called after Factory.newInstance(), which itself calls the entity facade
-     * constructor, but before the object is returned to the caller. The intern method can replace the 
-     * object returned if it so wishes.
-     * 
-     * The default implementation calls the model wide intern method, the default implementation of which
-     * returns the given instance without any change or side effect, however this may be overridden in the
-     * model facade, and the facade of any type may be overridden to do something else entirely.
-     * 
-     * The intention is that the developer has the option to implement intern functionality either at the
-     * model level or separately for each type in the model.
-     * 
-     * @param instance A model object to be interned.
-     * 
-     * @return The interned instance of the given object.
-     */
-    public <T extends I${model.camelCapitalizedName}> T intern(T instance)
-    {
-      return get${model.model.camelCapitalizedName}Model().intern(instance);
-    }
-  </#if>
- 
- <#--      
-    /**
-     * Return a new entity instance created from the given other instance.
-     * This is used to construct an entity from its builder as the builder also
-     * implements the interface of the entity.
-     * 
-     * @param builder a builder containing values of all fields for the required entity.
-     * 
-     * @return An instance of the entity represented by the given values.
-     * 
-<@javadocLimitsClassThrows model/>
-     */
-    public abstract I${model.camelCapitalizedName} newInstance(I${modelJavaClassName}Builder builder)<@checkLimitsClassThrows model/>;
--->
-  }
   
 <#------------------------------------------------------------------------------------------------------------------------------
 
@@ -294,85 +186,75 @@
    * Builder for ${modelJavaClassName}
    * 
    * Created by calling I${modelJavaClassName}.newBuilder();
-   * 
-   * @author Bruce Skingle
    *
    */
-  public static class Builder extends ${modelJavaClassName}.AbstractBuilder<Builder>
+  public static class Builder extends AbstractBuilder<Builder> implements I${modelJavaClassName}Builder
   {
-    private ${(modelJavaClassName + "Entity.Factory")?right_pad(25)}  canonFactory_;
-
-    private Builder(${modelJavaClassName}Entity.Factory factory)
+    private Builder()
     {
-      super(factory);
-      canonFactory_ = factory;
+      super(Builder.class);
     }
     
-    private Builder(${modelJavaClassName}Entity.Factory factory, I${modelJavaClassName}Builder initial)
+    private Builder(I${modelJavaClassName}Entity initial)
     {
-      super(factory, initial);
-      canonFactory_ = factory;
+      super(Builder.class, initial);
     }
-         
+       
     public I${modelJavaClassName} build() throws InvalidValueException
     {
-      validate();
-      return canonFactory_.newInstance(this);
-    }
-    
-    public Builder withValues(ImmutableJsonObject jsonObject, boolean ignoreValidation) throws InvalidValueException
-    {
-      super.setValues(canonFactory_, jsonObject, ignoreValidation);
-      return this;
+      return new ${model.camelCapitalizedName}(this);
     }
   }
   
 <#------------------------------------------------------------------------------------------------------------------------------
 
- Abstract Builder
+ AbstractBuilder
  
 -------------------------------------------------------------------------------------------------------------------------------> 
-  public static abstract class AbstractBuilder<B extends AbstractBuilder<?>>
+  protected static class AbstractBuilder<B extends AbstractBuilder<B>>
   <#if model.superSchema??>
     extends ${model.superSchema.baseSchema.camelCapitalizedName}.AbstractBuilder<B>
   <#else>
-    extends EntityBuilder
+    extends EntityBuilder<B>
   </#if>
-    implements I${modelJavaClassName}Builder
   {
   <#list model.fields as field>
     <@setJavaType field/>
     private ${fieldType?right_pad(25)}  ${field.camelName}_${javaBuilderTypeNew};
   </#list>
-    
-    protected AbstractBuilder(AbstractFactory<?,?,B> factory)
+  
+    protected AbstractBuilder(Class<B> type)
     {
-      super(factory);
+      super(type);
     }
     
-    protected AbstractBuilder(AbstractFactory<?,?,B> factory, I${modelJavaClassName}Builder initial)
+    protected AbstractBuilder(Class<B> type, I${modelJavaClassName}Entity initial)
     {
-      super(factory);
+      super(type, initial);
+      
   <#list model.fields as field>
   <@setJavaType field/>
       ${field.camelName}_${javaBuilderTypeCopyPrefix}initial.get${field.camelCapitalizedName}()${javaBuilderTypeCopyPostfix};
   </#list>
     }
     
-    protected void setValues(Factory canonFactory, ImmutableJsonObject jsonObject, boolean ignoreValidation) throws InvalidValueException
+    public B withValues(ImmutableJsonObject jsonObject, boolean ignoreValidation) throws InvalidValueException
     {
+<#if model.superSchema??>
+      super.withValues(jsonObject, ignoreValidation);
+</#if>    
 <#list model.fields as field>
       if(jsonObject.containsKey("${field.camelName}"))
       {
         IJsonDomNode  node = jsonObject.get("${field.camelName}");
-  <@generateCreateFieldFromJsonDomNode "        " field "${field.camelName}_" "if(!ignoreValidation)" "canonFactory" "Mutable"/>
+  <@generateCreateFieldFromJsonDomNode "        " field "${field.camelName}_" "if(!ignoreValidation)" "Mutable"/>
       }
 </#list>
+      return getTypedThis();
     }
   <#list model.fields as field>
     <@setJavaType field/>
     
-    @Override
     public ${fieldType} get${field.camelCapitalizedName}()
     {
       return ${field.camelName}_;
@@ -382,7 +264,7 @@
     {
     <@checkLimits "        " field "value"/>
       ${field.camelName}_${javaBuilderTypeCopyPrefix}value${javaBuilderTypeCopyPostfix};
-      return (B)this;
+      return getTypedThis();
     }
     <#if field.isArraySchema && ! field.isComponent>
     <@printField/>
@@ -391,7 +273,7 @@
     {
     <@checkLimits "        " field "value"/>
       ${field.camelName}_.add(value);
-      return (B)this;
+      return getTypedThis();
     }
     </#if>
     <#if field.isTypeDef>
@@ -404,7 +286,7 @@
   
     </#if>
       ${field.camelName}_ = ${javaConstructTypePrefix}value${javaConstructTypePostfix};
-      return (B)this;
+      return getTypedThis();
     }
     </#if>
   </#list>
@@ -435,15 +317,9 @@
   </#list>
     }
     
-    @Override
     public String getCanonType()
     {
       return TYPE_ID;
-    }
-    
-    public void validate() throws InvalidValueException
-    {
-      super.validate();
     }
   }
 }

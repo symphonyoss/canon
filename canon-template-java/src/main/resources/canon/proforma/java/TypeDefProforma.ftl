@@ -10,6 +10,7 @@ import ${javaGenPackage}.${modelJavaClassName}TypeDef;
 
 <#include "../../template/java/TypeDefHeader.ftl">
 @Immutable
+@SuppressWarnings("unused")
 public class ${modelJavaClassName} extends ${modelJavaClassName}TypeDef
 {
   private static Builder theBuilder = new Builder();

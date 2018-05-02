@@ -1,20 +1,17 @@
-<#if ! model.baseSchema.isGenerateFacade?? || ! model.baseSchema.isGenerateFacade>
 <#include "../canon-template-java-Prologue.ftl">
 <#assign model=model.type>
 <@setPrologueJavaType model/>
-import javax.annotation.concurrent.Immutable;
+import org.symphonyoss.s2.common.dom.json.ImmutableJsonObject;
+import org.symphonyoss.s2.common.exception.InvalidValueException;
 
+<@importFieldTypes model true/>
 <@importFacadePackages model/>
 
 <#include "Object.ftl">
-@Immutable
 public interface I${model.camelCapitalizedName}Builder
-<#if model.superSchema??>
-  extends I${model.superSchema.baseSchema.camelCapitalizedName}Builder, I${model.camelCapitalizedName}Entity
-<#else>
-  extends I${model.camelCapitalizedName}Entity
-</#if>
+  extends I${model.camelCapitalizedName}AbstractBuilder<I${model.camelCapitalizedName}Builder>
 {
+    I${model.camelCapitalizedName}Builder withValues(ImmutableJsonObject jsonObject, boolean ignoreValidation) throws InvalidValueException;  
+    I${modelJavaClassName} build() throws InvalidValueException;
 }
 <#include "../canon-template-java-Epilogue.ftl">
-</#if>

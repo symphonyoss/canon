@@ -37,17 +37,25 @@ import org.symphonyoss.s2.common.exception.InvalidValueException;
  * 
  * @author Bruce Skingle
  */
-public abstract class EntityBuilder implements IJsonDomNodeProvider, IBaseEntity
+public abstract class EntityBuilder<B extends EntityBuilder<B>> implements IEntityBuilder, IJsonDomNodeProvider, IBaseEntity
 {
   protected static final DomSerializer SERIALIZER = DomSerializer.newBuilder().withCanonicalMode(true).build();
+ 
+  private final B typedThis_;
 
-  /**
-   * Constructor.
-   * 
-   * @param factory The factory with which this builder is associated.
-   */
-  public EntityBuilder(EntityFactory<?,?,?> factory)
+  protected EntityBuilder(Class<B> type)
   {
+    typedThis_ = type.cast(this);
+  }
+  
+  protected EntityBuilder(Class<B> type, IBaseEntity other)
+  {
+    typedThis_ = type.cast(this);
+  }
+  
+  protected B getTypedThis()
+  {
+    return typedThis_;
   }
 
   /**
@@ -78,12 +86,4 @@ public abstract class EntityBuilder implements IJsonDomNodeProvider, IBaseEntity
   {
     return SERIALIZER.serialize(getJsonObject());
   }
-  
-  /**
-   * Called immediately prior to building an instance from this builder.
-   * 
-   * @throws InvalidValueException May be thrown if the values in the builder as a whole are not valid.
-   */
-  public void validate() throws InvalidValueException
-  {}
 }

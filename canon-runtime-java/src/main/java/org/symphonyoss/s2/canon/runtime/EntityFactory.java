@@ -46,7 +46,7 @@ import com.google.common.collect.ImmutableSet;
  * @param <S> The super type of the entity, i.e. the generated super class.
  * @param <B> The builder type of the entity.
  */
-public abstract class EntityFactory<E extends IEntity, S extends IEntity, B extends EntityBuilder>
+public abstract class EntityFactory<E extends IEntity, S extends IEntity, B extends IEntityBuilder>
 implements IEntityFactory<E,S,B>
 {
   @Override

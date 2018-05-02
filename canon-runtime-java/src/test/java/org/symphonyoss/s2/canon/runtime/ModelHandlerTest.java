@@ -35,7 +35,7 @@ public class ModelHandlerTest
   @Test
   public void testNoParam()
   {
-    PathHandler<TestModel> handler = testHandler(0, "/users", "/users");
+    PathHandler handler = testHandler(0, "/users", "/users");
     
     test(handler, "/users", true);
     test(handler, "/users/", false);
@@ -46,7 +46,7 @@ public class ModelHandlerTest
   @Test
   public void testOneParam()
   {
-    PathHandler<TestModel> handler = testHandler(1, "/users/{userId}", "/users/");
+    PathHandler handler = testHandler(1, "/users/{userId}", "/users/");
     
     test(handler, "/users", false);
     test(handler, "/users/", false);
@@ -57,7 +57,7 @@ public class ModelHandlerTest
   @Test
   public void testOneParamExtra()
   {
-    PathHandler<TestModel> handler = testHandler(1, "/users/{userId}/extra", "/users/", "/extra");
+    PathHandler handler = testHandler(1, "/users/{userId}/extra", "/users/", "/extra");
     
     test(handler, "/users", false);
     test(handler, "/users/", false);
@@ -65,7 +65,7 @@ public class ModelHandlerTest
     test(handler, "/users/21", false);
   }
 
-  private void test(PathHandler<TestModel> handler, String path, boolean expected)
+  private void test(PathHandler handler, String path, boolean expected)
   {
     if((handler.getVariablesIfCanHandle(path)!=null) != expected)
     {
@@ -78,30 +78,12 @@ public class ModelHandlerTest
     System.err.println(msg);
     fail(msg);
   }
-  
-  class TestModel extends Model
+
+
+  private PathHandler testHandler(int varCnt, final String path, String ...parts)
   {
-
-    @Override
-    public IEntityFactory<?, ?, ?>[] getFactories()
+    return new PathHandler(varCnt, parts)
     {
-      return new IEntityFactory<?, ?, ?>[0];
-    }
-    
-  }
-
-  private PathHandler<TestModel> testHandler(int varCnt, final String path, String ...parts)
-  {
-    return new PathHandler<TestModel>(varCnt, parts)
-    {
-      TestModel model_ = new TestModel();
-      
-      @Override
-      public TestModel getModel()
-      {
-        return model_;
-      }
-
       @Override
       public String getPath()
       {
