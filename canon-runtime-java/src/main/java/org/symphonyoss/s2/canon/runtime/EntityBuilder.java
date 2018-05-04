@@ -28,7 +28,6 @@ import org.symphonyoss.s2.common.dom.json.IImmutableJsonDomNode;
 import org.symphonyoss.s2.common.dom.json.IJsonDomNodeProvider;
 import org.symphonyoss.s2.common.dom.json.ImmutableJsonObject;
 import org.symphonyoss.s2.common.dom.json.MutableJsonObject;
-import org.symphonyoss.s2.common.exception.InvalidValueException;
 
 /**
  * A builder for some entity type.
@@ -41,21 +40,21 @@ public abstract class EntityBuilder<B extends EntityBuilder<B>> implements IEnti
 {
   protected static final DomSerializer SERIALIZER = DomSerializer.newBuilder().withCanonicalMode(true).build();
  
-  private final B typedThis_;
+  private final B self_;
 
   protected EntityBuilder(Class<B> type)
   {
-    typedThis_ = type.cast(this);
+    self_ = type.cast(this);
   }
   
   protected EntityBuilder(Class<B> type, IBaseEntity other)
   {
-    typedThis_ = type.cast(this);
+    self_ = type.cast(this);
   }
   
-  protected B getTypedThis()
+  protected B self()
   {
-    return typedThis_;
+    return self_;
   }
 
   /**

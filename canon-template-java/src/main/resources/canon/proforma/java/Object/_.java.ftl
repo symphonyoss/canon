@@ -15,7 +15,6 @@ import org.symphonyoss.s2.canon.runtime.IEntity;
 
 import ${javaGenPackage}.${model.camelCapitalizedName}Entity;
 import ${javaGenPackage}.I${model.camelCapitalizedName}Entity;
-import ${javaGenPackage}.I${model.camelCapitalizedName}AbstractBuilder;
 import ${javaGenPackage}.${model.model.camelCapitalizedName}Model;
 
 <#include "Facade.ftl">

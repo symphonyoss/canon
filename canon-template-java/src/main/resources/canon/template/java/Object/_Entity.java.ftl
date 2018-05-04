@@ -11,13 +11,13 @@
  Constructor from fields
  
 ------------------------------------------------------------------------------------------------------------------------------->
-  public ${modelJavaClassName}Entity(I${model.camelCapitalizedName}AbstractBuilder<?> canonOther)<@checkLimitsClassThrows model/>
+  public ${modelJavaClassName}Entity(${modelJavaClassName}.Abstract${modelJavaClassName}Builder<?> other)<@checkLimitsClassThrows model/>
   {
-    super(canonOther);
+    super(other);
     
 <#list model.fields as field>
     <@setJavaType field/>
-    ${field.camelName}_ = ${javaTypeCopyPrefix}canonOther.get${field.camelCapitalizedName}()${javaTypeCopyPostfix};
+    ${field.camelName}_ = ${javaTypeCopyPrefix}other.get${field.camelCapitalizedName}()${javaTypeCopyPostfix};
 <#if requiresChecks>
 <@checkLimits "    " field field.camelName + "_"/>
 
@@ -112,30 +112,6 @@
 </#list>
 
 <#include "ObjectBody.ftl">
-
-  /**
-   * Called once at class load time to initialize the public static FACTORY.
-   * 
-   * The implementor can override this method to return a sub-class of Factory if required.
-   * 
-   * @return A new Factory instance.
-   */
-  protected static Factory new${modelJavaClassName}Factory()
-  {
-    return new Factory();
-  }
-  
-  /**
-   * Called once at class load time to initialize the public static BUILDER.
-   * 
-   * The implementor can override this method to return a sub-class of BuilderFactory if required.
-   * 
-   * @return A new BuilderFactory instance.
-   */
-  protected static IBuilderFactory<I${modelJavaClassName}Entity, I${modelJavaClassName}Builder> new${modelJavaClassName}BuilderFactory()
-  {
-    return new BuilderFactory();
-  }
   
 
 <#------------------------------------------------------------------------------------------------------------------------------
@@ -147,8 +123,7 @@
 <#if model.superSchema??>
   extends ${model.superSchema.baseSchema.camelCapitalizedName}.Factory
 <#else>
-  // We can't extend a parameterized super type here because the further sub-classing by users does not work
-  extends EntityFactory<I${modelJavaClassName}, I${modelJavaClassName}Entity, I${modelJavaClassName}Builder>
+  extends EntityFactory<I${modelJavaClassName}, I${modelJavaClassName}Entity, Builder>
 </#if>
   {
     protected Factory()
@@ -190,7 +165,7 @@
      * 
      * @throws InvalidValueException If the given values are not valid.
      */
-    public I${model.camelCapitalizedName} newInstance(I${modelJavaClassName}Builder builder)<@checkLimitsClassThrows model/>
+    public I${model.camelCapitalizedName} newInstance(Builder builder)<@checkLimitsClassThrows model/>
     {
       return new ${model.camelCapitalizedName}(builder);
     }
@@ -288,16 +263,16 @@
  Builder
  
 ------------------------------------------------------------------------------------------------------------------------------->
-  private static class BuilderFactory implements IBuilderFactory<I${modelJavaClassName}Entity, I${modelJavaClassName}Builder>
+  private static class BuilderFactory implements IBuilderFactory<I${modelJavaClassName}Entity, Builder>
   {
     @Override
-    public I${modelJavaClassName}Builder newInstance()
+    public Builder newInstance()
     {
       return new Builder();
     }
 
     @Override
-    public I${modelJavaClassName}Builder newInstance(I${modelJavaClassName}Entity initial)
+    public Builder newInstance(I${modelJavaClassName}Entity initial)
     {
       return new Builder(initial);
     }
@@ -306,17 +281,17 @@
   /**
    * Builder for ${modelJavaClassName}
    * 
-   * Created by calling I${modelJavaClassName}.newBuilder();
+   * Created by calling BUILDER.newInstance();
    *
    */
-  public static class Builder extends AbstractBuilder<Builder> implements I${modelJavaClassName}Builder
+  public static class Builder extends ${modelJavaClassName}.Abstract${modelJavaClassName}Builder<Builder>
   {
-    public Builder()
+    private Builder()
     {
       super(Builder.class);
     }
     
-    public Builder(I${modelJavaClassName}Entity initial)
+    private Builder(I${modelJavaClassName}Entity initial)
     {
       super(Builder.class, initial);
     }
@@ -332,9 +307,14 @@
  AbstractBuilder
  
 -------------------------------------------------------------------------------------------------------------------------------> 
-  protected static class AbstractBuilder<B extends AbstractBuilder<B>>
+  <#if model.baseSchema.isGenerateBuilderFacade>
+    <#assign AbstractBuilder="Abstract${modelJavaClassName}EntityBuilder"/>
+  <#else>
+    <#assign AbstractBuilder="Abstract${modelJavaClassName}Builder"/>
+  </#if>
+  protected static class ${AbstractBuilder}<B extends ${modelJavaClassName}.Abstract${modelJavaClassName}Builder<B>>
   <#if model.superSchema??>
-    extends ${model.superSchema.baseSchema.camelCapitalizedName}.AbstractBuilder<B>
+    extends ${model.superSchema.baseSchema.camelCapitalizedName}.Abstract${model.superSchema.baseSchema.camelCapitalizedName}Builder<B>
   <#else>
     extends EntityBuilder<B>
   </#if>
@@ -344,12 +324,12 @@
     private ${fieldType?right_pad(25)}  ${field.camelName}_${javaBuilderTypeNew};
   </#list>
   
-    protected AbstractBuilder(Class<B> type)
+    protected ${AbstractBuilder}(Class<B> type)
     {
       super(type);
     }
     
-    protected AbstractBuilder(Class<B> type, I${modelJavaClassName}Entity initial)
+    protected ${AbstractBuilder}(Class<B> type, I${modelJavaClassName}Entity initial)
     {
       super(type, initial);
       
@@ -371,7 +351,7 @@
   <@generateCreateFieldFromJsonDomNode "        " field "${field.camelName}_" "if(!ignoreValidation)" "Mutable"/>
       }
 </#list>
-      return getTypedThis();
+      return self();
     }
   <#list model.fields as field>
     <@setJavaType field/>
@@ -385,7 +365,7 @@
     {
     <@checkLimits "        " field "value"/>
       ${field.camelName}_${javaBuilderTypeCopyPrefix}value${javaBuilderTypeCopyPostfix};
-      return getTypedThis();
+      return self();
     }
     <#if field.isArraySchema && ! field.isComponent>
     <@printField/>
@@ -394,7 +374,7 @@
     {
     <@checkLimits "        " field "value"/>
       ${field.camelName}_.add(value);
-      return getTypedThis();
+      return self();
     }
     </#if>
     <#if field.isTypeDef>
@@ -407,7 +387,7 @@
   
     </#if>
       ${field.camelName}_ = ${javaConstructTypePrefix}value${javaConstructTypePostfix};
-      return getTypedThis();
+      return self();
     }
     </#if>
   </#list>

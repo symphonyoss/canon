@@ -47,5 +47,5 @@ public abstract class ${modelJavaClassName}Entity extends Entity
  implements I${modelJavaClassName}, I${model.model.camelCapitalizedName}ModelEntity<#list model.superClasses as s><#if s.isComponent>, I${s.camelCapitalizedName}</#if></#list>
 {
   public static final String  TYPE_ID = "${model.model.canonId}.${model.name}";
-  public static final Factory FACTORY = new${modelJavaClassName}Factory();
-  public static final IBuilderFactory<I${modelJavaClassName}Entity, I${modelJavaClassName}Builder> BUILDER = new${modelJavaClassName}BuilderFactory();
+  public static final Factory FACTORY = new Factory();;
+  public static final IBuilderFactory<I${modelJavaClassName}Entity, Builder> BUILDER = new BuilderFactory();

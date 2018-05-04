@@ -473,6 +473,9 @@
         "facade": {
           "type": "boolean"
         },
+        "builderFacade": {
+          "type": "boolean"
+        },
         "nullable": {
           "type": "boolean"
         },

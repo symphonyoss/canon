@@ -23,7 +23,7 @@
 
 package org.symphonyoss.s2.canon.runtime;
 
-public interface IEntityBuilder
+public interface IEntityBuilder extends IEntity
 {
 
 }

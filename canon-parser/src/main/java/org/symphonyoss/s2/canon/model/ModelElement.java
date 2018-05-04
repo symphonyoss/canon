@@ -332,6 +332,11 @@ public class ModelElement
     return false;
   }
   
+  public boolean getIsGenerateBuilderFacade()
+  {
+    return false;
+  }
+  
   public ModelElement getReference()
   {
     return this;
