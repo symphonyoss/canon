@@ -54,24 +54,6 @@ public interface IEntityFactory<E extends IEntity, S extends IEntity, B extends 
   @Nonnull String getCanonType();
   
   /**
-   * Create a new builder with all fields initialized to default values.
-   * 
-   * @return A new builder.
-   */
-  public B newBuilder();
-  
-  /**
-   * Create a new builder with all fields initialized from the given builder.
-   * Values are copied so that subsequent changes to initial will not be reflected in
-   * the returned builder.
-   * 
-   * @param initial A builder or instance whose values are copied into a new builder.
-   * 
-   * @return A new builder.
-   */
-  public B newBuilder(S initial);
-  
-  /**
    * Return a new entity instance created from the given JSON serialization.
    * 
    * @param jsonObject The JSON serialized form of the required entity.

@@ -112,68 +112,174 @@
 </#list>
 
 <#include "ObjectBody.ftl">
+
+  /**
+   * Called once at class load time to initialize the public static FACTORY.
+   * 
+   * The implementor can override this method to return a sub-class of Factory if required.
+   * 
+   * @return A new Factory instance.
+   */
+  protected static Factory new${modelJavaClassName}Factory()
+  {
+    return new Factory();
+  }
   
+  /**
+   * Called once at class load time to initialize the public static BUILDER.
+   * 
+   * The implementor can override this method to return a sub-class of BuilderFactory if required.
+   * 
+   * @return A new BuilderFactory instance.
+   */
+  protected static IBuilderFactory<I${modelJavaClassName}Entity, I${modelJavaClassName}Builder> new${modelJavaClassName}BuilderFactory()
+  {
+    return new BuilderFactory();
+  }
+  
+
 <#------------------------------------------------------------------------------------------------------------------------------
 
  Factory
  
 -------------------------------------------------------------------------------------------------------------------------------> 
   public static class Factory
-    extends EntityFactory<I${modelJavaClassName}, I${modelJavaClassName}Entity, I${modelJavaClassName}Builder>
+<#if model.superSchema??>
+  extends ${model.superSchema.baseSchema.camelCapitalizedName}.Factory
+<#else>
+  // We can't extend a parameterized super type here because the further sub-classing by users does not work
+  extends EntityFactory<I${modelJavaClassName}, I${modelJavaClassName}Entity, I${modelJavaClassName}Builder>
+</#if>
   {
-    /**
-     * Constructor.
-     * 
-     * @param model The model of which this factory is a part.
-     */
-    private Factory()
+    protected Factory()
     {
     }
     
-    @Override
+    /**
+     * Return the type identifier (_type JSON attribute) for entities created by this factory.
+     * 
+     * @return The type identifier for entities created by this factory.
+     */
     public String getCanonType()
     {
       return TYPE_ID;
     }
-    
-    @Override
-    public I${model.camelCapitalizedName} newInstance(I${modelJavaClassName}Builder builder)<@checkLimitsClassThrows model/>
-    {
-      return new ${model.camelCapitalizedName}(builder);
-    }
-    
-    // DELETE ME
-    @Override
+        
+    /**
+     * Return a new entity instance created from the given JSON serialization.
+     * 
+     * @param jsonObject The JSON serialized form of the required entity.
+     * 
+     * @return An instance of the entity represented by the given serialized form.
+     * 
+     * @throws InvalidValueException If the given JSON is not valid.
+     */
     public I${model.camelCapitalizedName} newInstance(ImmutableJsonObject jsonObject) throws InvalidValueException
     {
       return new ${model.camelCapitalizedName}(jsonObject);
     }
     
     /**
-     * Create a new builder with all fields initialized to default values.
+     * Return a new entity instance created from the given other instance.
+     * This is used to construct an entity from its builder as the builder also
+     * implements the interface of the entity.
      * 
-     * @return A new builder.
+     * @param builder a builder containing values of all fields for the required entity.
+     * 
+     * @return An instance of the entity represented by the given values.
+     * 
+     * @throws InvalidValueException If the given values are not valid.
      */
-    @Override
-    public Builder newBuilder()
+    public I${model.camelCapitalizedName} newInstance(I${modelJavaClassName}Builder builder)<@checkLimitsClassThrows model/>
     {
-      return new Builder();
+      return new ${model.camelCapitalizedName}(builder);
     }
-    
+<#-------------
+<#if model.superSchema??>
+<#else>
+    // We can't extend a parameterized super type here because the further sub-classing by users does not work
+
     /**
-     * Create a new builder with all fields initialized from the given builder.
-     * Values are copied so that subsequent changes to initial will not be reflected in
-     * the returned builder.
+     * Return a list of new entity instances created from the given JSON array.
      * 
-     * @param initial A builder or instance whose values are copied into a new builder.
+     * @param jsonArray An array of the JSON serialized form of the required entity.
      * 
-     * @return A new builder.
+     * @return A list of instances of the entity represented by the given serialized form.
+     * 
+     * @throws InvalidValueException If the given JSON is not valid.
      */
-    @Override
-    public Builder newBuilder(I${modelJavaClassName}Entity initial)
+    public List<I${modelJavaClassName}> newMutableList(JsonArray<?> jsonArray) throws InvalidValueException
     {
-      return new Builder(initial);
+      List<I${modelJavaClassName}> list = new LinkedList<>();
+      
+      for(IJsonDomNode node : jsonArray)
+      {
+        if(node instanceof JsonObject)
+          list.add(newInstance((ImmutableJsonObject) node));
+        else
+          throw new InvalidValueException("Expected an array of JSON objectcs, but encountered a " + node.getClass().getName());
+      }
+      
+      return list;
     }
+  
+    /**
+     * Return a set of new entity instances created from the given JSON array.
+     * 
+     * @param jsonArray An array of the JSON serialized form of the required entity.
+     * 
+     * @return A set of instances of the entity represented by the given serialized form.
+     * 
+     * @throws InvalidValueException If the given JSON is not valid.
+     */
+    public Set<I${modelJavaClassName}> newMutableSet(JsonArray<?> jsonArray) throws InvalidValueException
+    {
+      Set<I${modelJavaClassName}> list = new HashSet<>();
+      
+      for(IJsonDomNode node : jsonArray)
+      {
+        if(node instanceof JsonObject)
+        {
+          list.add(newInstance((ImmutableJsonObject) node.immutify()));
+        }
+        else
+        {
+          throw new InvalidValueException("Expected an array of JSON objectcs, but encountered a " + node.getClass().getName());
+        }
+      }
+      
+      return list;
+    }
+  
+    /**
+     * Return a list of new entity instances created from the given JSON array.
+     * 
+     * @param jsonArray An array of the JSON serialized form of the required entity.
+     * 
+     * @return A list of instances of the entity represented by the given serialized form.
+     * 
+     * @throws InvalidValueException If the given JSON is not valid.
+     */
+    public ImmutableList<E> newImmutableList(JsonArray<?> jsonArray) throws InvalidValueException
+    {
+      return ImmutableList.copyOf(newMutableList(jsonArray));
+    }
+  
+    /**
+     * Return a set of new entity instances created from the given JSON array.
+     * 
+     * @param jsonArray An array of the JSON serialized form of the required entity.
+     * 
+     * @return A set of instances of the entity represented by the given serialized form.
+     * 
+     * @throws InvalidValueException If the given JSON is not valid.
+     */
+    public ImmutableSet<E> newImmutableSet(JsonArray<?> jsonArray) throws InvalidValueException
+    {
+      return ImmutableSet.copyOf(newMutableSet(jsonArray));
+    }
+</#if>
+---->
   }
  
   
@@ -181,7 +287,22 @@
 
  Builder
  
--------------------------------------------------------------------------------------------------------------------------------> 
+------------------------------------------------------------------------------------------------------------------------------->
+  private static class BuilderFactory implements IBuilderFactory<I${modelJavaClassName}Entity, I${modelJavaClassName}Builder>
+  {
+    @Override
+    public I${modelJavaClassName}Builder newInstance()
+    {
+      return new Builder();
+    }
+
+    @Override
+    public I${modelJavaClassName}Builder newInstance(I${modelJavaClassName}Entity initial)
+    {
+      return new Builder(initial);
+    }
+  }
+   
   /**
    * Builder for ${modelJavaClassName}
    * 
@@ -190,12 +311,12 @@
    */
   public static class Builder extends AbstractBuilder<Builder> implements I${modelJavaClassName}Builder
   {
-    private Builder()
+    public Builder()
     {
       super(Builder.class);
     }
     
-    private Builder(I${modelJavaClassName}Entity initial)
+    public Builder(I${modelJavaClassName}Entity initial)
     {
       super(Builder.class, initial);
     }
@@ -323,5 +444,6 @@
     }
   }
 }
+
 <#include "../canon-template-java-Epilogue.ftl">
 </#if>

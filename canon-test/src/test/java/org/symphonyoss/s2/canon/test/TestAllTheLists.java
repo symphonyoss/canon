@@ -115,7 +115,7 @@ public class TestAllTheLists extends AbstractModelObjectTest
 
   private IAllTheLists createTestObject1() throws InvalidValueException
   {
-    return AllTheLists.FACTORY.newBuilder()
+    return AllTheLists.BUILDER.newInstance()
           .withBooleanListField(ImmutableList.of(true, false))
           .withByteStringListField(ImmutableList.of(ByteString.copyFrom("Hello".getBytes()),
               ByteString.copyFrom("Byteworld".getBytes())))
@@ -126,11 +126,11 @@ public class TestAllTheLists extends AbstractModelObjectTest
           .withIntField(110L)
           .withStringListField(ImmutableList.of("Hello", "World"))
           .withObjectListField(ImmutableList.of(
-              SimpleObject.FACTORY.newBuilder()
+              SimpleObject.BUILDER.newInstance()
                 .withName("Bruce")
                 .withValue(17L)
                 .build(),
-                SimpleObject.FACTORY.newBuilder()
+                SimpleObject.BUILDER.newInstance()
                 .withName("Mike")
                 .withValue(29L)
                 .build()

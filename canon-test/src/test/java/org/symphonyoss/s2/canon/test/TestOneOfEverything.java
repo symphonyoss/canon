@@ -40,7 +40,6 @@ import org.symphonyoss.s2.canon.test.oneofeverything.ASimpleObject;
 import org.symphonyoss.s2.canon.test.oneofeverything.DoubleMinMax;
 import org.symphonyoss.s2.canon.test.oneofeverything.IASimpleObject;
 import org.symphonyoss.s2.canon.test.oneofeverything.IObjectWithOneOfEverything;
-import org.symphonyoss.s2.canon.test.oneofeverything.IObjectWithOneOfEverythingBuilder;
 import org.symphonyoss.s2.canon.test.oneofeverything.ListOfByteString;
 import org.symphonyoss.s2.canon.test.oneofeverything.ObjectWithOneOfEverything;
 import org.symphonyoss.s2.canon.test.oneofeverything.OneOfEverythingModel;
@@ -60,7 +59,7 @@ import com.google.protobuf.ByteString;
 
 public class TestOneOfEverything extends AbstractModelObjectTest
 {
-  private final IModelRegistry                    modelRegistry_          = new ModelRegistry(OneOfEverythingModel.FACTORIES);
+  private final IModelRegistry                    modelRegistry_          = new ModelRegistry().withFactories(OneOfEverythingModel.FACTORIES);
   private final ObjectWithOneOfEverything.Factory objectFactory_          = ObjectWithOneOfEverything.FACTORY;
   
   @Test
@@ -83,7 +82,7 @@ public class TestOneOfEverything extends AbstractModelObjectTest
         "  \"aSetOfString\":[],\n" + 
         "  \"secs\":10\n" + 
         "}\n",
-        serializer.serialize(objectFactory_.newBuilder()
+        serializer.serialize(ObjectWithOneOfEverything.BUILDER.newInstance()
           .withABoolean(true)
           .withADouble(7.0)
           .withADoubleMinMax(DoubleMinMax.newBuilder().build(5.0))
@@ -97,7 +96,7 @@ public class TestOneOfEverything extends AbstractModelObjectTest
   {
     IObjectWithOneOfEverything obj1 = createTestObject1();
 
-    IObjectWithOneOfEverything obj2 = objectFactory_.newBuilder(obj1).build();
+    IObjectWithOneOfEverything obj2 = ObjectWithOneOfEverything.BUILDER.newInstance(obj1).build();
     
     assertEquals(obj1, obj2);
   }
@@ -230,7 +229,7 @@ public class TestOneOfEverything extends AbstractModelObjectTest
   
   private IASimpleObject createTestObject3() throws InvalidValueException
   {
-    return ASimpleObject.FACTORY.newBuilder()
+    return ASimpleObject.BUILDER.newInstance()
         .withName("Simple3")
         .withValue("Value Three\nhas\nthree lines.")
         .build();
@@ -238,7 +237,7 @@ public class TestOneOfEverything extends AbstractModelObjectTest
 
   private IASimpleObject createTestObject2() throws InvalidValueException
   {
-    return ASimpleObject.FACTORY.newBuilder()
+    return ASimpleObject.BUILDER.newInstance()
         .withName("Simple2")
         .withValue("Value Two")
         .build();
@@ -246,7 +245,7 @@ public class TestOneOfEverything extends AbstractModelObjectTest
 
   private IObjectWithOneOfEverything createTestObject1() throws InvalidValueException
   {
-    return objectFactory_.newBuilder()
+    return ObjectWithOneOfEverything.BUILDER.newInstance()
         .withABoolean(false)
         .withADouble(27.0)
         .withADoubleMinMax(5.0)

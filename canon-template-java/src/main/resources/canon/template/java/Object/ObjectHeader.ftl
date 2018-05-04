@@ -10,6 +10,7 @@ import org.symphonyoss.s2.canon.runtime.CanonRuntime;
 import org.symphonyoss.s2.canon.runtime.Entity;
 import org.symphonyoss.s2.canon.runtime.EntityBuilder;
 import org.symphonyoss.s2.canon.runtime.EntityFactory;
+import org.symphonyoss.s2.canon.runtime.IBuilderFactory;
 
 import org.symphonyoss.s2.common.dom.IBooleanProvider;
 import org.symphonyoss.s2.common.dom.IStringProvider;
@@ -46,4 +47,5 @@ public abstract class ${modelJavaClassName}Entity extends Entity
  implements I${modelJavaClassName}, I${model.model.camelCapitalizedName}ModelEntity<#list model.superClasses as s><#if s.isComponent>, I${s.camelCapitalizedName}</#if></#list>
 {
   public static final String  TYPE_ID = "${model.model.canonId}.${model.name}";
-  public static final Factory FACTORY = new Factory();
+  public static final Factory FACTORY = new${modelJavaClassName}Factory();
+  public static final IBuilderFactory<I${modelJavaClassName}Entity, I${modelJavaClassName}Builder> BUILDER = new${modelJavaClassName}BuilderFactory();

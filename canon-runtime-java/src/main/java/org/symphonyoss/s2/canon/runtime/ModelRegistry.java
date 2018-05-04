@@ -55,15 +55,18 @@ public class ModelRegistry implements IModelRegistry
   /**
    * Create a registry with the given models.
    * 
-   * @param firstModel        At least one model to be registered.
-   * @param additionalModels  Additional models to be registered.
+   * @param factories Entity factories to be registered.
+   * 
+   * @return this (Fluent interface)
    */
-  public ModelRegistry(IEntityFactory<?,?,?> ...factories)
+  public ModelRegistry withFactories(IEntityFactory<?,?,?> ...factories)
   {
     for(IEntityFactory<?,?,?> factory :factories)
     {
       factoryMap_.put(factory.getCanonType(), factory);
     }
+    
+    return this;
   }
 
   @Override
