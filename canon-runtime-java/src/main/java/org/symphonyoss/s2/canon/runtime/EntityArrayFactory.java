@@ -23,20 +23,27 @@
 
 package org.symphonyoss.s2.canon.runtime;
 
-import org.symphonyoss.s2.common.dom.DomSerializer;
 import org.symphonyoss.s2.common.dom.json.IJsonDomNodeProvider;
+import org.symphonyoss.s2.common.immutable.ImmutableByteArray;
 
 public abstract class EntityArrayFactory<M extends IEntityArray>
 implements IEntityArrayFactory<M>
 {
-  protected static final DomSerializer SERIALIZER = DomSerializer.newBuilder().withCanonicalMode(true).build();
+  //protected static final DomSerializer SERIALIZER = DomSerializer.newBuilder().withCanonicalMode(true).build();
   
   public abstract static class Builder implements IJsonDomNodeProvider, IBaseEntity
   {
     @Override
-    public String serialize()
+    public ImmutableByteArray serialize()
     {
-      return SERIALIZER.serialize(getJsonDomNode());
+      //return SERIALIZER.serialize(getJsonDomNode());
+      return getJsonDomNode().serialize();
+    }
+
+    @Override
+    public String toString()
+    {
+      return getJsonDomNode().toString();
     }
   }
 }

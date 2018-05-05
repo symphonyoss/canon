@@ -26,8 +26,8 @@ package org.symphonyoss.s2.canon.runtime;
 import org.symphonyoss.s2.common.dom.DomSerializer;
 import org.symphonyoss.s2.common.dom.json.IImmutableJsonDomNode;
 import org.symphonyoss.s2.common.dom.json.IJsonDomNodeProvider;
-import org.symphonyoss.s2.common.dom.json.ImmutableJsonObject;
 import org.symphonyoss.s2.common.dom.json.MutableJsonObject;
+import org.symphonyoss.s2.common.immutable.ImmutableByteArray;
 
 /**
  * A builder for some entity type.
@@ -35,6 +35,7 @@ import org.symphonyoss.s2.common.dom.json.MutableJsonObject;
  * Essentially this is a mutable version of the enclosing entity type.
  * 
  * @author Bruce Skingle
+ * @param <B> Fluent type, determines the type of the "this" reference returned by with methods.
  */
 public abstract class EntityBuilder<B extends EntityBuilder<B>> implements IEntityBuilder, IJsonDomNodeProvider, IBaseEntity
 {
@@ -56,13 +57,6 @@ public abstract class EntityBuilder<B extends EntityBuilder<B>> implements IEnti
   {
     return self_;
   }
-
-  /**
-   * Return the JSON representation of the current state of this builder.
-   * 
-   * @return the JSON representation of the current state of this builder.
-   */
-  public abstract ImmutableJsonObject getJsonObject();
   
   /**
    * Fill in the JSON representation of the current state of this builder.
@@ -81,8 +75,8 @@ public abstract class EntityBuilder<B extends EntityBuilder<B>> implements IEnti
   }
 
   @Override
-  public String serialize()
+  public ImmutableByteArray serialize()
   {
-    return SERIALIZER.serialize(getJsonObject());
+    return ImmutableByteArray.newInstance(SERIALIZER.serialize(getJsonObject()));
   }
 }

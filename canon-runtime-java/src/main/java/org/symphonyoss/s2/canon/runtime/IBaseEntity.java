@@ -25,11 +25,12 @@ package org.symphonyoss.s2.canon.runtime;
 
 import org.symphonyoss.s2.common.dom.json.IImmutableJsonDomNode;
 import org.symphonyoss.s2.common.dom.json.IJsonDomNodeProvider;
+import org.symphonyoss.s2.common.immutable.ImmutableByteArray;
 
 public interface IBaseEntity extends IJsonDomNodeProvider
 {
   @Override
   IImmutableJsonDomNode  getJsonDomNode();
 
-  String serialize();
+  ImmutableByteArray serialize();
 }

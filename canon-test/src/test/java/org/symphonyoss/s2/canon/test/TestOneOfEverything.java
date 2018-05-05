@@ -26,9 +26,6 @@ package org.symphonyoss.s2.canon.test;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
-import java.io.Reader;
-import java.io.StringReader;
-import java.nio.charset.StandardCharsets;
 
 import org.junit.Assert;
 import org.junit.Test;
@@ -50,6 +47,7 @@ import org.symphonyoss.s2.common.dom.json.IJsonObject;
 import org.symphonyoss.s2.common.dom.json.ImmutableJsonObject;
 import org.symphonyoss.s2.common.dom.json.jackson.JacksonAdaptor;
 import org.symphonyoss.s2.common.exception.InvalidValueException;
+import org.symphonyoss.s2.common.immutable.ImmutableByteArray;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -172,9 +170,8 @@ public class TestOneOfEverything extends AbstractModelObjectTest
   public void testOneSchemas() throws InvalidValueException, IOException
   {
     IASimpleObject source = createTestObject3();
-    String serial = source.serialize();
-    Reader reader = new StringReader(serial);
-    IEntity deserialized = modelRegistry_.parseOne(reader);
+    ImmutableByteArray serial = source.serialize();
+    IEntity deserialized = modelRegistry_.parseOne(serial.getReader());
     
     assertEquals(source, deserialized);
   }
@@ -187,15 +184,15 @@ public class TestOneOfEverything extends AbstractModelObjectTest
     
     writer.write('[');
     source[0] = createTestObject3();
-    writer.write(source[0].serialize().getBytes(StandardCharsets.UTF_8));
+    source[0].serialize().write(writer);
     writer.write(',');
     
     source[1] = createTestObject2();
-    writer.write(source[1].serialize().getBytes(StandardCharsets.UTF_8));
+    source[1].serialize().write(writer);
     writer.write(',');
     
     source[2] = createTestObject1();
-    writer.write(source[2].serialize().getBytes(StandardCharsets.UTF_8));
+    source[2].serialize().write(writer);
     writer.write(']');
     
     writer.close();
