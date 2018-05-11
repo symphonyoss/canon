@@ -36,11 +36,11 @@ import org.symphonyoss.s2.common.dom.json.IJsonObject;
 import org.symphonyoss.s2.common.dom.json.ImmutableJsonObject;
 import org.symphonyoss.s2.common.dom.json.jackson.JacksonAdaptor;
 import org.symphonyoss.s2.common.exception.InvalidValueException;
+import org.symphonyoss.s2.common.immutable.ImmutableByteArray;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.common.collect.ImmutableList;
-import com.google.protobuf.ByteString;
 
 public class TestAllTheLists extends AbstractModelObjectTest
 { 
@@ -117,8 +117,8 @@ public class TestAllTheLists extends AbstractModelObjectTest
   {
     return AllTheLists.BUILDER.newInstance()
           .withBooleanListField(ImmutableList.of(true, false))
-          .withByteStringListField(ImmutableList.of(ByteString.copyFrom("Hello".getBytes()),
-              ByteString.copyFrom("Byteworld".getBytes())))
+          .withByteStringListField(ImmutableList.of(ImmutableByteArray.newInstance("Hello".getBytes()),
+              ImmutableByteArray.newInstance("Byteworld".getBytes())))
           .withDoubleListField(ImmutableList.of(1.2, 2.3))
           .withFloatListField(ImmutableList.of((float)4.5, (float)5.6))
           .withInt32ListField(ImmutableList.of(55, 66))

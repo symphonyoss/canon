@@ -316,7 +316,7 @@
     <#case "String">
       <#switch model.format>
         <#case "byte">
-          <@"<#assign ${varPrefix}BaseType=\"ByteString\">"?interpret />
+          <@"<#assign ${varPrefix}BaseType=\"ImmutableByteArray\">"?interpret />
           <#return>
         
         <#default>
@@ -428,7 +428,7 @@
     <#case "String">
       <#switch model.format>
         <#case "byte">
-          <#return "ByteString">
+          <#return "ImmutableByteArray">
         
         <#default>
           <#return "String">
@@ -731,7 +731,7 @@ import com.google.common.collect.ImmutableSet;
     </#if>
   </#if>
   <#if model.hasByteString>
-import com.google.protobuf.ByteString;
+import org.symphonyoss.s2.common.immutable.ImmutableByteArray;
   </#if>
   <#list model.referencedTypes as field>
     <@setJavaType field/>

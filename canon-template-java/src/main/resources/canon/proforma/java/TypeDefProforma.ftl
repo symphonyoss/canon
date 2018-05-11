@@ -2,7 +2,7 @@
 import javax.annotation.Nonnull;
 import javax.annotation.concurrent.Immutable;
 
-import com.google.protobuf.ByteString;
+import org.symphonyoss.s2.common.immutable.ImmutableByteArray;
 
 import org.symphonyoss.s2.common.exception.InvalidValueException;
 

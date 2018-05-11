@@ -35,6 +35,10 @@ public class Field extends AbstractSchema
   {
     super(parent, context, "Field", name);
     required_ = required;
+    
+    if(type == null)
+      throw new NullPointerException("Type is null");
+    
     type_ = type;
     add(type_);
   }
@@ -145,6 +149,9 @@ public class Field extends AbstractSchema
 
   public static AbstractSchema create(ModelElement parent, ParserContext context, boolean required)
   {
+    if(context.getName().startsWith("#"))
+      return null;
+    
     AbstractSchema schema = AbstractSchema.createSchema(parent, context);
     
     return new Field(parent, context, schema, required, context.getName());

@@ -14,6 +14,7 @@
   },
   "components": {
     "schemas": {
+      "# This is a comment": [],
       "IntTypedef": {
         "description": "An integer typedef.",
         "type": "integer"
@@ -41,6 +42,11 @@
         "description": "A Hash value, encoded as Base64, represented by an external class which we cant change so we need a factory generated.",
         "type": "string",
         "format": "byte",
+        "# This is a test comment.": [],
+        "# This is a another comment.": [
+          "I can put stuff in here",
+          "so I have as much space as I need."
+        ],
         "x-canon-attributes": {
           "javaExternalPackage":  "org.symphonyoss.s2.canon.test.oneofeverything",
           "javaExternalType":     "TestHash"

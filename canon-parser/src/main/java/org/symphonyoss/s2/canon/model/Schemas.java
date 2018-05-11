@@ -51,34 +51,41 @@ public class Schemas extends ModelElement
       
       AbstractSchema objectSchema = Field.createSchema(this, schema);
       
-      if(objectSchema instanceof Type)
+      if(schema.getName().startsWith("#"))
       {
-        objectSchema = new TypeDef(this, schema, objectSchema, objectSchema.getName());
-      }
-      else if(objectSchema instanceof ArraySchema)
-      {
-        objectSchema = new Component(this, schema, objectSchema, "Array", objectSchema.getName());
-      }
-      else if(objectSchema instanceof ObjectSchema)
-      {
-        objectSchema = new Component(this, schema, objectSchema, "Object", objectSchema.getName());
-      }
-      else if(objectSchema instanceof OneOfSchema)
-      {
-        objectSchema = new Component(this, schema, objectSchema, "OneOf", objectSchema.getName());
-      }
-      else if(objectSchema instanceof AllOfSchema)
-      {
-        objectSchema = new Component(this, schema, objectSchema, "AllOf", objectSchema.getName());
-      }
-      
-      if(objectSchema instanceof ReferenceOrSchema)
-      {
-        schemaMap_.put(schema.getPath(), (ReferenceOrSchema) objectSchema);
-        add(schema.getName(), objectSchema);
+        log_.debug("Comment ignored.");
       }
       else
-        schema.raise(new UnexpectedTypeError(ReferenceOrSchema.class, objectSchema));
+      {
+        if(objectSchema instanceof Type)
+        {
+          objectSchema = new TypeDef(this, schema, objectSchema, objectSchema.getName());
+        }
+        else if(objectSchema instanceof ArraySchema)
+        {
+          objectSchema = new Component(this, schema, objectSchema, "Array", objectSchema.getName());
+        }
+        else if(objectSchema instanceof ObjectSchema)
+        {
+          objectSchema = new Component(this, schema, objectSchema, "Object", objectSchema.getName());
+        }
+        else if(objectSchema instanceof OneOfSchema)
+        {
+          objectSchema = new Component(this, schema, objectSchema, "OneOf", objectSchema.getName());
+        }
+        else if(objectSchema instanceof AllOfSchema)
+        {
+          objectSchema = new Component(this, schema, objectSchema, "AllOf", objectSchema.getName());
+        }
+        
+        if(objectSchema instanceof ReferenceOrSchema)
+        {
+          schemaMap_.put(schema.getPath(), (ReferenceOrSchema) objectSchema);
+          add(schema.getName(), objectSchema);
+        }
+        else
+          schema.raise(new UnexpectedTypeError(ReferenceOrSchema.class, objectSchema));
+      }
     }
   }
   

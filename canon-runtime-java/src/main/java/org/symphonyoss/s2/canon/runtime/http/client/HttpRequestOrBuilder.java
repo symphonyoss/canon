@@ -29,6 +29,7 @@ import org.apache.http.client.methods.CloseableHttpResponse;
 import org.symphonyoss.s2.canon.runtime.exception.BadRequestException;
 import org.symphonyoss.s2.canon.runtime.exception.PermissionDeniedException;
 import org.symphonyoss.s2.canon.runtime.exception.ServerErrorException;
+import org.symphonyoss.s2.common.immutable.ImmutableByteArray;
 
 import com.google.protobuf.ByteString;
 
@@ -49,6 +50,11 @@ public class HttpRequestOrBuilder<MC extends HttpModelClient>
   public String asString(ByteString byteString)
   {
     return Base64.encodeBase64URLSafeString(byteString.toByteArray());
+  }
+  
+  public String asString(ImmutableByteArray byteString)
+  {
+    return byteString.toBase64UrlSafeString();
   }
   
   public String asString(Number number)

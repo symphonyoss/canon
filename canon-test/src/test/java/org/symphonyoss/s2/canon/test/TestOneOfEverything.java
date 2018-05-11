@@ -53,7 +53,6 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableSet;
-import com.google.protobuf.ByteString;
 
 public class TestOneOfEverything extends AbstractModelObjectTest
 {
@@ -247,15 +246,15 @@ public class TestOneOfEverything extends AbstractModelObjectTest
         .withADouble(27.0)
         .withADoubleMinMax(5.0)
         .withSecs(20L)
-        .withAByteString(ByteString.copyFrom("Hello World".getBytes()))
+        .withAByteString(ImmutableByteArray.newInstance("Hello World".getBytes()))
         .withAFloat(3.14f)
         .withAListOfString(ImmutableList.of("Hello", "World"))
         .withASetOfString(ImmutableSet.of("This is a set", "So the items are unique"))
         .withAListOfByteString(
             ListOfByteString.newBuilder()
-            .with(ByteString.copyFrom("Hello".getBytes()))
-            .with(ByteString.copyFrom("Byte".getBytes()))
-            .with(ByteString.copyFrom("World".getBytes()))
+            .with(ImmutableByteArray.newInstance("Hello".getBytes()))
+            .with(ImmutableByteArray.newInstance("Byte".getBytes()))
+            .with(ImmutableByteArray.newInstance("World".getBytes()))
             .build()
             )
         .withNanos(200)
