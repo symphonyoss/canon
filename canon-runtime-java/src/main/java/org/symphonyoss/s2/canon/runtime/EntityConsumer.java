@@ -7,25 +7,25 @@
 package org.symphonyoss.s2.canon.runtime;
 
 import java.io.IOException;
+import java.io.Reader;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.symphonyoss.s2.common.exception.InvalidValueException;
-import org.symphonyoss.s2.common.immutable.ImmutableByteArray;
 import org.symphonyoss.s2.fugue.core.trace.ITraceContext;
 import org.symphonyoss.s2.fugue.pipeline.IThreadSafeConsumer;
 
-public class EntityConsumer<E extends IEntity, C extends IThreadSafeConsumer<E>> implements IThreadSafeConsumer<ImmutableByteArray> 
+public abstract class EntityConsumer<P, E extends IEntity, C extends IThreadSafeConsumer<E>> implements IThreadSafeConsumer<P> 
 {
   private static final Logger                           log_ = LoggerFactory.getLogger(EntityConsumer.class);
 
   private final IModelRegistry                          modelRegistry_;
   private final Class<E>                                entityType_;
   private final C                                       consumer_;
-  private final IThreadSafeConsumer<ImmutableByteArray> invalidMessageConsumer_;
+  private final IThreadSafeConsumer<P> invalidMessageConsumer_;
 
   public EntityConsumer(IModelRegistry modelRegistry, Class<E> entityType, C consumer,
-      IThreadSafeConsumer<ImmutableByteArray> invalidMessageConsumer)
+      IThreadSafeConsumer<P> invalidMessageConsumer)
   {
     modelRegistry_ = modelRegistry;
     entityType_ = entityType;
@@ -34,11 +34,11 @@ public class EntityConsumer<E extends IEntity, C extends IThreadSafeConsumer<E>>
   }
 
   @Override
-  public void consume(ImmutableByteArray item, ITraceContext trace)
+  public void consume(P item, ITraceContext trace)
   {
     try
     {
-      IEntity modelObject = modelRegistry_.parseOne(item.getReader());
+      IEntity modelObject = modelRegistry_.parseOne(getReader(item));
 
       if (entityType_.isInstance(modelObject))
         consumer_.consume(entityType_.cast(modelObject), trace);
@@ -55,6 +55,8 @@ public class EntityConsumer<E extends IEntity, C extends IThreadSafeConsumer<E>>
     }
   }
   
+  protected abstract Reader getReader(P item);
+
   @Override
   public void close()
   {

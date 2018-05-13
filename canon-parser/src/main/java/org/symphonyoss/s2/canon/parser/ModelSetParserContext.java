@@ -136,6 +136,9 @@ public class ModelSetParserContext
     while((model = validateQueue_.pollFirst()) != null)
     {
       validate(model);
+      
+      if(!model.getContext().getRootParserContext().getErrors().isEmpty())
+        throw new ParsingException("Generation failed for " +model.getContext().getRootParserContext().getInputSourceName());
     }
   }
 

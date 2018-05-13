@@ -32,7 +32,9 @@ import org.symphonyoss.s2.common.dom.json.IJsonDomNode;
 import org.symphonyoss.s2.common.dom.json.ImmutableJsonObject;
 import org.symphonyoss.s2.common.dom.json.JsonArray;
 import org.symphonyoss.s2.common.dom.json.JsonObject;
+import org.symphonyoss.s2.common.dom.json.jackson.JacksonAdaptor;
 import org.symphonyoss.s2.common.exception.InvalidValueException;
+import org.symphonyoss.s2.common.immutable.ImmutableByteArray;
 
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableSet;
@@ -98,5 +100,10 @@ implements IEntityFactory<E,S,B>
   public ImmutableSet<E> newImmutableSet(JsonArray<?> jsonArray) throws InvalidValueException
   {
     return ImmutableSet.copyOf(newMutableSet(jsonArray));
+  }
+
+  public E newInstance(ImmutableByteArray bytes) throws InvalidValueException
+  {
+    return newInstance(JacksonAdaptor.parseObject(bytes).immutify());
   }
 }
