@@ -42,6 +42,7 @@ import org.symphonyoss.s2.canon.parser.GenerationException;
 import org.symphonyoss.s2.canon.parser.ParserContext;
 import org.symphonyoss.s2.canon.parser.RootParserContext;
 import org.symphonyoss.s2.canon.parser.error.CodeGenerationAbortedInfo;
+import org.symphonyoss.s2.canon.parser.error.ParserError;
 import org.symphonyoss.s2.canon.parser.error.ParserWarning;
 import org.symphonyoss.s2.canon.parser.error.RequiredItemMissingError;
 
@@ -63,6 +64,9 @@ public class Model extends ModelElement
   private Paths                  paths_;
   private String                 basePath_           = "";
   private Set<RootParserContext> referencedContexts_ = new HashSet<>();
+  private String                 canonVersion_;
+  private int                    canonMajorVersion_;
+  private int                    canonMinorVersion_;
   
   public Model(ParserContext parserContext)
   {
@@ -121,6 +125,28 @@ public class Model extends ModelElement
           }
           
           break;
+          
+        case Canon.VERSION:
+          canonVersion_ = subContext.getJsonNode().asText();
+          String[] parts = canonVersion_.split("\\.");
+          
+          if(parts.length == 2)
+          {
+            try
+            {
+              canonMajorVersion_ = Integer.parseInt(parts[0]);
+              canonMinorVersion_ = Integer.parseInt(parts[1]);
+            }
+            catch(NumberFormatException e)
+            {
+              parserContext.raise(new ParserError("%s must be a 2 element semantic version (each element must be an integer)", Canon.VERSION));
+            }
+          }
+          else
+          {
+            parserContext.raise(new ParserError("%s must be a 2 element semantic version", Canon.VERSION));
+          }
+          break;
         
         case Canon.X_BASE_PATH:
           basePath_ = subContext.getJsonNode().asText();
@@ -168,6 +194,21 @@ public class Model extends ModelElement
   public URI getCanonId()
   {
     return canonId_;
+  }
+
+  public String getCanonVersion()
+  {
+    return canonVersion_;
+  }
+
+  public int getCanonMajorVersion()
+  {
+    return canonMajorVersion_;
+  }
+
+  public int getCanonMinorVersion()
+  {
+    return canonMinorVersion_;
   }
 
   public String getBasePath()

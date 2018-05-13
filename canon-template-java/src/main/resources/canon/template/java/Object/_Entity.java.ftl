@@ -139,6 +139,16 @@
     {
       return TYPE_ID;
     }
+    
+    /**
+     * Return the type version (_version JSON attribute) for entities created by this factory.
+     * 
+     * @return The type version for entities created by this factory.
+     */
+    public String getCanonVersion()
+    {
+      return TYPE_VERSION;
+    }
         
     /**
      * Return a new entity instance created from the given JSON serialization.
@@ -398,6 +408,7 @@
       MutableJsonObject jsonObject = new MutableJsonObject();
       
       jsonObject.addIfNotNull(CanonRuntime.JSON_TYPE, ${modelJavaClassName}Entity.TYPE_ID);
+      jsonObject.addIfNotNull(CanonRuntime.JSON_VERSION, ${modelJavaClassName}Entity.TYPE_VERSION);
 
       getJsonObject(jsonObject);
   
@@ -417,10 +428,25 @@
       }
   </#list>
     }
-    
+        
+    /**
+     * Return the type id (_type JSON attribute) for this entity.
+     * 
+     * @return The type id for this entity.
+     */
     public String getCanonType()
     {
       return TYPE_ID;
+    }
+    
+    /**
+     * Return the type version (_version JSON attribute) for this entity.
+     * 
+     * @return The type version for this entity.
+     */
+    public String getCanonVersion()
+    {
+      return TYPE_VERSION;
     }
   }
 }

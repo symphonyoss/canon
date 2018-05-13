@@ -68,6 +68,7 @@ public class TestOneOfEverything extends AbstractModelObjectTest
     
     assertEquals("{\n" + 
         "  \"_type\":\"org.symphonyoss.s2.canon.test.oneOfEverything.ObjectWithOneOfEverything\",\n" + 
+        "  \"_version\":\"1.0\",\n" + 
         "  \"aBoolean\":true,\n" + 
         "  \"aDouble\":7.0,\n" + 
         "  \"aDoubleMinMax\":5.0,\n" + 
