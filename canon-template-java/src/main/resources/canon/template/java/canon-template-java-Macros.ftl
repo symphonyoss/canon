@@ -350,7 +350,7 @@
       <@"<#assign ${varPrefix}FQType=\"${model.attributes['javaExternalPackage']}.${model.attributes['javaExternalType']}\">"?interpret />
       <#if (model.attributes['isDirectExternal']!"false") != "true">
         <@"<#assign ${varPrefix}ElementFromBaseValuePrefix=\"${model.camelCapitalizedName}Builder.build(\">"?interpret />
-        <@"<#assign ${varPrefix}ElementFQBuilder=\"${javaFacadePackage}.${model.camelCapitalizedName}Builder\">"?interpret />
+        <@"<#assign ${varPrefix}ElementFQBuilder=\"${model.model.modelMap.javaFacadePackage}.${model.camelCapitalizedName}Builder\">"?interpret />
         <@"<#assign ${varPrefix}BaseValueFromElementPrefix=\"${model.camelCapitalizedName}Builder.to\" + ${varPrefix}BaseType + \"(\">"?interpret />
         <@"<#assign ${varPrefix}BaseValueFromElementSuffix=\")\">"?interpret />
       <#else>
@@ -919,12 +919,10 @@ ${indent}${var}.addIfNotNull("${field.camelName}", ${field.camelName}_.getValue(
     </#if>
   <#else>
     <#if field.isArraySchema>
-    // T1
       <#if field.baseSchema.items.baseSchema.isObjectSchema>
 ${indent}${var}.addCollectionOfDomNode("${field.camelName}", ${javaGetValuePrefix}${field.camelName}_${javaGetValuePostfix});
 
       <#else>
-      //T2
 ${indent}MutableJson${javaCardinality}  value${javaCardinality} = new MutableJson${javaCardinality}();
 
 ${indent}for(${fieldElementType} value : ${field.camelName}_)
@@ -997,7 +995,7 @@ ${indent}}
       </#if>
   <#else>
     <#if field.isArraySchema>
-${indent}if(node instanceof JsonArray)//HERE2
+${indent}if(node instanceof JsonArray)
 ${indent}{
     <#if field.baseSchema.items.isTypeDef>
 <#assign elementClassName=field.baseSchema.items.baseSchema.camelCapitalizedName>   
