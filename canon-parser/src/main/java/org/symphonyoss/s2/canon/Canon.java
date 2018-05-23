@@ -43,12 +43,14 @@ public class Canon
   /* JSON Constants */
   public static final String X_MODEL               = "model";
   public static final String X_ID                  = "id";
+  public static final String VERSION               = "version";
   public static final String X_ATTRIBUTES          = "x-canon-attributes";
   public static final String X_CARDINALITY         = "x-canon-cardinality";
   public static final String X_CARDINALITY_LIST    = "LIST";
   public static final String X_CARDINALITY_SET     = "SET";
   public static final String EXTENDS               = "extends";
   public static final String FACADE                = "facade";
+  public static final String BUILDER_FACADE        = "builderFacade";
   public static final String PROPERTY_NAME         = "propertyName";
   public static final String MAPPING               = "mapping";
   public static final String ENUM                  = "enum";

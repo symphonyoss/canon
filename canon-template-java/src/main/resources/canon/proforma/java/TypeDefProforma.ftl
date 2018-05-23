@@ -2,7 +2,7 @@
 import javax.annotation.Nonnull;
 import javax.annotation.concurrent.Immutable;
 
-import com.google.protobuf.ByteString;
+import org.symphonyoss.s2.common.immutable.ImmutableByteArray;
 
 import org.symphonyoss.s2.common.exception.InvalidValueException;
 
@@ -10,6 +10,7 @@ import ${javaGenPackage}.${modelJavaClassName}TypeDef;
 
 <#include "../../template/java/TypeDefHeader.ftl">
 @Immutable
+@SuppressWarnings("unused")
 public class ${modelJavaClassName} extends ${modelJavaClassName}TypeDef
 {
   private static Builder theBuilder = new Builder();

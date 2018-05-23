@@ -44,6 +44,7 @@
 	<module>canon-template-java</module>
 	<module>canon-runtime-java</module>
 	<module>canon-launch</module>
+	<module>canon-model-gcp</module>
 	</modules>
 
 	<licenses>
@@ -78,8 +79,8 @@
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<maven.compiler.source>1.8</maven.compiler.source>
 		<maven.compiler.target>1.8</maven.compiler.target>
-		<s2.common.version>0.1.18</s2.common.version>
-		<fugue.version>0.0.8</fugue.version>
+		<s2.common.version>0.1.20</s2.common.version>
+		<fugue.version>0.0.9</fugue.version>
 	</properties>
 
 	<repositories>
@@ -122,11 +123,6 @@
 	      <groupId>org.symphonyoss.s2.common</groupId>
 	      <artifactId>S2-common-dom-jackson</artifactId>
         <version>${s2.common.version}</version>
-	    </dependency>
-	    <dependency>
-	      <groupId>org.symphonyoss.s2.common</groupId>
-	      <artifactId>S2-common-crypto</artifactId>
-	      <version>${s2.common.version}</version>
 	    </dependency>
 			    
     

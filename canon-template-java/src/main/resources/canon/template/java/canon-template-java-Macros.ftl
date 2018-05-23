@@ -316,7 +316,7 @@
     <#case "String">
       <#switch model.format>
         <#case "byte">
-          <@"<#assign ${varPrefix}BaseType=\"ByteString\">"?interpret />
+          <@"<#assign ${varPrefix}BaseType=\"ImmutableByteArray\">"?interpret />
           <#return>
         
         <#default>
@@ -350,7 +350,7 @@
       <@"<#assign ${varPrefix}FQType=\"${model.attributes['javaExternalPackage']}.${model.attributes['javaExternalType']}\">"?interpret />
       <#if (model.attributes['isDirectExternal']!"false") != "true">
         <@"<#assign ${varPrefix}ElementFromBaseValuePrefix=\"${model.camelCapitalizedName}Builder.build(\">"?interpret />
-        <@"<#assign ${varPrefix}ElementFQBuilder=\"${javaFacadePackage}.${model.camelCapitalizedName}Builder\">"?interpret />
+        <@"<#assign ${varPrefix}ElementFQBuilder=\"${model.model.modelMap.javaFacadePackage}.${model.camelCapitalizedName}Builder\">"?interpret />
         <@"<#assign ${varPrefix}BaseValueFromElementPrefix=\"${model.camelCapitalizedName}Builder.to\" + ${varPrefix}BaseType + \"(\">"?interpret />
         <@"<#assign ${varPrefix}BaseValueFromElementSuffix=\")\">"?interpret />
       <#else>
@@ -428,7 +428,7 @@
     <#case "String">
       <#switch model.format>
         <#case "byte">
-          <#return "ByteString">
+          <#return "ImmutableByteArray">
         
         <#default>
           <#return "String">
@@ -731,7 +731,7 @@ import com.google.common.collect.ImmutableSet;
     </#if>
   </#if>
   <#if model.hasByteString>
-import com.google.protobuf.ByteString;
+import org.symphonyoss.s2.common.immutable.ImmutableByteArray;
   </#if>
   <#list model.referencedTypes as field>
     <@setJavaType field/>
@@ -919,12 +919,10 @@ ${indent}${var}.addIfNotNull("${field.camelName}", ${field.camelName}_.getValue(
     </#if>
   <#else>
     <#if field.isArraySchema>
-    // T1
       <#if field.baseSchema.items.baseSchema.isObjectSchema>
 ${indent}${var}.addCollectionOfDomNode("${field.camelName}", ${javaGetValuePrefix}${field.camelName}_${javaGetValuePostfix});
 
       <#else>
-      //T2
 ${indent}MutableJson${javaCardinality}  value${javaCardinality} = new MutableJson${javaCardinality}();
 
 ${indent}for(${fieldElementType} value : ${field.camelName}_)
@@ -950,16 +948,15 @@ ${indent}${var}.addIfNotNull("${field.camelName}", ${field.camelName}_);
  # @param field         A model element representing the field to generate for
  # @param var           The name of a variable to which the extracted value will be assigned 
  # @param ifValidation  If set then an if statement which guards validation checks
- # @param factoryName   Name of the model factory
  # @param mutable       "Mutable" for builders and "Immutable" for objects
  #----------------------------------------------------------------------------------------------------->
-<#macro generateCreateFieldFromJsonDomNode indent field var ifValidation factoryName mutable>
+<#macro generateCreateFieldFromJsonDomNode indent field var ifValidation mutable>
   <@setJavaType field/>
   <#if field.isComponent>
     <#if field.isObjectSchema>
 ${indent}if(node instanceof ImmutableJsonObject)
 ${indent}{
-${indent}  ${var} = ${factoryName}.get${field.model.camelCapitalizedName}Model().get${field.elementSchema.camelCapitalizedName}Factory().newInstance((ImmutableJsonObject)node);
+${indent}  ${var} = ${field.elementSchema.camelCapitalizedName}.FACTORY.newInstance((ImmutableJsonObject)node);
 ${indent}}
 ${indent}else ${ifValidation}
 ${indent}{
@@ -998,7 +995,7 @@ ${indent}}
       </#if>
   <#else>
     <#if field.isArraySchema>
-${indent}if(node instanceof JsonArray)//HERE2
+${indent}if(node instanceof JsonArray)
 ${indent}{
     <#if field.baseSchema.items.isTypeDef>
 <#assign elementClassName=field.baseSchema.items.baseSchema.camelCapitalizedName>   
@@ -1016,7 +1013,7 @@ ${indent}}
 ${indent}    ${var} = ${javaTypeCopyPrefix}list${javaTypeCopyPostfix};
     <#else>
       <#if field.baseSchema.items.isComponent>
-${indent}  ${var} = ${factoryName}.get${field.model.camelCapitalizedName}Model().get${field.elementSchema.camelCapitalizedName}Factory().new${mutable}${fieldCardinality}((JsonArray<?>)node);
+${indent}  ${var} = ${field.elementSchema.camelCapitalizedName}.FACTORY.new${mutable}${fieldCardinality}((JsonArray<?>)node);
 
       <#else>
 ${indent}  ${var} = ((JsonArray<?>)node).asImmutable${fieldCardinality}Of(${javaElementFieldClassName}.class);
@@ -1129,12 +1126,13 @@ ${indent}    ${var}.add(${model.camelCapitalizedName}.newBuilder().build(${value
    * ${description}
   <#if operation.payload??>
   <@setJavaType operation.payload.schema/>
-   * @param _payload The request payload
+   * @param canonPayload The request payload
   </#if>
   <#if isAsync && operation.response??>
   <@setJavaType operation.response.schema/>
-  * @param _consumer A consumer into which responses may be passed.
+   * @param canonConsumer A consumer into which responses may be passed.
   </#if>
+   * @param canonTrace A trace context.
   <#list operation.parameters as parameter>
     <@setJavaType parameter.schema/>
    * @param ${parameter.camelName?right_pad(25)} ${summary}

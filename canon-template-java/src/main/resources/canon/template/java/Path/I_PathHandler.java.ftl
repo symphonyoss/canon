@@ -5,6 +5,7 @@ import javax.annotation.Nullable;
 
 import org.symphonyoss.s2.canon.runtime.exception.CanonException;
 import org.symphonyoss.s2.canon.runtime.IEntityHandler;
+import org.symphonyoss.s2.fugue.core.trace.ITraceContext;
 
 <@importFieldTypes model true/>
 <@importFacadePackages model/>
@@ -18,11 +19,12 @@ public interface I${modelJavaClassName}PathHandler extends I${model.model.camelC
   <#if operation.payload??>
   <@setJavaType operation.payload.schema/>
   <#if operation.payload.isRequired>
-    @Nonnull  ${fieldType?right_pad(25)} _payload<#if operation.parameters?size != 0>,</#if>
+    @Nonnull  ${fieldType?right_pad(25)} canonPayload,
   <#else>
-    @Nullable ${fieldType?right_pad(25)} _payload<#if operation.parameters?size != 0>,</#if>
+    @Nullable ${fieldType?right_pad(25)} canonPayload,
   </#if>
   </#if>
+              ${"ITraceContext"?right_pad(25)} canonTrace<#if operation.parameters?size != 0>,</#if>
 	<#list operation.parameters as parameter>
 	  <@setJavaType parameter.schema/>
 	  <#if parameter.isRequired>

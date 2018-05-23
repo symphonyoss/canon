@@ -24,26 +24,37 @@
 package org.symphonyoss.s2.canon.runtime.http.client;
 
 import org.apache.commons.codec.binary.Base64;
+import org.apache.http.HttpStatus;
+import org.apache.http.client.methods.CloseableHttpResponse;
+import org.symphonyoss.s2.canon.runtime.exception.BadRequestException;
+import org.symphonyoss.s2.canon.runtime.exception.PermissionDeniedException;
+import org.symphonyoss.s2.canon.runtime.exception.ServerErrorException;
+import org.symphonyoss.s2.common.immutable.ImmutableByteArray;
 
 import com.google.protobuf.ByteString;
 
 public class HttpRequestOrBuilder<MC extends HttpModelClient>
 {
-  private final MC japiClient_;
+  private final MC canonClient_;
 
-  public HttpRequestOrBuilder(MC japiClient)
+  public HttpRequestOrBuilder(MC canonClient)
   {
-    japiClient_ = japiClient;
+    canonClient_ = canonClient;
   }
 
-  public MC getJapiClient()
+  public MC getCanonClient()
   {
-    return japiClient_;
+    return canonClient_;
   }
 
   public String asString(ByteString byteString)
   {
     return Base64.encodeBase64URLSafeString(byteString.toByteArray());
+  }
+  
+  public String asString(ImmutableByteArray byteString)
+  {
+    return byteString.toBase64UrlSafeString();
   }
   
   public String asString(Number number)
@@ -54,5 +65,25 @@ public class HttpRequestOrBuilder<MC extends HttpModelClient>
   public String asString(String s)
   {
     return s;
+  }
+  
+  public void validateResponse(CloseableHttpResponse response) throws PermissionDeniedException, BadRequestException, ServerErrorException
+  {
+    int statusCode = response.getStatusLine().getStatusCode();
+    
+    if(statusCode == HttpStatus.SC_FORBIDDEN)
+      throw new PermissionDeniedException(response.getStatusLine().getReasonPhrase());
+    
+    if(statusCode < 200 || statusCode > 599)
+      throw new ServerErrorException("Unexpected HTTP response " + response.getStatusLine());
+    
+    if(statusCode >= 300 && statusCode <= 399)
+      throw new ServerErrorException("Unexpected HTTP response " + response.getStatusLine());
+    
+    if(statusCode >= 500)
+      throw new ServerErrorException(response.getStatusLine().toString());
+    
+    if(statusCode >= 400)
+      throw new BadRequestException(response.getStatusLine().toString());
   }
 }

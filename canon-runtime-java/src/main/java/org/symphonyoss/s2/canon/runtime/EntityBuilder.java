@@ -26,9 +26,9 @@ package org.symphonyoss.s2.canon.runtime;
 import org.symphonyoss.s2.common.dom.DomSerializer;
 import org.symphonyoss.s2.common.dom.json.IImmutableJsonDomNode;
 import org.symphonyoss.s2.common.dom.json.IJsonDomNodeProvider;
-import org.symphonyoss.s2.common.dom.json.ImmutableJsonObject;
 import org.symphonyoss.s2.common.dom.json.MutableJsonObject;
 import org.symphonyoss.s2.common.exception.InvalidValueException;
+import org.symphonyoss.s2.common.immutable.ImmutableByteArray;
 
 /**
  * A builder for some entity type.
@@ -36,26 +36,28 @@ import org.symphonyoss.s2.common.exception.InvalidValueException;
  * Essentially this is a mutable version of the enclosing entity type.
  * 
  * @author Bruce Skingle
+ * @param <B> Fluent type, determines the type of the "this" reference returned by with methods.
  */
-public abstract class EntityBuilder implements IJsonDomNodeProvider, IBaseEntity
+public abstract class EntityBuilder<B extends EntityBuilder<B>> implements IEntityBuilder, IJsonDomNodeProvider, IBaseEntity
 {
   protected static final DomSerializer SERIALIZER = DomSerializer.newBuilder().withCanonicalMode(true).build();
+ 
+  private final B self_;
 
-  /**
-   * Constructor.
-   * 
-   * @param factory The factory with which this builder is associated.
-   */
-  public EntityBuilder(EntityFactory<?,?,?> factory)
+  protected EntityBuilder(Class<B> type)
   {
+    self_ = type.cast(this);
   }
-
-  /**
-   * Return the JSON representation of the current state of this builder.
-   * 
-   * @return the JSON representation of the current state of this builder.
-   */
-  public abstract ImmutableJsonObject getJsonObject();
+  
+  protected EntityBuilder(Class<B> type, IBaseEntity other)
+  {
+    self_ = type.cast(this);
+  }
+  
+  protected B self()
+  {
+    return self_;
+  }
   
   /**
    * Fill in the JSON representation of the current state of this builder.
@@ -74,16 +76,10 @@ public abstract class EntityBuilder implements IJsonDomNodeProvider, IBaseEntity
   }
 
   @Override
-  public String serialize()
+  public ImmutableByteArray serialize()
   {
-    return SERIALIZER.serialize(getJsonObject());
+    return ImmutableByteArray.newInstance(SERIALIZER.serialize(getJsonObject()));
   }
   
-  /**
-   * Called immediately prior to building an instance from this builder.
-   * 
-   * @throws InvalidValueException May be thrown if the values in the builder as a whole are not valid.
-   */
-  public void validate() throws InvalidValueException
-  {}
+  public abstract IEntity build() throws InvalidValueException;
 }

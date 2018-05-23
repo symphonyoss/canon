@@ -25,13 +25,10 @@ package org.symphonyoss.s2.canon.test.oneofeverything;
 
 import java.io.IOException;
 
-import org.symphonyoss.s2.canon.test.oneofeverything.facade.OneOfEverything;
 import org.symphonyoss.s2.fugue.FugueServer;
 
 public class OneOfEverythingServer extends FugueServer
 {
-  private OneOfEverything  model_ = new OneOfEverything();
-  
   public OneOfEverythingServer()
   {
     super("OneOfEverythingServer", 7009);

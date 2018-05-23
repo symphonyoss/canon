@@ -13,6 +13,11 @@ public class ${modelJavaClassName}HttpModelClient extends HttpModelClient
   {
     super(registry, baseUri, "${model.basePath}");
   }
+  
+  public ${modelJavaClassName}HttpModelClient(IModelRegistry registry, String baseUri, String basePath)
+  {
+    super(registry, baseUri, basePath);
+  }
 <#list model.paths.children as path>
   <#list path.operations as operation>
     <@setJavaMethod operation/>

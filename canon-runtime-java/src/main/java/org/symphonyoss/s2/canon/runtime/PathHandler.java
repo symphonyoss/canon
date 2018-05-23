@@ -35,7 +35,7 @@ import org.slf4j.LoggerFactory;
 import org.symphonyoss.s2.canon.runtime.exception.CanonException;
 import org.symphonyoss.s2.canon.runtime.http.RequestContext;
 
-public abstract class PathHandler<M extends IModel> implements IEntityHandler
+public abstract class PathHandler implements IEntityHandler
 {
   private static final Logger log_ = LoggerFactory.getLogger(PathHandler.class);
   
@@ -55,8 +55,6 @@ public abstract class PathHandler<M extends IModel> implements IEntityHandler
     
     partsLength_ = cnt;
   }
-
-  public abstract M getModel();
 
   @Override
   public boolean handle(RequestContext context) throws IOException

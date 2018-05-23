@@ -37,7 +37,6 @@ import javax.servlet.http.HttpServletResponse;
 import org.apache.commons.codec.binary.Base64;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.symphonyoss.s2.canon.runtime.Entity;
 import org.symphonyoss.s2.canon.runtime.IBaseEntity;
 import org.symphonyoss.s2.canon.runtime.IEntity;
 import org.symphonyoss.s2.canon.runtime.IEntityFactory;
@@ -46,6 +45,7 @@ import org.symphonyoss.s2.canon.runtime.TypeDefBuilder;
 import org.symphonyoss.s2.common.dom.json.ImmutableJsonObject;
 import org.symphonyoss.s2.common.dom.json.JsonValue;
 import org.symphonyoss.s2.common.exception.InvalidValueException;
+import org.symphonyoss.s2.common.immutable.ImmutableByteArray;
 import org.symphonyoss.s2.fugue.core.trace.ITraceContext;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -110,6 +110,11 @@ public class RequestContext
   {
     return asByteString(name, getParameterAsString(name, location, required));
   }
+  
+  public ImmutableByteArray getParameterAsImmutableByteArray(String name, ParameterLocation location, boolean required)
+  {
+    return asImmutableByteArray(name, getParameterAsString(name, location, required));
+  }
 
   public @Nullable Long asLong(String parameterName, String value)
   {
@@ -155,6 +160,20 @@ public class RequestContext
     }
     
     return ByteString.copyFrom(Base64.decodeBase64(value));
+  }
+
+  public @Nullable ImmutableByteArray asImmutableByteArray(String parameterName, String value)
+  {
+    if(value == null)
+      return null;
+    
+    if(!Base64.isBase64(value))
+    {
+      error("Parameter %s requires a Base64 value but we found \"%s\"", parameterName, value);
+      return null;
+    }
+    
+    return ImmutableByteArray.newInstance(Base64.decodeBase64(value));
   }
 
   public String  getParameterAsString(String name, ParameterLocation location, boolean required)

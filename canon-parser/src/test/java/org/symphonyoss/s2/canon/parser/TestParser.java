@@ -38,38 +38,56 @@ public class TestParser extends AbstractParserTest
   }
   
   // This test checks that openapi3 schemavalidation is working but we turned it off...
-//  @Test(expected=SchemaValidationException.class)
-//  public void testIncomplete() throws ParsingException
-//  {
-//    test(false, "{\n" + 
-//        "  \"canon\": \"0.0.1\",\n" + 
-//        "  \"info\": {\n" + 
-//        "    \"version\": \"0.0.1\",\n" + 
-//        "    \"title\": \"Canon Template Type Check\",\n" + 
-//        "    \"license\": {\n" + 
-//        "      \"name\": \"Apache2\"\n" + 
-//        "    }\n" + 
-//        "  }\n" + 
-//        "}");
-//  }
+  @Test(expected=SchemaValidationException.class)
+  public void testIncomplete() throws ParsingException
+  {
+    test(false, "{\n" + 
+        "  \"canon\": \"0.0.1\",\n" + 
+        "  \"info\": {\n" + 
+        "    \"title\": \"Canon Template Type Check\",\n" + 
+        "    \"license\": {\n" + 
+        "      \"name\": \"Apache2\"\n" + 
+        "    }\n" + 
+        "  }\n" + 
+        "}");
+  }
   
-  @Test
-  public void testInvalid() throws ParsingException
+  @Test(expected=SchemaValidationException.class)
+  public void testNoId() throws ParsingException
   {
     Model model = test(false, "{\n" + 
         "  \"canon\": \"0.0.1\",\n" + 
         "  \"info\": {\n" + 
-        "    \"version\": \"0.0.1\",\n" + 
         "    \"title\": \"Canon Template Type Check\",\n" + 
         "    \"license\": {\n" + 
         "      \"name\": \"Apache2\"\n" + 
         "    }\n" + 
         "  },\n" + 
-        "  \"components\": {}\n" + 
+        "  \"version\": \"1.0\",\n" +
+        "  \"components\": {}\n" +
         "  }\n" + 
         "}");
     
     assertHasOneErrorMissing(model, Canon.X_ID);
+  }
+  
+  @Test(expected=SchemaValidationException.class)
+  public void testNoVersion() throws ParsingException
+  {
+    Model model = test(false, "{\n" + 
+        "  \"canon\": \"0.0.1\",\n" + 
+        "  \"info\": {\n" + 
+        "    \"title\": \"Canon Template Type Check\",\n" + 
+        "    \"license\": {\n" + 
+        "      \"name\": \"Apache2\"\n" + 
+        "    }\n" + 
+        "  },\n" + 
+        "  \"id\": \"org.symphonyoss.s2.canon.test\",\n" +
+        "  \"components\": {}\n" + 
+        "  }\n" + 
+        "}");
+    
+    assertHasOneErrorMissing(model, Canon.VERSION);
   }
 
   @Test
@@ -78,13 +96,13 @@ public class TestParser extends AbstractParserTest
     test(true, "{\n" + 
         "  \"canon\": \"0.0.1\",\n" + 
         "  \"info\": {\n" + 
-        "    \"version\": \"0.0.1\",\n" + 
         "    \"title\": \"Canon Template Type Check\",\n" + 
         "    \"license\": {\n" + 
         "      \"name\": \"Apache2\"\n" + 
         "    }\n" + 
         "  },\n" + 
-        "  \"id\": \"https://github.com/bruceskingle/canon/blob/master/canon-test/src/main/resources/test/typeCheck.json\",\n" + 
+        "  \"id\": \"org.symphonyoss.s2.canon.test\",\n" +
+        "  \"version\": \"1.0\",\n" +
         "  \"model\": {\n" + 
         "    \"javaGenPackage\":  \"org.symphonyoss.s2.canon.test.typeCheck\",\n" + 
         "    \"javaFacadePackage\":  \"org.symphonyoss.s2.canon.test.typeCheck.facade\"\n" + 
@@ -100,13 +118,13 @@ public class TestParser extends AbstractParserTest
     Model model = test(true, "{\n" + 
         "  \"canon\": \"0.0.1\",\n" + 
         "  \"info\": {\n" + 
-        "    \"version\": \"0.0.1\",\n" + 
         "    \"title\": \"Symphony 2.0 Typedefs\",\n" + 
         "    \"license\": {\n" + 
         "      \"name\": \"Apache2\"\n" + 
         "    }\n" + 
         "  },\n" + 
-        "  \"id\": \"https://github.com/bruceskingle/canon/blob/master/canon-test/src/main/resources/test/typeCheck.json\",\n" + 
+        "  \"id\": \"org.symphonyoss.s2.canon.test\",\n" +
+        "  \"version\": \"1.0\",\n" +
         "  \"model\": {\n" + 
         "    \"javaGenPackage\":  \"com.symphony.s2.common.types.canon\",\n" + 
         "    \"javaFacadePackage\":  \"com.symphony.s2.common.types.canon.facade\"\n" + 

@@ -44,7 +44,7 @@ import com.google.common.collect.ImmutableSet;
  * @param <S> The super type of the entity, i.e. the generated super class.
  * @param <B> The builder type of the entity.
  */
-public interface IEntityFactory<E extends IEntity, S extends IEntity, B extends EntityBuilder>
+public interface IEntityFactory<E extends IEntity, S extends IEntity, B extends IEntityBuilder>
 {
   /**
    * Return the type identifier (_type JSON attribute) for entities created by this factory.
@@ -52,24 +52,6 @@ public interface IEntityFactory<E extends IEntity, S extends IEntity, B extends 
    * @return The type identifier for entities created by this factory.
    */
   @Nonnull String getCanonType();
-  
-  /**
-   * Create a new builder with all fields initialized to default values.
-   * 
-   * @return A new builder.
-   */
-  public B newBuilder();
-  
-  /**
-   * Create a new builder with all fields initialized from the given builder.
-   * Values are copied so that subsequent changes to initial will not be reflected in
-   * the returned builder.
-   * 
-   * @param initial A builder or instance whose values are copied into a new builder.
-   * 
-   * @return A new builder.
-   */
-  public B newBuilder(S initial);
   
   /**
    * Return a new entity instance created from the given JSON serialization.
@@ -93,7 +75,7 @@ public interface IEntityFactory<E extends IEntity, S extends IEntity, B extends 
    * 
    * @throws InvalidValueException If the given values are not valid.
    */
-  E newInstance(S builder) throws InvalidValueException;
+  E newInstance(B builder) throws InvalidValueException;
 
   /**
    * Return a list of new entity instances created from the given JSON array.

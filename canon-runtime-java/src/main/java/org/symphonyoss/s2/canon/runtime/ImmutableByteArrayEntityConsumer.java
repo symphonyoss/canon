@@ -1,12 +1,12 @@
 /*
  *
  *
- * Copyright 2017 Symphony Communication Services, LLC.
+ * Copyright 2018 Symphony Communication Services, LLC.
  *
  * Licensed to The Symphony Software Foundation (SSF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
- * regarding copyright ownership.  The SSF licenses this file
+ * regarding copyright ownership.  The ASF licenses this file
  * to you under the Apache License, Version 2.0 (the
  * "License"); you may not use this file except in compliance
  * with the License.  You may obtain a copy of the License at
@@ -23,6 +23,23 @@
 
 package org.symphonyoss.s2.canon.runtime;
 
-public abstract class Model implements IModel
+import java.io.Reader;
+
+import org.symphonyoss.s2.common.immutable.ImmutableByteArray;
+import org.symphonyoss.s2.fugue.pipeline.IThreadSafeConsumer;
+
+public class ImmutableByteArrayEntityConsumer<E extends IEntity, C extends IThreadSafeConsumer<E>> extends EntityConsumer<ImmutableByteArray, E, C>
 {
+  public ImmutableByteArrayEntityConsumer(IModelRegistry modelRegistry, Class<E> entityType, C consumer,
+      IThreadSafeConsumer<ImmutableByteArray> invalidMessageConsumer)
+  {
+    super(modelRegistry, entityType, consumer, invalidMessageConsumer);
+  }
+
+  @Override
+  protected Reader getReader(ImmutableByteArray item)
+  {
+    return item.getReader();
+  }
+
 }

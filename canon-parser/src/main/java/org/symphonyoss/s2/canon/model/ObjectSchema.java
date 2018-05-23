@@ -35,7 +35,6 @@ import org.symphonyoss.s2.canon.parser.GenerationException;
 import org.symphonyoss.s2.canon.parser.ParserContext;
 import org.symphonyoss.s2.canon.parser.error.ParserError;
 import org.symphonyoss.s2.canon.parser.error.ParserInfo;
-import org.symphonyoss.s2.canon.parser.error.UnexpectedTypeError;
 
 /**
  * Schema for an object.
@@ -48,6 +47,7 @@ public class ObjectSchema extends Schema
   private Set<String>          requiredButUndefinedSet_ = new HashSet<>();
   private List<ModelElement>   fields_                  = new ArrayList<>();
   private boolean              generateFacade_;
+  private boolean              generateBuilderFacade_;
   private ReferenceSchema      superSchema_;
     
   public ObjectSchema(ModelElement parent, ParserContext context, String name)
@@ -97,7 +97,7 @@ public class ObjectSchema extends Schema
       }
       
       generateFacade_ = context.getBooleanNode(Canon.FACADE, false);
-      
+      generateBuilderFacade_ = context.getBooleanNode(Canon.BUILDER_FACADE, false);
       
       ParserContext extendsContext = context.get(Canon.EXTENDS);
       
@@ -105,25 +105,6 @@ public class ObjectSchema extends Schema
       {
         superSchema_ =  new ReferenceSchema(this, extendsContext, extendsContext, "extends");
         add(superSchema_);
-//        ReferenceSchema ss = null;
-//        
-//        ParserContext r = extendsContext.get(Canon.DOLLAR_REF);
-//        if(r.isTextual())
-//        {
-//          String s = r.asText();
-//          
-//          ss = new ReferenceSchema(this, extendsContext, r, "extends");
-//        }
-//        
-//        AbstractSchema superSchema = createSchema(extendsContext);
-//        
-//        if(superSchema instanceof ReferenceSchema)
-//        {
-//          superSchema_ = (ReferenceSchema) superSchema;
-//          add(superSchema);
-//        }
-//        else
-//          extendsContext.raise(new UnexpectedTypeError(ReferenceSchema.class, superSchema));
       }
     }
     else
@@ -249,6 +230,12 @@ public class ObjectSchema extends Schema
   public boolean getIsGenerateFacade()
   {
     return generateFacade_;
+  }
+  
+  @Override
+  public boolean getIsGenerateBuilderFacade()
+  {
+    return generateBuilderFacade_;
   }
   
   @Override

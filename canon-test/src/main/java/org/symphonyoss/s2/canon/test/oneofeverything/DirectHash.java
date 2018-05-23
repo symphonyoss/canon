@@ -23,11 +23,10 @@
 
 package org.symphonyoss.s2.canon.test.oneofeverything;
 
-import org.symphonyoss.s2.common.dom.IByteStringProvider;
+import org.symphonyoss.s2.common.dom.IImmutableByteArrayProvider;
 import org.symphonyoss.s2.common.dom.json.IJsonDomNode;
 import org.symphonyoss.s2.common.exception.InvalidValueException;
-
-import com.google.protobuf.ByteString;
+import org.symphonyoss.s2.common.immutable.ImmutableByteArray;
 
 /**
  * Example of a class which can be used as a direct external type with canon.
@@ -42,21 +41,21 @@ import com.google.protobuf.ByteString;
  */
 public class DirectHash
 {
-  private final ByteString  value_;
+  private final ImmutableByteArray  value_;
   private final int         someObscureImplementatinoDetail_;
   
-  private DirectHash(ByteString value, int someObscureImplementatinoDetail)
+  private DirectHash(ImmutableByteArray value, int someObscureImplementatinoDetail)
   {
     value_ = value;
     someObscureImplementatinoDetail_ = someObscureImplementatinoDetail;
   }
   
-  public static DirectHash someObscureImplementationFactory(ByteString value) throws InvalidValueException
+  public static DirectHash someObscureImplementationFactory(ImmutableByteArray value) throws InvalidValueException
   {
     return new DirectHash(value, 7);
   }
 
-  public ByteString someObscureGetter()
+  public ImmutableByteArray someObscureGetter()
   {
     return value_;
   }
@@ -70,26 +69,26 @@ public class DirectHash
    * The following canon standard factory methods have been added so that this class
    * can be used as a direct external class with JAPIGEN.
    */
-  public static DirectHash build(ByteString value) throws InvalidValueException
+  public static DirectHash build(ImmutableByteArray value) throws InvalidValueException
   {
     return someObscureImplementationFactory(value);
   }
   
-  public static ByteString toByteString(DirectHash instance)
+  public static ImmutableByteArray toImmutableByteArray(DirectHash instance)
   {
     return instance.someObscureGetter();
   }
 
   public static DirectHash build(IJsonDomNode node) throws InvalidValueException
   {
-    if(node instanceof IByteStringProvider)
+    if(node instanceof IImmutableByteArrayProvider)
     {
-      ByteString value = ((IByteStringProvider)node).asByteString();
+      ImmutableByteArray value = ((IImmutableByteArrayProvider)node).asImmutableByteArray();
       return build(value);
     }
     else
     {
-      throw new InvalidValueException("Hash must be an instance of ByteString not " + node.getClass().getName());
+      throw new InvalidValueException("Hash must be an instance of ImmutableByteArray not " + node.getClass().getName());
     }
   }
 }

@@ -26,6 +26,7 @@ package org.symphonyoss.s2.canon.runtime;
 import javax.annotation.Nonnull;
 
 import org.symphonyoss.s2.common.dom.json.IImmutableJsonDomNode;
+import org.symphonyoss.s2.common.immutable.ImmutableByteArray;
 
 public class BaseEntity implements IBaseEntity
 {
@@ -52,9 +53,9 @@ public class BaseEntity implements IBaseEntity
   }
   
   @Override
-  public @Nonnull String serialize()
+  public @Nonnull ImmutableByteArray serialize()
   {
-    return jsonDomNode_.toString();
+    return jsonDomNode_.serialize();
   }
   
   @Override

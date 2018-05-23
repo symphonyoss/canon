@@ -215,5 +215,10 @@ public abstract class AbstractRequestManager<P,R extends IBaseEntity>
     async_.complete();
   }
 
+  protected ITraceContext getTrace()
+  {
+    return trace_;
+  }
+
 
 }

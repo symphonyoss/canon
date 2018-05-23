@@ -32,7 +32,9 @@ import org.symphonyoss.s2.common.dom.json.IJsonDomNode;
 import org.symphonyoss.s2.common.dom.json.ImmutableJsonObject;
 import org.symphonyoss.s2.common.dom.json.JsonArray;
 import org.symphonyoss.s2.common.dom.json.JsonObject;
+import org.symphonyoss.s2.common.dom.json.jackson.JacksonAdaptor;
 import org.symphonyoss.s2.common.exception.InvalidValueException;
+import org.symphonyoss.s2.common.immutable.ImmutableByteArray;
 
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableSet;
@@ -46,7 +48,7 @@ import com.google.common.collect.ImmutableSet;
  * @param <S> The super type of the entity, i.e. the generated super class.
  * @param <B> The builder type of the entity.
  */
-public abstract class EntityFactory<E extends IEntity, S extends IEntity, B extends EntityBuilder>
+public abstract class EntityFactory<E extends IEntity, S extends IEntity, B extends IEntityBuilder>
 implements IEntityFactory<E,S,B>
 {
   @Override
@@ -98,5 +100,10 @@ implements IEntityFactory<E,S,B>
   public ImmutableSet<E> newImmutableSet(JsonArray<?> jsonArray) throws InvalidValueException
   {
     return ImmutableSet.copyOf(newMutableSet(jsonArray));
+  }
+
+  public E newInstance(ImmutableByteArray bytes) throws InvalidValueException
+  {
+    return newInstance(JacksonAdaptor.parseObject(bytes).immutify());
   }
 }

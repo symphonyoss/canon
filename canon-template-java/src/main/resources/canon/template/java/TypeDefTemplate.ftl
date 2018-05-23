@@ -2,7 +2,7 @@
 import javax.annotation.Nonnull;
 import javax.annotation.concurrent.Immutable;
 
-import com.google.protobuf.ByteString;
+import org.symphonyoss.s2.common.immutable.ImmutableByteArray;
 
 import org.symphonyoss.s2.common.dom.IBooleanProvider;
 import org.symphonyoss.s2.common.dom.IStringProvider;
@@ -10,7 +10,7 @@ import org.symphonyoss.s2.common.dom.IIntegerProvider;
 import org.symphonyoss.s2.common.dom.ILongProvider;
 import org.symphonyoss.s2.common.dom.IFloatProvider;
 import org.symphonyoss.s2.common.dom.IDoubleProvider;
-import org.symphonyoss.s2.common.dom.IByteStringProvider;
+import org.symphonyoss.s2.common.dom.IImmutableByteArrayProvider;
 import org.symphonyoss.s2.common.dom.json.IJsonDomNode;
 
 import org.symphonyoss.s2.common.exception.InvalidValueException;

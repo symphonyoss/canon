@@ -21,7 +21,6 @@ import org.symphonyoss.s2.common.dom.json.JsonValue;
 import org.symphonyoss.s2.common.exception.InvalidValueException;
 
 import org.symphonyoss.s2.canon.runtime.AsyncPathHandler;
-import org.symphonyoss.s2.fugue.pipeline.IConsumer;
 import org.symphonyoss.s2.canon.runtime.EmptyRequestManager;
 import org.symphonyoss.s2.canon.runtime.PayloadOnlyRequestManager;
 import org.symphonyoss.s2.canon.runtime.PayloadResponseRequestManager;
@@ -34,18 +33,17 @@ import org.symphonyoss.s2.canon.runtime.exception.PermissionDeniedException;
 import org.symphonyoss.s2.canon.runtime.exception.ServerErrorException;
 import org.symphonyoss.s2.canon.runtime.http.ParameterLocation;
 import org.symphonyoss.s2.canon.runtime.http.RequestContext;
+import org.symphonyoss.s2.fugue.pipeline.IConsumer;
 
 <@importFieldTypes model true/>
 <@importFacadePackages model/>
 
 <#include "Path.ftl">
 @Immutable
-public abstract class ${modelJavaClassName}AsyncPathHandler extends AsyncPathHandler<I${model.model.camelCapitalizedName}> implements I${modelJavaClassName}AsyncPathHandler
+@SuppressWarnings("unused")
+public abstract class ${modelJavaClassName}AsyncPathHandler extends AsyncPathHandler implements I${modelJavaClassName}AsyncPathHandler
 {
-  private final I${model.model.camelCapitalizedName} model_;
-  
   public ${modelJavaClassName}AsyncPathHandler(
-    I${model.model.camelCapitalizedName} model,
     ExecutorService processExecutor,
     ExecutorService responseExecutor)
   {
@@ -55,14 +53,6 @@ public abstract class ${modelJavaClassName}AsyncPathHandler extends AsyncPathHan
 </#list>
       }
     );
-      
-      model_ = model;
-  }
-  
-  @Override
-  public I${model.model.camelCapitalizedName} getModel()
-  {
-    return model_;
   }
 
   @Override
@@ -122,7 +112,7 @@ public abstract class ${modelJavaClassName}AsyncPathHandler extends AsyncPathHan
         @Override
         public void handle(${methodPayloadDecl} payload, IConsumer<${methodResponseType}> consumer) throws CanonException
         {
-          handle${operation.camelCapitalizedName}(payload, consumer<#if operation.parameters?size != 0>,</#if>
+          handle${operation.camelCapitalizedName}(payload, consumer, getTrace()<#if operation.parameters?size != 0>,</#if>
       <#list operation.parameters as parameter>
         final${parameter.camelCapitalizedName}<#sep>,</#sep>
       </#list>
@@ -138,7 +128,7 @@ public abstract class ${modelJavaClassName}AsyncPathHandler extends AsyncPathHan
           return ${javaClassName}.newBuilder().build(jsonValue);
       <#else>
           ImmutableJsonObject jsonObject = ModelRegistry.parseOneJsonObject(new StringReader(request));
-          return getModel().get${javaClassName}Factory().newInstance(jsonObject);
+          return ${javaClassName}.FACTORY.newInstance(jsonObject);
       </#if>
         }
       };
@@ -156,7 +146,7 @@ public abstract class ${modelJavaClassName}AsyncPathHandler extends AsyncPathHan
         @Override
         public void handle(${methodPayloadDecl} payload) throws CanonException
         {
-          handle${operation.camelCapitalizedName}(payload<#if operation.parameters?size != 0>,</#if>
+          handle${operation.camelCapitalizedName}(payload, getTrace()<#if operation.parameters?size != 0>,</#if>
       <#list operation.parameters as parameter>
         final${parameter.camelCapitalizedName}<#sep>,</#sep>
       </#list>
@@ -172,7 +162,7 @@ public abstract class ${modelJavaClassName}AsyncPathHandler extends AsyncPathHan
           return ${javaClassName}.newBuilder().build(jsonValue);
       <#else>
           ImmutableJsonObject jsonObject = ModelRegistry.parseOneJsonObject(new StringReader(request));
-          return getModel().get${javaClassName}Factory().newInstance(jsonObject);
+          return ${javaClassName}.FACTORY.newInstance(jsonObject);
       </#if>
         }
       };
@@ -189,7 +179,7 @@ public abstract class ${modelJavaClassName}AsyncPathHandler extends AsyncPathHan
         @Override
         public void handle(IConsumer<${methodResponseType}> consumer) throws CanonException
         {
-          handle${operation.camelCapitalizedName}(consumer<#if operation.parameters?size != 0>,</#if>
+          handle${operation.camelCapitalizedName}(consumer, getTrace()<#if operation.parameters?size != 0>,</#if>
       <#list operation.parameters as parameter>
             final${parameter.camelCapitalizedName}<#sep>,</#sep>
       </#list>
@@ -205,12 +195,12 @@ public abstract class ${modelJavaClassName}AsyncPathHandler extends AsyncPathHan
     <#default>
       // Method has neither Payload nor Response
       EmptyRequestManager manager =
-        new EmptyRequestManager(in, out, async, getProcessExecutor())
+        new EmptyRequestManager(in, out, context.getTrace(), async, getProcessExecutor())
       {
         @Override
         public void handle() throws CanonException
         {
-          handle${operation.camelCapitalizedName}(
+          handle${operation.camelCapitalizedName}(getTrace()<#if operation.parameters?size != 0>,</#if>
       <#list operation.parameters as parameter>
         final${parameter.camelCapitalizedName}<#sep>,</#sep>
       </#list>

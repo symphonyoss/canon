@@ -20,16 +20,16 @@ import ${fieldFQType};
 @Immutable
 public abstract class ${model.parent.camelCapitalizedName}${model.camelCapitalizedName}HttpRequestOrBuilder extends HttpRequestOrBuilder<${model.model.camelCapitalizedName}HttpModelClient>
 {
-  public ${model.parent.camelCapitalizedName}${model.camelCapitalizedName}HttpRequestOrBuilder(${model.model.camelCapitalizedName}HttpModelClient japiClient)
+  public ${model.parent.camelCapitalizedName}${model.camelCapitalizedName}HttpRequestOrBuilder(${model.model.camelCapitalizedName}HttpModelClient canonClient)
   {
-    super(japiClient);
+    super(canonClient);
   }
   
   <#if model.payload??>
     <#if model.payload.isMultiple>
-  public abstract JsonArray<?> getJapiPayload();
+  public abstract JsonArray<?> getCanonPayload();
     <#else>
-  public abstract ${methodPayloadType} getJapiPayload();
+  public abstract ${methodPayloadType} getCanonPayload();
     </#if>
   </#if>
   <#list model.parameters as parameter>

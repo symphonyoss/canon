@@ -1,12 +1,12 @@
 /*
  *
  *
- * Copyright 2017 Symphony Communication Services, LLC.
+ * Copyright 2018 Symphony Communication Services, LLC.
  *
  * Licensed to The Symphony Software Foundation (SSF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
- * regarding copyright ownership.  The SSF licenses this file
+ * regarding copyright ownership.  The ASF licenses this file
  * to you under the Apache License, Version 2.0 (the
  * "License"); you may not use this file except in compliance
  * with the License.  You may obtain a copy of the License at
@@ -23,8 +23,23 @@
 
 package org.symphonyoss.s2.canon.runtime;
 
-public interface IModel
+import java.io.Reader;
+import java.io.StringReader;
+
+import org.symphonyoss.s2.fugue.pipeline.IThreadSafeConsumer;
+
+public class StringEntityConsumer<E extends IEntity, C extends IThreadSafeConsumer<E>> extends EntityConsumer<String, E, C>
 {
-  //void registerWith(IModelRegistry registry);
-  IEntityFactory<?,?,?>[] getFactories();
+  public StringEntityConsumer(IModelRegistry modelRegistry, Class<E> entityType, C consumer,
+      IThreadSafeConsumer<String> invalidMessageConsumer)
+  {
+    super(modelRegistry, entityType, consumer, invalidMessageConsumer);
+  }
+
+  @Override
+  protected Reader getReader(String item)
+  {
+    return new StringReader(item);
+  }
+
 }

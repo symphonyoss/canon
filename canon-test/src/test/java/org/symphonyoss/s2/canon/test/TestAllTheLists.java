@@ -29,7 +29,6 @@ import org.junit.Test;
 import org.symphonyoss.s2.canon.test.typeCheck.AllTheLists;
 import org.symphonyoss.s2.canon.test.typeCheck.IAllTheLists;
 import org.symphonyoss.s2.canon.test.typeCheck.SimpleObject;
-import org.symphonyoss.s2.canon.test.typeCheck.facade.TypeCheck;
 import org.symphonyoss.s2.common.dom.DomSerializer;
 import org.symphonyoss.s2.common.dom.DomWriter;
 import org.symphonyoss.s2.common.dom.json.IJsonDomNode;
@@ -37,18 +36,14 @@ import org.symphonyoss.s2.common.dom.json.IJsonObject;
 import org.symphonyoss.s2.common.dom.json.ImmutableJsonObject;
 import org.symphonyoss.s2.common.dom.json.jackson.JacksonAdaptor;
 import org.symphonyoss.s2.common.exception.InvalidValueException;
+import org.symphonyoss.s2.common.immutable.ImmutableByteArray;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.common.collect.ImmutableList;
-import com.google.protobuf.ByteString;
 
 public class TestAllTheLists extends AbstractModelObjectTest
-{
-  private final TypeCheck            typeCheck_           = new TypeCheck();
-  private final AllTheLists.Factory  objectFactory_       = typeCheck_.getAllTheListsFactory();
-  private final SimpleObject.Factory simpleObjectFactory_ = typeCheck_.getSimpleObjectFactory();
-  
+{ 
   @Test
   public void testRoundTrip() throws IOException, InvalidValueException
   {
@@ -92,7 +87,7 @@ public class TestAllTheLists extends AbstractModelObjectTest
       //((MutableJsonObject)adapted).addIfNotNull("_type", "foo");
       try
       {
-        IAllTheLists obj2 = objectFactory_.newInstance((ImmutableJsonObject) adapted.immutify());
+        IAllTheLists obj2 = AllTheLists.FACTORY.newInstance((ImmutableJsonObject) adapted.immutify());
         
         System.out.println("Reconstructed object:");
         writer.write(obj2.getJsonObject());
@@ -120,10 +115,10 @@ public class TestAllTheLists extends AbstractModelObjectTest
 
   private IAllTheLists createTestObject1() throws InvalidValueException
   {
-    return objectFactory_.newBuilder()
+    return AllTheLists.BUILDER.newInstance()
           .withBooleanListField(ImmutableList.of(true, false))
-          .withByteStringListField(ImmutableList.of(ByteString.copyFrom("Hello".getBytes()),
-              ByteString.copyFrom("Byteworld".getBytes())))
+          .withByteStringListField(ImmutableList.of(ImmutableByteArray.newInstance("Hello".getBytes()),
+              ImmutableByteArray.newInstance("Byteworld".getBytes())))
           .withDoubleListField(ImmutableList.of(1.2, 2.3))
           .withFloatListField(ImmutableList.of((float)4.5, (float)5.6))
           .withInt32ListField(ImmutableList.of(55, 66))
@@ -131,11 +126,11 @@ public class TestAllTheLists extends AbstractModelObjectTest
           .withIntField(110L)
           .withStringListField(ImmutableList.of("Hello", "World"))
           .withObjectListField(ImmutableList.of(
-              simpleObjectFactory_.newBuilder()
+              SimpleObject.BUILDER.newInstance()
                 .withName("Bruce")
                 .withValue(17L)
                 .build(),
-                simpleObjectFactory_.newBuilder()
+                SimpleObject.BUILDER.newInstance()
                 .withName("Mike")
                 .withValue(29L)
                 .build()

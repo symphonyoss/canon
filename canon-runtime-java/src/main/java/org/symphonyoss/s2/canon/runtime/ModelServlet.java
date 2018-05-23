@@ -28,6 +28,7 @@ import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
 import java.util.TreeMap;
+import java.util.UUID;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
@@ -38,14 +39,13 @@ import org.symphonyoss.s2.canon.runtime.http.HttpMethod;
 import org.symphonyoss.s2.canon.runtime.http.RequestContext;
 import org.symphonyoss.s2.fugue.core.trace.ITraceContext;
 import org.symphonyoss.s2.fugue.core.trace.ITraceContextFactory;
-import org.symphonyoss.s2.fugue.core.trace.log.LoggerTraceContextFactory;
 
-public abstract class ModelServlet<M extends IModel> extends HttpServlet implements IModelServlet
+public abstract class ModelServlet extends HttpServlet implements IModelServlet
 {
   private static final long serialVersionUID = 1L;
 
-  private ITraceContextFactory                    traceFactory_ = new LoggerTraceContextFactory();
-  private TreeMap<Integer, List<IEntityHandler>>  handlerMap_   = new TreeMap<>(new Comparator<Integer>()
+  private final ITraceContextFactory                    traceFactory_;
+  private final TreeMap<Integer, List<IEntityHandler>>  handlerMap_   = new TreeMap<>(new Comparator<Integer>()
       {
         /*
          * We want the map in descending order.
@@ -62,7 +62,10 @@ public abstract class ModelServlet<M extends IModel> extends HttpServlet impleme
           return 0;
         }});
   
-  public abstract M getModel();
+  public ModelServlet(ITraceContextFactory traceFactory)
+  {
+    traceFactory_ = traceFactory;
+  }
   
   public void register(IEntityHandler handler)
   {
@@ -79,24 +82,25 @@ public abstract class ModelServlet<M extends IModel> extends HttpServlet impleme
   
   private void handle(HttpMethod method, HttpServletRequest req, HttpServletResponse resp) throws IOException
   {
-    RequestContext context = new RequestContext(method, req, resp, createTraceContext(method + " " + req.getRequestURI()));
+    ITraceContext trace = traceFactory_.createTransaction("HTTP " + method, UUID.randomUUID().toString());
+    
+    RequestContext context = new RequestContext(method, req, resp, trace);
     
     for(List<IEntityHandler> list : handlerMap_.values())
     {
       for(IEntityHandler handler : list)
       {
         if(handler.handle(context))
+        {
+          trace.finished();
           return;
+        }
       }
     }
     
     context.error("No handler found for " + context.getRequest().getPathInfo());
     context.sendErrorResponse(HttpServletResponse.SC_NOT_FOUND);
-  }
-  
-  protected ITraceContext createTraceContext(String request)
-  {
-    return traceFactory_.createTransaction("HTTP Request", request);
+    trace.aborted();
   }
 
   @Override

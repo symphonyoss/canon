@@ -26,6 +26,8 @@ import org.symphonyoss.s2.common.exception.InvalidValueException;
 import org.symphonyoss.s2.canon.runtime.IEntity;
 import org.symphonyoss.s2.canon.runtime.JsonArrayParser;
 import org.symphonyoss.s2.canon.runtime.exception.BadRequestException;
+import org.symphonyoss.s2.canon.runtime.exception.PermissionDeniedException;
+import org.symphonyoss.s2.canon.runtime.exception.ServerErrorException;
 import org.symphonyoss.s2.canon.runtime.http.ParameterLocation;
 import org.symphonyoss.s2.canon.runtime.http.RequestContext;
 import org.symphonyoss.s2.canon.runtime.http.client.HttpParameter;
@@ -47,27 +49,27 @@ public class ${model.parent.camelCapitalizedName}${model.camelCapitalizedName}Ht
     <@setJavaType parameter.schema/>
   private ${("final " + javaClassName)?right_pad(25)  } ${parameter.camelName}_;
   </#list>
-  private ${("final HttpUriRequest")?right_pad(25)    } japiRequest_;
+  private ${("final HttpUriRequest")?right_pad(25)    } canonRequest_;
   <#if model.payload??>
     <#if model.payload.isMultiple>
-  private ${"ImmutableJsonList"?right_pad(25)          } japiPayload_;
+  private ${"ImmutableJsonList"?right_pad(25)          } canonPayload_;
     <#else>
-  private ${methodPayloadType?right_pad(25)           } japiPayload_;
+  private ${methodPayloadType?right_pad(25)           } canonPayload_;
     </#if>
   </#if>
   
   <#if model.response??>
     <#if model.response.isMultiple>
-    private ${"List<" + methodResponseType + ">"?right_pad(25)          } japiResult_ = new LinkedList<>();
+    private ${"List<" + methodResponseType + ">"?right_pad(25)          } canonResult_ = new LinkedList<>();
 
     <#else>
-    private ${methodResponseType?right_pad(25)          } japiResult_;
+    private ${methodResponseType?right_pad(25)          } canonResult_;
     </#if>
   </#if>
   
   public ${model.parent.camelCapitalizedName}${model.camelCapitalizedName}HttpRequest(${model.parent.camelCapitalizedName}${model.camelCapitalizedName}HttpRequestOrBuilder other)
   {
-    super(other.getJapiClient());
+    super(other.getCanonClient());
     <#list model.parameters as parameter>
     ${parameter.camelName}_ = other.get${parameter.camelCapitalizedName}();
     </#list>
@@ -75,7 +77,7 @@ public class ${model.parent.camelCapitalizedName}${model.camelCapitalizedName}Ht
     RequestBuilder builder = RequestBuilder.${model.name}()
       .setUri(
         String.format("%s${model.parent.pathFormat}",
-          getJapiClient().getUri()<#if model.pathParameters?size!=0>,</#if>
+          getCanonClient().getUri()<#if model.pathParameters?size!=0>,</#if>
       <#list model.pathParameters as parameter>
         <@setJavaType parameter.schema/>
           asString(${javaGetValuePrefix}${parameter.camelName}_${javaGetValuePostfix})<#sep>,</#sep>
@@ -84,20 +86,20 @@ public class ${model.parent.camelCapitalizedName}${model.camelCapitalizedName}Ht
       );
     <#if model.payload??>
       <#if model.payload.isMultiple>
-    if(other.getJapiPayload() == null)
+    if(other.getCanonPayload() == null)
     {
-      japiPayload_ = null;
+      canonPayload_ = null;
     }
     else
     {
-      japiPayload_ = (ImmutableJsonList)other.getJapiPayload().immutify();
+      canonPayload_ = (ImmutableJsonList)other.getCanonPayload().immutify();
     }
       <#else>
-    japiPayload_ = other.getJapiPayload();
+    canonPayload_ = other.getCanonPayload();
       </#if>
-    if(japiPayload_ != null)
+    if(canonPayload_ != null)
     {
-      StringEntity entity = new StringEntity(japiPayload_.toString(), StandardCharsets.UTF_8);
+      StringEntity entity = new StringEntity(canonPayload_.toString(), StandardCharsets.UTF_8);
         entity.setContentType(RequestContext.JSON_CONTENT_TYPE);
       
       builder.setEntity(entity);
@@ -120,18 +122,18 @@ public class ${model.parent.camelCapitalizedName}${model.camelCapitalizedName}Ht
           <#break>
       </#switch>
     </#list>
-    japiRequest_ = builder.build();
+    canonRequest_ = builder.build();
   }
   <#if model.payload??>
   
   @Override
     <#if model.payload.isMultiple>
-  public ImmutableJsonList getJapiPayload()
+  public ImmutableJsonList getCanonPayload()
     <#else>
-  public ${methodPayloadType} getJapiPayload()
+  public ${methodPayloadType} getCanonPayload()
     </#if>
   {
-    return japiPayload_;
+    return canonPayload_;
   }
   </#if>
   <#list model.parameters as parameter>
@@ -145,12 +147,15 @@ public class ${model.parent.camelCapitalizedName}${model.camelCapitalizedName}Ht
   </#list>
   
   <#if model.response?? && model.response.isMultiple>
-  public List<${methodResponseType}> execute(CloseableHttpClient httpClient) throws IOException
+  public List<${methodResponseType}> execute(CloseableHttpClient httpClient) throws IOException, PermissionDeniedException, BadRequestException, ServerErrorException
   <#else>
-  public ${methodResponseDecl} execute(CloseableHttpClient httpClient) throws IOException
+  public ${methodResponseDecl} execute(CloseableHttpClient httpClient) throws IOException, PermissionDeniedException, BadRequestException, ServerErrorException
   </#if>
   {
-    CloseableHttpResponse response = httpClient.execute(japiRequest_);
+    CloseableHttpResponse response = httpClient.execute(canonRequest_);
+    
+    validateResponse(response);
+    
     try
     {
   <#if model.response??>
@@ -167,14 +172,14 @@ public class ${model.parent.camelCapitalizedName}${model.camelCapitalizedName}Ht
         {
           try
           {
-            IEntity result = getJapiClient().getRegistry().parseOne(new StringReader(input));
+            IEntity result = getCanonClient().getRegistry().parseOne(new StringReader(input));
             
             if(result instanceof ${methodResponseType})
             {
               <#if model.response.isMultiple>
-              japiResult_.add((${methodResponseType}) result);
+              canonResult_.add((${methodResponseType}) result);
               <#else>
-              japiResult_ = (${methodResponseType}) result;
+              canonResult_ = (${methodResponseType}) result;
               </#if>
             }
           }
@@ -210,7 +215,7 @@ public class ${model.parent.camelCapitalizedName}${model.camelCapitalizedName}Ht
       response.close();
     }
   
-  return japiResult_;
+  return canonResult_;
   <#else>
     }
     finally

@@ -5,28 +5,20 @@ import javax.annotation.concurrent.Immutable;
 
 import org.symphonyoss.s2.canon.runtime.ModelServlet;
 import org.symphonyoss.s2.common.http.IUrlPathServlet;
-
-import ${javaFacadePackage}.I${model.model.camelCapitalizedName};
+import org.symphonyoss.s2.fugue.core.trace.ITraceContextFactory;
 
 @Immutable
-public class ${modelJavaClassName}ModelServlet extends ModelServlet<I${model.model.camelCapitalizedName}>
+@SuppressWarnings("unused")
+public class ${modelJavaClassName}ModelServlet extends ModelServlet
 {
   private static final long serialVersionUID = 1L;
-  
-  private final I${model.model.camelCapitalizedName} model_;
 
-  public ${modelJavaClassName}ModelServlet(I${model.model.camelCapitalizedName} model,
+  public ${modelJavaClassName}ModelServlet(ITraceContextFactory traceFactory,
     I${model.model.camelCapitalizedName}EntityHandler ...handlers)
   {
-    model_ = model;
+    super(traceFactory);
     for(I${model.model.camelCapitalizedName}EntityHandler handler : handlers)
       register(handler);
-  }
-  
-  @Override
-  public I${model.model.camelCapitalizedName} getModel()
-  {
-    return model_;
   }
  
   @Override

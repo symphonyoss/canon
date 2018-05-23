@@ -28,8 +28,8 @@ import java.util.concurrent.ExecutorService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public abstract class AsyncPathHandler<M extends IModel>
-extends PathHandler<M>
+public abstract class AsyncPathHandler
+extends PathHandler
 {
   private static final Logger log_ = LoggerFactory.getLogger(AsyncPathHandler.class);
   

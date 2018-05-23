@@ -5,13 +5,18 @@
 	"description": "This is the root document object of the Canon document.",
 	"required": [
 		"canon",
-		"info"
+		"info",
+		"id",
+		"version"
 	],
 	"additionalProperties": false,
 	"patternProperties": {
 		"^x-": {
 			"$ref": "#/definitions/specificationExtension"
-		}
+		},
+		"^#": {
+      "$ref": "#/definitions/comment"
+    }
 	},
 	"properties": {
 		"canon": {
@@ -51,8 +56,13 @@
 			"$ref": "#/definitions/externalDocs"
 		},
 		"id": {
-			"type": "string"
-		},
+      "type": "string",
+      "pattern": "^[A-Za-z0-9_-]+(\\.[A-Za-z0-9_-]+)*$"
+    },
+    "version": {
+      "type": "string",
+      "pattern": "^(0|[1-9][0-9]*)\\.(0|[1-9][0-9]*)$"
+    },
 		"model": {
 			"type": "object",
 			"additionalProperties": true
@@ -66,14 +76,16 @@
 			"type": "object",
 			"description": "The object provides metadata about the API. The metadata MAY be used by the clients if needed, and MAY be presented in editing or documentation generation tools for convenience.",
 			"required": [
-				"title",
-				"version"
+				"title"
 			],
 			"additionalProperties": false,
 			"patternProperties": {
 				"^x-": {
 					"$ref": "#/definitions/specificationExtension"
-				}
+				},
+        "^#": {
+          "$ref": "#/definitions/comment"
+        }
 			},
 			"properties": {
 				"title": {
@@ -90,9 +102,6 @@
 				},
 				"license": {
 					"$ref": "#/definitions/license"
-				},
-				"version": {
-					"type": "string"
 				}
 			}
 		},
@@ -103,7 +112,10 @@
 			"patternProperties": {
 				"^x-": {
 					"$ref": "#/definitions/specificationExtension"
-				}
+				},
+        "^#": {
+          "$ref": "#/definitions/comment"
+        }
 			},
 			"properties": {
 				"name": {
@@ -127,7 +139,10 @@
 			"patternProperties": {
 				"^x-": {
 					"$ref": "#/definitions/specificationExtension"
-				}
+				},
+        "^#": {
+          "$ref": "#/definitions/comment"
+        }
 			},
 			"properties": {
 				"name": {
@@ -148,7 +163,10 @@
 			"patternProperties": {
 				"^x-": {
 					"$ref": "#/definitions/specificationExtension"
-				}
+				},
+        "^#": {
+          "$ref": "#/definitions/comment"
+        }
 			},
 			"properties": {
 				"url": {
@@ -172,7 +190,10 @@
 			"patternProperties": {
 				"^x-": {
 					"$ref": "#/definitions/specificationExtension"
-				}
+				},
+        "^#": {
+          "$ref": "#/definitions/comment"
+        }
 			},
 			"properties": {
 				"enum": {
@@ -213,6 +234,13 @@
 				}
 			]
 		},
+		"comment": {
+		  "description": "A comment, ignored by canon.",
+		  "type": "array",
+        "items": {
+          "type": "string"
+        }
+		},
 		"components": {
 			"type": "object",
 			"description": "Holds a set of reusable objects for different aspects of the OAS. All objects defined within the components object will have no effect on the API unless they are explicitly referenced from properties outside the components object.",
@@ -220,7 +248,10 @@
 			"patternProperties": {
 				"^x-": {
 					"$ref": "#/definitions/specificationExtension"
-				}
+				},
+        "^#": {
+          "$ref": "#/definitions/comment"
+        }
 			},
 			"properties": {
 				"schemas": {
@@ -257,7 +288,10 @@
 				},
 				"^x-": {
 					"$ref": "#/definitions/specificationExtension"
-				}
+				},
+        "^#": {
+          "$ref": "#/definitions/comment"
+        }
 			}
 		},
 		"methodItem": {
@@ -267,7 +301,10 @@
 			"patternProperties": {
 				"^x-": {
 					"$ref": "#/definitions/specificationExtension"
-				}
+				},
+        "^#": {
+          "$ref": "#/definitions/comment"
+        }
 			},
 			"properties": {
 				"$ref": {
@@ -334,7 +371,10 @@
 			"patternProperties": {
 				"^x-": {
 					"$ref": "#/definitions/specificationExtension"
-				}
+				},
+        "^#": {
+          "$ref": "#/definitions/comment"
+        }
 			},
 			"properties": {
 				"tags": {
@@ -392,7 +432,10 @@
 			"patternProperties": {
 				"^x-": {
 					"$ref": "#/definitions/specificationExtension"
-				}
+				},
+        "^#": {
+          "$ref": "#/definitions/comment"
+        }
 			},
 			"properties": {
 				"description": {
@@ -413,7 +456,10 @@
 			"patternProperties": {
 				"^x-": {
 					"$ref": "#/definitions/specificationExtension"
-				}
+				},
+        "^#": {
+          "$ref": "#/definitions/comment"
+        }
 			},
 			"properties": {
 				"in": {
@@ -452,9 +498,12 @@
 				{
 					"$ref": "#/definitions/schema"
 				},
-				{
-					"$ref": "#/definitions/reference"
-				}
+        {
+          "$ref": "#/definitions/reference"
+        },
+        {
+          "$ref": "#/definitions/comment"
+        }
 			]
 		},
 		"schema": {
@@ -464,13 +513,19 @@
 			"patternProperties": {
 				"^x-": {
 					"$ref": "#/definitions/specificationExtension"
-				}
+				},
+        "^#": {
+          "$ref": "#/definitions/comment"
+        }
 			},
 			"properties": {
 				"extends": {
           "type": "string"
         },
         "facade": {
+          "type": "boolean"
+        },
+        "builderFacade": {
           "type": "boolean"
         },
         "nullable": {
@@ -633,7 +688,10 @@
 			"patternProperties": {
 				"^x-": {
 					"$ref": "#/definitions/specificationExtension"
-				}
+				},
+        "^#": {
+          "$ref": "#/definitions/comment"
+        }
 			},
 			"properties": {
 				"required": {

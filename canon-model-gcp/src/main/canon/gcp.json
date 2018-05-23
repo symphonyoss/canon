@@ -1,0 +1,41 @@
+{
+	"canon": "0.0.1",
+	"info": {
+		"title": "Canon Model for Google Cloud Platform types.",
+		"license": {
+			"name": "Apache2"
+		}
+	},
+	"id": "org.symphonyoss.s2.canon.model.gcp",
+	"version": "1.0",
+	"model": {
+		"javaGenPackage": "org.symphonyoss.s2.canon.model.gcp",
+		"javaFacadePackage": "org.symphonyoss.s2.canon.model.gcp.facade"
+	},
+	"components": {
+		"schemas": {
+      "PubSubMessage": {
+				"description": "A message sent in PubSub.",
+				"type": "object",
+				"properties": {
+					"data": {
+						"type": "string",
+            "format": "byte"
+					}
+				}
+			},
+			"PubSubPushMessage": {
+        "description": "A message sent from a PubSub push subscription.",
+        "type": "object",
+        "properties": {
+          "message": {
+            "$ref": "#/components/schemas/PubSubMessage"
+          },
+          "subscription": {
+            "type": "string"
+          }
+        }
+      }
+		}
+	}
+}

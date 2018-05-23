@@ -26,4 +26,5 @@ package org.symphonyoss.s2.canon.runtime;
 public class CanonRuntime
 {
   public static final String JSON_TYPE = "_type";
+  public static final String JSON_VERSION = "_version";
 }

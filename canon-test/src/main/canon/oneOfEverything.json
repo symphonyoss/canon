@@ -1,13 +1,13 @@
 {
   "canon": "0.0.1",
   "info": {
-    "version": "0.0.1",
     "title": "Canon Test Types",
     "license": {
       "name": "Apache2"
     }
   },
   "id": "org.symphonyoss.s2.canon.test.oneOfEverything",
+  "version": "1.0",
   "model": {
     "javaGenPackage":  "org.symphonyoss.s2.canon.test.oneofeverything",
     "javaFacadePackage":  "org.symphonyoss.s2.canon.test.oneofeverything.facade"

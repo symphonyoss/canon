@@ -29,14 +29,13 @@ import org.apache.commons.codec.binary.Base64;
 import org.symphonyoss.s2.common.dom.json.IJsonDomNode;
 import org.symphonyoss.s2.common.dom.json.JsonBase64String;
 import org.symphonyoss.s2.common.exception.InvalidValueException;
+import org.symphonyoss.s2.common.immutable.ImmutableByteArray;
 
-import com.google.protobuf.ByteString;
-
-public class ByteStringBaseModelType
+public class ImmutableByteArrayBaseModelType
 {
   private final @Nonnull JsonBase64String jsonValue_;
 
-  public ByteStringBaseModelType(ByteString value) throws InvalidValueException
+  public ImmutableByteArrayBaseModelType(ImmutableByteArray value) throws InvalidValueException
   {
     if(value == null)
       throw new InvalidValueException("value is required.");
@@ -44,7 +43,7 @@ public class ByteStringBaseModelType
     jsonValue_ = new JsonBase64String(Base64.encodeBase64URLSafeString(value.toByteArray()));
   }
   
-  public ByteStringBaseModelType(@Nonnull IJsonDomNode node) throws InvalidValueException
+  public ImmutableByteArrayBaseModelType(@Nonnull IJsonDomNode node) throws InvalidValueException
   {
     if(node == null)
       throw new InvalidValueException("value is required.");
@@ -55,13 +54,13 @@ public class ByteStringBaseModelType
     }
     else
     {
-      throw new InvalidValueException("value must be an instance of ByteString not " + node.getClass().getName());
+      throw new InvalidValueException("value must be an instance of ImmutableByteArray not " + node.getClass().getName());
     }
   }
 
-  public @Nonnull ByteString getValue()
+  public @Nonnull ImmutableByteArray getValue()
   {
-    return jsonValue_.asByteString();
+    return jsonValue_.asImmutableByteArray();
   }
 
   public @Nonnull JsonBase64String getJsonValue()

@@ -4,6 +4,7 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
 import org.symphonyoss.s2.canon.runtime.exception.CanonException;
+import org.symphonyoss.s2.fugue.core.trace.ITraceContext;
 import org.symphonyoss.s2.fugue.pipeline.IConsumer;
 
 <@importFieldTypes model true/>
@@ -17,12 +18,13 @@ public interface I${modelJavaClassName}AsyncPathHandler extends I${model.model.c
   void handle${operation.camelCapitalizedName}(
   <#if operation.payload??>
   <@setJavaType operation.payload.schema/>
-    @Nonnull  ${fieldType?right_pad(25)} _payload<#if operation.parameters?size != 0 || operation.response??>,</#if>
+    @Nonnull  ${fieldType?right_pad(25)} canonPayload,
   </#if>
   <#if operation.response??>
   <@setJavaType operation.response.schema/>
-    @Nonnull  ${"IConsumer<${fieldType}>"?right_pad(25)} _consumer<#if operation.parameters?size != 0>,</#if>
+    @Nonnull  ${"IConsumer<${fieldType}>"?right_pad(25)} canonConsumer,
   </#if>
+    @Nonnull  ${"ITraceContext"?right_pad(25)} canonTrace<#if operation.parameters?size != 0>,</#if>
 	<#list operation.parameters as parameter>
 	  <@setJavaType parameter.schema/>
 	  <#if parameter.isRequired>

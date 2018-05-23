@@ -26,9 +26,6 @@ package org.symphonyoss.s2.canon.test;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
-import java.io.Reader;
-import java.io.StringReader;
-import java.nio.charset.StandardCharsets;
 
 import org.junit.Assert;
 import org.junit.Test;
@@ -36,12 +33,13 @@ import org.symphonyoss.s2.canon.runtime.IEntity;
 import org.symphonyoss.s2.canon.runtime.IEntityConsumer;
 import org.symphonyoss.s2.canon.runtime.IModelRegistry;
 import org.symphonyoss.s2.canon.runtime.ModelRegistry;
+import org.symphonyoss.s2.canon.test.oneofeverything.ASimpleObject;
 import org.symphonyoss.s2.canon.test.oneofeverything.DoubleMinMax;
 import org.symphonyoss.s2.canon.test.oneofeverything.IASimpleObject;
 import org.symphonyoss.s2.canon.test.oneofeverything.IObjectWithOneOfEverything;
 import org.symphonyoss.s2.canon.test.oneofeverything.ListOfByteString;
 import org.symphonyoss.s2.canon.test.oneofeverything.ObjectWithOneOfEverything;
-import org.symphonyoss.s2.canon.test.oneofeverything.facade.OneOfEverything;
+import org.symphonyoss.s2.canon.test.oneofeverything.OneOfEverythingModel;
 import org.symphonyoss.s2.common.dom.DomSerializer;
 import org.symphonyoss.s2.common.dom.DomWriter;
 import org.symphonyoss.s2.common.dom.json.IJsonDomNode;
@@ -49,19 +47,17 @@ import org.symphonyoss.s2.common.dom.json.IJsonObject;
 import org.symphonyoss.s2.common.dom.json.ImmutableJsonObject;
 import org.symphonyoss.s2.common.dom.json.jackson.JacksonAdaptor;
 import org.symphonyoss.s2.common.exception.InvalidValueException;
+import org.symphonyoss.s2.common.immutable.ImmutableByteArray;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableSet;
-import com.google.protobuf.ByteString;
 
 public class TestOneOfEverything extends AbstractModelObjectTest
 {
-  private final OneOfEverything                   oneOfEverything_        = new OneOfEverything();
-  private final IModelRegistry                    modelRegistry_          = new ModelRegistry(oneOfEverything_);
-  private final ObjectWithOneOfEverything.Factory objectFactory_          = oneOfEverything_
-                                                                            .getObjectWithOneOfEverythingFactory();
+  private final IModelRegistry                    modelRegistry_          = new ModelRegistry().withFactories(OneOfEverythingModel.FACTORIES);
+  private final ObjectWithOneOfEverything.Factory objectFactory_          = ObjectWithOneOfEverything.FACTORY;
   
   @Test
   public void testSubset() throws InvalidValueException
@@ -72,6 +68,7 @@ public class TestOneOfEverything extends AbstractModelObjectTest
     
     assertEquals("{\n" + 
         "  \"_type\":\"org.symphonyoss.s2.canon.test.oneOfEverything.ObjectWithOneOfEverything\",\n" + 
+        "  \"_version\":\"1.0\",\n" + 
         "  \"aBoolean\":true,\n" + 
         "  \"aDouble\":7.0,\n" + 
         "  \"aDoubleMinMax\":5.0,\n" + 
@@ -83,13 +80,23 @@ public class TestOneOfEverything extends AbstractModelObjectTest
         "  \"aSetOfString\":[],\n" + 
         "  \"secs\":10\n" + 
         "}\n",
-        serializer.serialize(objectFactory_.newBuilder()
+        serializer.serialize(ObjectWithOneOfEverything.BUILDER.newInstance()
           .withABoolean(true)
           .withADouble(7.0)
           .withADoubleMinMax(DoubleMinMax.newBuilder().build(5.0))
           .withSecs(10L)
           .withAListOfString(ImmutableList.of("Hello", "World"))
           .build().getJsonObject()));
+}
+  
+  @Test
+  public void testInitialize() throws IOException, InvalidValueException
+  {
+    IObjectWithOneOfEverything obj1 = createTestObject1();
+
+    IObjectWithOneOfEverything obj2 = ObjectWithOneOfEverything.BUILDER.newInstance(obj1).build();
+    
+    assertEquals(obj1, obj2);
   }
   
   @Test
@@ -163,9 +170,8 @@ public class TestOneOfEverything extends AbstractModelObjectTest
   public void testOneSchemas() throws InvalidValueException, IOException
   {
     IASimpleObject source = createTestObject3();
-    String serial = source.serialize();
-    Reader reader = new StringReader(serial);
-    IEntity deserialized = modelRegistry_.parseOne(reader);
+    ImmutableByteArray serial = source.serialize();
+    IEntity deserialized = modelRegistry_.parseOne(serial.getReader());
     
     assertEquals(source, deserialized);
   }
@@ -178,15 +184,15 @@ public class TestOneOfEverything extends AbstractModelObjectTest
     
     writer.write('[');
     source[0] = createTestObject3();
-    writer.write(source[0].serialize().getBytes(StandardCharsets.UTF_8));
+    source[0].serialize().write(writer);
     writer.write(',');
     
     source[1] = createTestObject2();
-    writer.write(source[1].serialize().getBytes(StandardCharsets.UTF_8));
+    source[1].serialize().write(writer);
     writer.write(',');
     
     source[2] = createTestObject1();
-    writer.write(source[2].serialize().getBytes(StandardCharsets.UTF_8));
+    source[2].serialize().write(writer);
     writer.write(']');
     
     writer.close();
@@ -220,7 +226,7 @@ public class TestOneOfEverything extends AbstractModelObjectTest
   
   private IASimpleObject createTestObject3() throws InvalidValueException
   {
-    return oneOfEverything_.getASimpleObjectFactory().newBuilder()
+    return ASimpleObject.BUILDER.newInstance()
         .withName("Simple3")
         .withValue("Value Three\nhas\nthree lines.")
         .build();
@@ -228,7 +234,7 @@ public class TestOneOfEverything extends AbstractModelObjectTest
 
   private IASimpleObject createTestObject2() throws InvalidValueException
   {
-    return oneOfEverything_.getASimpleObjectFactory().newBuilder()
+    return ASimpleObject.BUILDER.newInstance()
         .withName("Simple2")
         .withValue("Value Two")
         .build();
@@ -236,20 +242,20 @@ public class TestOneOfEverything extends AbstractModelObjectTest
 
   private IObjectWithOneOfEverything createTestObject1() throws InvalidValueException
   {
-    return objectFactory_.newBuilder()
+    return ObjectWithOneOfEverything.BUILDER.newInstance()
         .withABoolean(false)
         .withADouble(27.0)
         .withADoubleMinMax(5.0)
         .withSecs(20L)
-        .withAByteString(ByteString.copyFrom("Hello World".getBytes()))
+        .withAByteString(ImmutableByteArray.newInstance("Hello World".getBytes()))
         .withAFloat(3.14f)
         .withAListOfString(ImmutableList.of("Hello", "World"))
         .withASetOfString(ImmutableSet.of("This is a set", "So the items are unique"))
         .withAListOfByteString(
             ListOfByteString.newBuilder()
-            .with(ByteString.copyFrom("Hello".getBytes()))
-            .with(ByteString.copyFrom("Byte".getBytes()))
-            .with(ByteString.copyFrom("World".getBytes()))
+            .with(ImmutableByteArray.newInstance("Hello".getBytes()))
+            .with(ImmutableByteArray.newInstance("Byte".getBytes()))
+            .with(ImmutableByteArray.newInstance("World".getBytes()))
             .build()
             )
         .withNanos(200)

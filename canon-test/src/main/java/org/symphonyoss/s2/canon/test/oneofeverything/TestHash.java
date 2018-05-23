@@ -23,18 +23,18 @@
 
 package org.symphonyoss.s2.canon.test.oneofeverything;
 
-import com.google.protobuf.ByteString;
+import org.symphonyoss.s2.common.immutable.ImmutableByteArray;
 
 public class TestHash
 {
-  private ByteString value_;
+  private ImmutableByteArray value_;
 
-  public TestHash(ByteString value)
+  public TestHash(ImmutableByteArray value)
   {
     value_ = value;
   }
 
-  public ByteString getValue()
+  public ImmutableByteArray getValue()
   {
     return value_;
   }

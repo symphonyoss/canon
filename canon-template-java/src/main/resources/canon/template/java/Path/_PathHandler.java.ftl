@@ -25,11 +25,10 @@ import org.symphonyoss.s2.canon.runtime.http.RequestContext;
 
 <#include "Path.ftl">
 @Immutable
-public abstract class ${modelJavaClassName}PathHandler extends PathHandler<I${model.model.camelCapitalizedName}> implements I${modelJavaClassName}PathHandler
+@SuppressWarnings("unused")
+public abstract class ${modelJavaClassName}PathHandler extends PathHandler implements I${modelJavaClassName}PathHandler
 {
-  private final I${model.model.camelCapitalizedName} model_;
-  
-  public ${modelJavaClassName}PathHandler(I${model.model.camelCapitalizedName} model)
+  public ${modelJavaClassName}PathHandler()
   {
     super(${model.pathParamCnt}, new String[] {
 <#list model.partList as part>
@@ -37,14 +36,6 @@ public abstract class ${modelJavaClassName}PathHandler extends PathHandler<I${mo
 </#list>
       }
     );
-    
-    model_ = model;
-  }
-  
-  @Override
-  public I${model.model.camelCapitalizedName} getModel()
-  {
-    return model_;
   }
 
   @Override
@@ -84,9 +75,9 @@ public abstract class ${modelJavaClassName}PathHandler extends PathHandler<I${mo
   
     <@setJavaType operation.payload.schema/>
     <#if operation.payload.schema.isTypeDef>
-    ${fieldType} _payload = context.parsePayload(${javaClassName}.newBuilder());
+    ${fieldType} canonPayload = context.parsePayload(${javaClassName}.newBuilder());
     <#else>
-    ${fieldType} _payload = context.parsePayload(getModel().get${javaClassName}Factory());
+    ${fieldType} canonPayload = context.parsePayload(${javaClassName}.FACTORY);
     </#if>
   </#if>
   
@@ -100,8 +91,9 @@ public abstract class ${modelJavaClassName}PathHandler extends PathHandler<I${mo
   </#if> 
           handle${operation.camelCapitalizedName}(
   <#if operation.payload??>
-            _payload<#if operation.parameters?size != 0>,</#if>
+            canonPayload,
   </#if>
+            context.getTrace()<#if operation.parameters?size != 0>,</#if>
   <#list operation.parameters as parameter>
     <@setJavaType parameter.schema/>
             ${parameter.camelName}<#sep>,
