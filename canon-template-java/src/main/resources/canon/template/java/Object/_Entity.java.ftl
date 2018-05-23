@@ -18,9 +18,15 @@
 <#list model.fields as field>
     <@setJavaType field/>
     ${field.camelName}_ = ${javaTypeCopyPrefix}other.get${field.camelCapitalizedName}()${javaTypeCopyPostfix};
+<#if field.required>
+
+    if(${field.camelName}_ == null)
+      throw new InvalidValueException("${field.camelName} is required.");
+      
+</#if>
 <#if requiresChecks>
 <@checkLimits "    " field field.camelName + "_"/>
-
+  
 </#if>
 </#list>
   }
@@ -322,7 +328,7 @@
   <#else>
     <#assign AbstractBuilder="Abstract${modelJavaClassName}Builder"/>
   </#if>
-  protected static class ${AbstractBuilder}<B extends ${modelJavaClassName}.Abstract${modelJavaClassName}Builder<B>>
+  protected static abstract class ${AbstractBuilder}<B extends ${modelJavaClassName}.Abstract${modelJavaClassName}Builder<B>>
   <#if model.superSchema??>
     extends ${model.superSchema.baseSchema.camelCapitalizedName}.Abstract${model.superSchema.baseSchema.camelCapitalizedName}Builder<B>
   <#else>
@@ -348,6 +354,9 @@
       ${field.camelName}_${javaBuilderTypeCopyPrefix}initial.get${field.camelCapitalizedName}()${javaBuilderTypeCopyPostfix};
   </#list>
     }
+
+    @Override
+    public abstract I${modelJavaClassName} build() throws InvalidValueException;
     
     public B withValues(ImmutableJsonObject jsonObject, boolean ignoreValidation) throws InvalidValueException
     {
