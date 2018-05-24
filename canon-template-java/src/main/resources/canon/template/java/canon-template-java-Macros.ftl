@@ -779,6 +779,9 @@ import ${fieldElementFQBuilder};
 </#macro>
 
 <#macro checkLimitsClassThrows model><#list model.fields as field><#if isCheckLimits(field)> throws InvalidValueException<#return></#if></#list><#if model.superSchema??><@checkLimitsClassThrows model.superSchema.baseSchema/></#if></#macro>
+<#macro checkLimitsClassThrowsJavaDoc model><#list model.fields as field><#if isCheckLimits(field)>
+     * @throws InvalidValueException If the given values are not valid.
+<#return></#if></#list><#if model.superSchema??><@checkLimitsClassThrowsJavaDoc model.superSchema.baseSchema/></#if></#macro>
 
 <#macro checkLimitsThrows model><#if isCheckLimits(model)> throws InvalidValueException</#if></#macro>
 

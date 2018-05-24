@@ -179,7 +179,7 @@
      * 
      * @return An instance of the entity represented by the given values.
      * 
-     * @throws InvalidValueException If the given values are not valid.
+<@checkLimitsClassThrowsJavaDoc model/>
      */
     public I${model.camelCapitalizedName} newInstance(Builder builder)<@checkLimitsClassThrows model/>
     {
