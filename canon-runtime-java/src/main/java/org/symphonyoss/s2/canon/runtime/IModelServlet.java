@@ -23,7 +23,7 @@
 
 package org.symphonyoss.s2.canon.runtime;
 
-import org.symphonyoss.s2.common.http.IUrlPathServlet;
+import org.symphonyoss.s2.fugue.http.IUrlPathServlet;
 
 public interface IModelServlet extends IUrlPathServlet
 {

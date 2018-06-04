@@ -32,7 +32,6 @@ import java.util.concurrent.Executors;
 
 import javax.servlet.AsyncContext;
 import javax.servlet.ReadListener;
-import javax.servlet.ServletException;
 import javax.servlet.ServletInputStream;
 import javax.servlet.ServletOutputStream;
 import javax.servlet.WriteListener;
@@ -40,11 +39,11 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import org.symphonyoss.s2.common.http.HttpServer;
-import org.symphonyoss.s2.common.http.HttpServerBuilder;
 import org.symphonyoss.s2.fugue.core.trace.ITraceContext;
 import org.symphonyoss.s2.fugue.core.trace.ITraceContextFactory;
 import org.symphonyoss.s2.fugue.core.trace.log.LoggerTraceContextFactory;
+import org.symphonyoss.s2.fugue.http.HttpServer;
+import org.symphonyoss.s2.fugue.http.HttpServerBuilder;
 
 public class AsyncServer
 {
@@ -92,24 +91,8 @@ class AsyncServlet extends HttpServlet
     executor_ = executor;
   }
 
-
   @Override
-  public void destroy()
-  {
-    System.err.println("DESTROY");
-    
-    super.destroy();
-  }
-
-
-  @Override
-  public void init() throws ServletException
-  {
-    System.err.println("INIT");
-  }
-
-  @Override
-  protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException
+  protected void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException
   {
     System.err.println("REQUEST");
     Enumeration<String> it = request.getHeaderNames();
@@ -144,14 +127,11 @@ class AsyncServlet extends HttpServlet
   
  class RequestHandler implements WriteListener, ReadListener
  {
-   private byte[] padding = 
-       "Now is the time for all good men to come to the aid of the party. Now is the time for all good men to come to the aid of the party. Now is the time for all good men to come to the aid of the party. Now is the time for all good men to come to the aid of the party. Now is the time for all good men to come to the aid of the party. Now is the time for all good men to come to the aid of the party. Now is the time for all good men to come to the aid of the party. Now is the time for all good men to come to the aid of the party. Now is the time for all good men to come to the aid of the party. Now is the time for all good men to come to the aid of the party. Now is the time for all good men to come to the aid of the party. Now is the time for all good men to come to the aid of the party. Now is the time for all good men to come to the aid of the party. Now is the time for all good men to come to the aid of the party. Now is the time for all good men to come to the aid of the party. Now is the time for all good men to come to the aid of the party.\n".getBytes();
   private ServletInputStream    in_;
   private ServletOutputStream   out_;
   private AsyncContext          async_;
   private ITraceContext         trace_;
 
-  private int                   cnt_               = 0;
   private ByteArrayOutputStream inputBufferStream_ = new ByteArrayOutputStream();
   private byte[]                inputBuffer_       = new byte[1024];
 
@@ -235,7 +215,7 @@ class AsyncServlet extends HttpServlet
   }
 
   @Override
-  public void onWritePossible() throws IOException
+  public void onWritePossible()
   {
     System.err.println("onWritePossible()");
     responseTask_.schedule();
@@ -323,7 +303,7 @@ class AsyncServlet extends HttpServlet
   
 
   @Override
-  public void onAllDataRead() throws IOException
+  public void onAllDataRead()
   {
     System.err.println("onAllDataRead()");
     
