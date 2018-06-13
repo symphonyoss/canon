@@ -3,7 +3,7 @@
 
 <#list model.fields as field>
   <@setJavaType field/>
-  private final ${fieldType?right_pad(25)}  ${field.camelName}_;
+  private final ${fieldType?right_pad(25)}  _${field.camelName}_;
 </#list>
 
 <#------------------------------------------------------------------------------------------------------------------------------
@@ -17,15 +17,15 @@
     
 <#list model.fields as field>
     <@setJavaType field/>
-    ${field.camelName}_ = ${javaTypeCopyPrefix}other.get${field.camelCapitalizedName}()${javaTypeCopyPostfix};
+    _${field.camelName}_ = ${javaTypeCopyPrefix}other.get${field.camelCapitalizedName}()${javaTypeCopyPostfix};
 <#if field.required>
 
-    if(${field.camelName}_ == null)
+    if(_${field.camelName}_ == null)
       throw new InvalidValueException("${field.camelName} is required.");
       
 </#if>
 <#if requiresChecks>
-<@checkLimits "    " field field.camelName + "_"/>
+<@checkLimits "    " field  "_" + field.camelName + "_"/>
   
 </#if>
 </#list>
@@ -54,14 +54,14 @@
     if(jsonObject.containsKey("${field.camelName}"))
     {
       IJsonDomNode  node = jsonObject.get("${field.camelName}");
-  <@generateCreateFieldFromJsonDomNode "      " field "${field.camelName}_" "" "Immutable"/>
+  <@generateCreateFieldFromJsonDomNode "      " field "_${field.camelName}_" "" "Immutable"/>
     }
     else
     {
   <#if field.required>
       throw new InvalidValueException("${field.camelName} is required.");
   <#else>
-      ${field.camelName}_ = null;
+      _${field.camelName}_ = null;
   </#if>
     }
 </#list>
@@ -72,7 +72,7 @@
   @Override
   public ${fieldType} get${field.camelCapitalizedName}()
   {
-    return ${field.camelName}_;
+    return _${field.camelName}_;
   }
   <#switch field.elementType>
     <#case "OneOf">
@@ -337,7 +337,7 @@
   {
   <#list model.fields as field>
     <@setJavaType field/>
-    private ${fieldType?right_pad(25)}  ${field.camelName}_${javaBuilderTypeNew};
+    private ${fieldType?right_pad(25)}  _${field.camelName}_${javaBuilderTypeNew};
   </#list>
   
     protected ${AbstractBuilder}(Class<B> type)
@@ -351,7 +351,7 @@
       
   <#list model.fields as field>
   <@setJavaType field/>
-      ${field.camelName}_${javaBuilderTypeCopyPrefix}initial.get${field.camelCapitalizedName}()${javaBuilderTypeCopyPostfix};
+      _${field.camelName}_${javaBuilderTypeCopyPrefix}initial.get${field.camelCapitalizedName}()${javaBuilderTypeCopyPostfix};
   </#list>
     }
 
@@ -367,7 +367,7 @@
       if(jsonObject.containsKey("${field.camelName}"))
       {
         IJsonDomNode  node = jsonObject.get("${field.camelName}");
-  <@generateCreateFieldFromJsonDomNode "        " field "${field.camelName}_" "if(!ignoreValidation)" "Mutable"/>
+  <@generateCreateFieldFromJsonDomNode "        " field "_${field.camelName}_" "if(!ignoreValidation)" "Mutable"/>
       }
 </#list>
       return self();
@@ -377,13 +377,13 @@
     
     public ${fieldType} get${field.camelCapitalizedName}()
     {
-      return ${field.camelName}_;
+      return _${field.camelName}_;
     }
   
     public B with${field.camelCapitalizedName}(${fieldType} value)<#if field.canFailValidation> throws InvalidValueException</#if>
     {
     <@checkLimits "        " field "value"/>
-      ${field.camelName}_${javaBuilderTypeCopyPrefix}value${javaBuilderTypeCopyPostfix};
+      _${field.camelName}_${javaBuilderTypeCopyPrefix}value${javaBuilderTypeCopyPostfix};
       return self();
     }
     <#if field.isArraySchema && ! field.isComponent>
@@ -392,7 +392,7 @@
     public B with${field.camelCapitalizedName}(${fieldElementType} value)<#if field.canFailValidation> throws InvalidValueException</#if>
     {
     <@checkLimits "        " field "value"/>
-      ${field.camelName}_.add(value);
+      _${field.camelName}_.add(value);
       return self();
     }
     </#if>
@@ -405,7 +405,7 @@
         throw new InvalidValueException("${field.camelName} is required.");
   
     </#if>
-      ${field.camelName}_ = ${javaConstructTypePrefix}value${javaConstructTypePostfix};
+      _${field.camelName}_ = ${javaConstructTypePrefix}value${javaConstructTypePostfix};
       return self();
     }
     </#if>
@@ -431,7 +431,7 @@
   <#list model.fields as field>
     <@setJavaType field/>
   
-      if(${field.camelName}_ != null)
+      if(_${field.camelName}_ != null)
       {
         <@generateCreateJsonDomNodeFromField "          " field "jsonObject"/>
       }
