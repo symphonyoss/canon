@@ -27,11 +27,12 @@ import java.io.Reader;
 
 import org.symphonyoss.s2.common.immutable.ImmutableByteArray;
 import org.symphonyoss.s2.fugue.pipeline.IThreadSafeConsumer;
+import org.symphonyoss.s2.fugue.pipeline.IThreadSafeErrorConsumer;
 
 public class ImmutableByteArrayEntityConsumer<E extends IEntity, C extends IThreadSafeConsumer<E>> extends EntityConsumer<ImmutableByteArray, E, C>
 {
   public ImmutableByteArrayEntityConsumer(IModelRegistry modelRegistry, Class<E> entityType, C consumer,
-      IThreadSafeConsumer<ImmutableByteArray> invalidMessageConsumer)
+      IThreadSafeErrorConsumer<ImmutableByteArray> invalidMessageConsumer)
   {
     super(modelRegistry, entityType, consumer, invalidMessageConsumer);
   }

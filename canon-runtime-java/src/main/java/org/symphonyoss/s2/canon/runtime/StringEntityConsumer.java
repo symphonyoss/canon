@@ -27,11 +27,12 @@ import java.io.Reader;
 import java.io.StringReader;
 
 import org.symphonyoss.s2.fugue.pipeline.IThreadSafeConsumer;
+import org.symphonyoss.s2.fugue.pipeline.IThreadSafeErrorConsumer;
 
 public class StringEntityConsumer<E extends IEntity, C extends IThreadSafeConsumer<E>> extends EntityConsumer<String, E, C>
 {
   public StringEntityConsumer(IModelRegistry modelRegistry, Class<E> entityType, C consumer,
-      IThreadSafeConsumer<String> invalidMessageConsumer)
+      IThreadSafeErrorConsumer<String> invalidMessageConsumer)
   {
     super(modelRegistry, entityType, consumer, invalidMessageConsumer);
   }

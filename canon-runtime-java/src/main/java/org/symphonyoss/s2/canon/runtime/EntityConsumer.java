@@ -9,23 +9,20 @@ package org.symphonyoss.s2.canon.runtime;
 import java.io.IOException;
 import java.io.Reader;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.symphonyoss.s2.common.exception.InvalidValueException;
 import org.symphonyoss.s2.fugue.core.trace.ITraceContext;
 import org.symphonyoss.s2.fugue.pipeline.IThreadSafeConsumer;
+import org.symphonyoss.s2.fugue.pipeline.IThreadSafeErrorConsumer;
 
 public abstract class EntityConsumer<P, E extends IEntity, C extends IThreadSafeConsumer<E>> implements IThreadSafeConsumer<P> 
 {
-  private static final Logger                           log_ = LoggerFactory.getLogger(EntityConsumer.class);
-
-  private final IModelRegistry                          modelRegistry_;
-  private final Class<E>                                entityType_;
-  private final C                                       consumer_;
-  private final IThreadSafeConsumer<P> invalidMessageConsumer_;
+  private final IModelRegistry              modelRegistry_;
+  private final Class<E>                    entityType_;
+  private final C                           consumer_;
+  private final IThreadSafeErrorConsumer<P> invalidMessageConsumer_;
 
   public EntityConsumer(IModelRegistry modelRegistry, Class<E> entityType, C consumer,
-      IThreadSafeConsumer<P> invalidMessageConsumer)
+      IThreadSafeErrorConsumer<P> invalidMessageConsumer)
   {
     modelRegistry_ = modelRegistry;
     entityType_ = entityType;
@@ -44,14 +41,12 @@ public abstract class EntityConsumer<P, E extends IEntity, C extends IThreadSafe
         consumer_.consume(entityType_.cast(modelObject), trace);
       else
       {
-        log_.error("Received an entity which is not an instance of " + entityType_.getName());
-        invalidMessageConsumer_.consume(item, trace);
+        invalidMessageConsumer_.consume(item, trace, "Received an entity which is not an instance of " + entityType_.getName(), null);
       }
     }
     catch (InvalidValueException | IOException e)
     {
-      log_.error("Received an entity which is not a known type", e);
-      invalidMessageConsumer_.consume(item, trace);
+      invalidMessageConsumer_.consume(item, trace, "Received an entity which is not a known type", e);
     }
   }
   
