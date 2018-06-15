@@ -36,11 +36,11 @@
       <artifactId>canon-parser</artifactId>
       <version>${project.version}</version>
     </dependency>
-    <dependency>
+    <!-- <dependency>
       <groupId>org.symphonyoss.s2.canon</groupId>
       <artifactId>canon-template-java</artifactId>
       <version>${project.version}</version>
-    </dependency>
+    </dependency> -->
     
     <dependency>
       <groupId>org.symphonyoss.s2.canon</groupId>
@@ -52,11 +52,51 @@
       <groupId>org.symphonyoss.s2.fugue</groupId>
       <artifactId>fugue-core</artifactId>
     </dependency>
+
+    <dependency>
+      <groupId>org.symphonyoss.s2.common</groupId>
+      <artifactId>S2-common-core</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.symphonyoss.s2.common</groupId>
+      <artifactId>S2-common-dom</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.symphonyoss.s2.common</groupId>
+      <artifactId>S2-common-dom-jackson</artifactId>
+    </dependency>
     
-    <dependency> 
-		  <groupId>ch.qos.logback</groupId>
-		  <artifactId>logback-classic</artifactId>
-		</dependency>
+    <dependency>
+      <groupId>javax.servlet</groupId>
+      <artifactId>javax.servlet-api</artifactId>
+    </dependency>
+    
+    <dependency>
+      <groupId>com.fasterxml.jackson.core</groupId>
+      <artifactId>jackson-databind</artifactId>
+    </dependency>
+    <dependency>
+       <groupId>com.google.guava</groupId>
+       <artifactId>guava</artifactId>
+    </dependency>
+    
+    <dependency>
+      <groupId>org.apache.httpcomponents</groupId>
+      <artifactId>httpcore</artifactId>
+     </dependency>
+     <dependency>
+      <groupId>org.apache.httpcomponents</groupId>
+      <artifactId>httpclient</artifactId>
+     </dependency>
+    
+    <dependency>
+      <groupId>com.github.java-json-tools</groupId>
+      <artifactId>json-schema-core</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>com.github.java-json-tools</groupId>
+      <artifactId>json-schema-validator</artifactId>
+    </dependency>
 		
     <dependency>
         <groupId>junit</groupId>
