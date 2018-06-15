@@ -4,7 +4,7 @@
 import javax.annotation.concurrent.Immutable;
 
 import org.symphonyoss.s2.canon.runtime.ModelServlet;
-import org.symphonyoss.s2.common.http.IUrlPathServlet;
+import org.symphonyoss.s2.fugue.http.IUrlPathServlet;
 import org.symphonyoss.s2.fugue.core.trace.ITraceContextFactory;
 
 @Immutable
