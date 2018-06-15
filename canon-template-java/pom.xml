@@ -30,12 +30,4 @@
   </parent>
   
   <artifactId>canon-template-java</artifactId>
-  
-  <!-- <dependencies>
-    <dependency>
-      <groupId>org.symphonyoss.s2.canon</groupId>
-	    <artifactId>canon-parser</artifactId>
-	    <version>${project.version}</version>
-    </dependency>
-  </dependencies> -->
 </project>

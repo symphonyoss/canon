@@ -41,16 +41,28 @@
     </dependency>
     <dependency>
       <groupId>org.symphonyoss.s2.common</groupId>
-      <artifactId>S2-common-http</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>org.symphonyoss.s2.common</groupId>
       <artifactId>S2-common-dom</artifactId>
     </dependency>
     <dependency>
       <groupId>org.symphonyoss.s2.common</groupId>
       <artifactId>S2-common-dom-jackson</artifactId>
     </dependency>
+    
+    <dependency>
+      <groupId>javax.servlet</groupId>
+      <artifactId>javax.servlet-api</artifactId>
+    </dependency>
+    
+    <dependency>
+      <groupId>com.google.protobuf</groupId>
+      <artifactId>protobuf-java</artifactId>
+    </dependency>
+
+    <dependency>
+      <groupId>commons-codec</groupId>
+      <artifactId>commons-codec</artifactId>
+    </dependency>
+    
     <dependency>
       <groupId>com.fasterxml.jackson.core</groupId>
       <artifactId>jackson-core</artifactId>
@@ -66,18 +78,11 @@
     
     <dependency>
 	    <groupId>org.apache.httpcomponents</groupId>
-	    <artifactId>httpclient</artifactId>
+	    <artifactId>httpcore</artifactId>
      </dependency>
-     
      <dependency>
-       <groupId>org.apache.httpcomponents</groupId>
-       <artifactId>httpasyncclient</artifactId>
+      <groupId>org.apache.httpcomponents</groupId>
+      <artifactId>httpclient</artifactId>
      </dependency>
-    
-    <dependency> 
-      <groupId>ch.qos.logback</groupId>
-      <artifactId>logback-classic</artifactId>
-        <scope>test</scope>
-    </dependency>
   </dependencies>
 </project>
