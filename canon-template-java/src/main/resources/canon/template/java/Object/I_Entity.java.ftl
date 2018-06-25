@@ -3,7 +3,9 @@
 <#assign model=model.type>
 <@setPrologueJavaType model/>
 
+import java.util.Set;
 import org.symphonyoss.s2.canon.runtime.IEntity;
+import com.google.common.collect.ImmutableSet;
 
 <@importFieldTypes model true/>
 <@importFacadePackages model/>
@@ -16,9 +18,9 @@ public interface I${model.camelCapitalizedName}Entity
   extends I${model.model.camelCapitalizedName}ModelEntity
 </#if>
 {
+  ImmutableSet<String> getCanonUnknownKeys();
 <#list model.fields as field>
   <@setJavaType field/>
-  
   ${fieldType} get${field.camelCapitalizedName}();
 </#list>
 }

@@ -1,6 +1,7 @@
 <#include "../canon-template-java-Prologue.ftl">
 <#assign model=model.type>
 <@setPrologueJavaType model/>
+import javax.annotation.Nullable;
 import javax.annotation.concurrent.Immutable;
 
 import org.symphonyoss.s2.common.immutable.ImmutableByteArray;
@@ -33,6 +34,11 @@ import org.symphonyoss.s2.common.dom.json.JsonSet;
 
 import org.symphonyoss.s2.common.exception.InvalidValueException;
 
+import java.util.HashSet;
+import java.util.Set;
+import java.util.Iterator;
+
+import com.google.common.collect.ImmutableSet;
 <@importFieldTypes model true/>
 <@importFacadePackages model/>
 
@@ -48,5 +54,7 @@ public abstract class ${modelJavaClassName}Entity extends Entity
 {
   public static final String  TYPE_ID = "${model.model.canonId}.${model.name}";
   public static final String  TYPE_VERSION = "${model.model.canonVersion}";
+  public static final Integer TYPE_MAJOR_VERSION = ${model.model.canonMajorVersion};
+  public static final Integer TYPE_MINOR_VERSION = ${model.model.canonMinorVersion};
   public static final Factory FACTORY = new Factory();;
   public static final IBuilderFactory<I${modelJavaClassName}Entity, Builder> BUILDER = new BuilderFactory();
