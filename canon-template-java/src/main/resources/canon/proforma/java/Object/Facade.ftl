@@ -14,6 +14,11 @@ public class ${model.camelCapitalizedName} extends ${model.camelCapitalizedName}
     super(jsonObject);
   }
   
+  public ${modelJavaClassName}(MutableJsonObject mutableJsonObject) throws InvalidValueException
+  {
+    super(mutableJsonObject);
+  }
+  
   <#if model.baseSchema.isGenerateBuilderFacade>
   public static class Abstract${modelJavaClassName}Builder<B extends Abstract${modelJavaClassName}Builder<B>> extends Abstract${modelJavaClassName}EntityBuilder<B>
   {

@@ -23,10 +23,16 @@
 
 package org.symphonyoss.s2.canon.runtime;
 
-import javax.annotation.Nonnull;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.Set;
 
-import org.symphonyoss.s2.common.dom.json.IImmutableJsonDomNode;
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+
 import org.symphonyoss.s2.common.dom.json.ImmutableJsonObject;
+
+import com.google.common.collect.ImmutableSet;
 
 /**
  * Base class for all generated object classes in a Canon model.
@@ -36,8 +42,11 @@ import org.symphonyoss.s2.common.dom.json.ImmutableJsonObject;
  */
 public class Entity extends BaseEntity implements IEntity
 {
-  private final ImmutableJsonObject jsonObject_;
-  private final String              type_;
+  private final ImmutableJsonObject  jsonObject_;
+  private final String               type_;
+  private final Integer              majorVersion_;
+  private final Integer              minorVersion_;
+  private final ImmutableSet<String> unknownKeys_;
   
   /**
    * Constructor from serialized form.
@@ -49,12 +58,43 @@ public class Entity extends BaseEntity implements IEntity
     super(jsonObject);
     
     jsonObject_ = jsonObject;
-    IImmutableJsonDomNode typeNode = jsonObject_.get(CanonRuntime.JSON_TYPE);
     
-    if(typeNode == null)
-      type_ = "UNKNONWN";
+    Set<String>       keySet = new HashSet<>();
+    Iterator<String>  it = jsonObject.getNameIterator();
+    
+    while(it.hasNext())
+      keySet.add(it.next());
+
+    if(keySet.remove(CanonRuntime.JSON_TYPE))
+      type_ = jsonObject_.get(CanonRuntime.JSON_TYPE).toString();
     else
-      type_ = typeNode.toString();
+      type_ = "UNKNONWN";
+    
+    if(keySet.remove(CanonRuntime.JSON_VERSION))
+    {
+      String versionStr = jsonObject_.get(CanonRuntime.JSON_VERSION).toString();
+      int     i = versionStr.indexOf('.');
+      
+      if(i == -1)
+        throw new IllegalArgumentException("Version must be of the form Magor.Minor not \"" + versionStr + "\"");
+      
+      try
+      {
+        majorVersion_ = Integer.parseInt(versionStr.substring(0,i));
+        minorVersion_ = Integer.parseInt(versionStr.substring(i+1));
+      }
+      catch(NumberFormatException e)
+      {
+        throw new IllegalArgumentException("Version must be of the form Magor.Minor not \"" + versionStr + "\"", e);
+      }
+    }
+    else
+    {
+      majorVersion_ = null;
+      minorVersion_ = null;
+    }
+    
+    unknownKeys_ = ImmutableSet.copyOf(keySet);
   }
 
   /**
@@ -77,5 +117,23 @@ public class Entity extends BaseEntity implements IEntity
   public @Nonnull String getCanonType()
   {
     return type_;
+  }
+
+  @Override
+  public @Nullable Integer getCanonMajorVersion()
+  {
+    return majorVersion_;
+  }
+
+  @Override
+  public @Nullable Integer getCanonMinorVersion()
+  {
+    return minorVersion_;
+  }
+  
+  @Override
+  public ImmutableSet<String> getCanonUnknownKeys()
+  {
+    return unknownKeys_;
   }
 }

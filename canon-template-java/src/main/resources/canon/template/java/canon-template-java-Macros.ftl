@@ -713,21 +713,11 @@ import ${javaFacadePackage}.${field.camelCapitalizedName};
 
 
 <#macro importFieldTypes model includeImpls>
-  <#if model.hasList || model.hasSet || model.elementType=="OneOf">
-import java.util.Iterator;
-  </#if>
   <#if model.hasList>
 import java.util.List;
     <#if includeImpls>
 import java.util.LinkedList;
 import com.google.common.collect.ImmutableList;
-    </#if>
-  </#if>
-  <#if model.hasSet>
-import java.util.Set;
-    <#if includeImpls>
-import java.util.HashSet;
-import com.google.common.collect.ImmutableSet;
     </#if>
   </#if>
   <#if model.hasByteString>

@@ -3,6 +3,11 @@
 <@setPrologueJavaType model/>
 import javax.annotation.concurrent.Immutable;
 
+import java.util.HashSet;
+import java.util.Set;
+import java.util.Iterator;
+
+import com.google.common.collect.ImmutableSet;
 <@importFieldTypes model true/>
 <@importFacadePackages model/>
 

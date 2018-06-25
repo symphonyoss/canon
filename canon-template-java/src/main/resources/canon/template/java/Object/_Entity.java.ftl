@@ -1,6 +1,7 @@
 <#if ! model.isAbstract?? || ! model.isAbstract?c>
 <#include "ObjectHeader.ftl">
 
+  private final ${"ImmutableSet<String>"?right_pad(25)}   unknownKeys_;
 <#list model.fields as field>
   <@setJavaType field/>
   private final ${fieldType?right_pad(25)}  _${field.camelName}_;
@@ -29,13 +30,28 @@
   
 </#if>
 </#list>
+
+    unknownKeys_ = ImmutableSet.of();
   }
   
 <#------------------------------------------------------------------------------------------------------------------------------
 
  Constructor from Json
  
--------------------------------------------------------------------------------------------------------------------------------> 
+------------------------------------------------------------------------------------------------------------------------------->
+  protected static ImmutableJsonObject setType(MutableJsonObject mutableJsonObject)
+  {
+    if(mutableJsonObject.get(CanonRuntime.JSON_TYPE) == null)
+      mutableJsonObject.addIfNotNull(CanonRuntime.JSON_TYPE, TYPE_ID);
+    
+    return mutableJsonObject.immutify();
+  }
+  
+  public ${modelJavaClassName}Entity(MutableJsonObject mutableJsonObject) throws InvalidValueException
+  {
+    this(setType(mutableJsonObject));
+  }
+   
   public ${modelJavaClassName}Entity(ImmutableJsonObject jsonObject) throws InvalidValueException
   {
     super(jsonObject);
@@ -43,15 +59,10 @@
     if(jsonObject == null)
       throw new InvalidValueException("jsonObject is required");
   
-<#-- We can't do this because of inheritance, we may be constructing a sub-class and the type will be that of the subclass
-    IImmutableJsonDomNode typeNode = jsonObject.get(CanonRuntime.JSON_TYPE);
-    if(!(typeNode instanceof IStringProvider && TYPE_ID.equals(((IStringProvider)typeNode).asString())))
-    {
-      throw new InvalidValueException("_type attribute must be \"" + TYPE_ID + "\"");
-    }----->
+    Set<String> keySet = new HashSet<>(super.getCanonUnknownKeys());
     
 <#list model.fields as field>
-    if(jsonObject.containsKey("${field.camelName}"))
+    if(keySet.remove("${field.camelName}"))
     {
       IJsonDomNode  node = jsonObject.get("${field.camelName}");
   <@generateCreateFieldFromJsonDomNode "      " field "_${field.camelName}_" "" "Immutable"/>
@@ -65,6 +76,14 @@
   </#if>
     }
 </#list>
+
+    unknownKeys_ = ImmutableSet.copyOf(keySet);
+  }
+  
+  @Override
+  public ImmutableSet<String> getCanonUnknownKeys()
+  {
+    return unknownKeys_;
   }
 <#list model.fields as field>
   <@setJavaType field/>
@@ -154,6 +173,26 @@
     public String getCanonVersion()
     {
       return TYPE_VERSION;
+    }
+    
+    /**
+     * Return the major type version for entities created by this factory.
+     * 
+     * @return The major type version for entities created by this factory.
+     */
+    public @Nullable Integer getCanonMajorVersion()
+    {
+      return TYPE_MAJOR_VERSION;
+    }
+    
+    /**
+     * Return the minjor type version for entities created by this factory.
+     * 
+     * @return The minor type version for entities created by this factory.
+     */
+    public @Nullable Integer getCanonMinorVersion()
+    {
+      return TYPE_MINOR_VERSION;
     }
         
     /**
@@ -456,6 +495,26 @@
     public String getCanonVersion()
     {
       return TYPE_VERSION;
+    }
+    
+    /**
+     * Return the major type version for entities created by this factory.
+     * 
+     * @return The major type version for entities created by this factory.
+     */
+    public @Nullable Integer getCanonMajorVersion()
+    {
+      return TYPE_MAJOR_VERSION;
+    }
+    
+    /**
+     * Return the minjor type version for entities created by this factory.
+     * 
+     * @return The minor type version for entities created by this factory.
+     */
+    public @Nullable Integer getCanonMinorVersion()
+    {
+      return TYPE_MINOR_VERSION;
     }
   }
 }

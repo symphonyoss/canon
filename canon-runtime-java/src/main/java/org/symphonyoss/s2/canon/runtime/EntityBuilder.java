@@ -30,6 +30,8 @@ import org.symphonyoss.s2.common.dom.json.MutableJsonObject;
 import org.symphonyoss.s2.common.exception.InvalidValueException;
 import org.symphonyoss.s2.common.immutable.ImmutableByteArray;
 
+import com.google.common.collect.ImmutableSet;
+
 /**
  * A builder for some entity type.
  * 
@@ -43,6 +45,7 @@ public abstract class EntityBuilder<B extends EntityBuilder<B>> implements IEnti
   protected static final DomSerializer SERIALIZER = DomSerializer.newBuilder().withCanonicalMode(true).build();
  
   private final B self_;
+  private final ImmutableSet<String> unknownKeys_ = ImmutableSet.of();
 
   protected EntityBuilder(Class<B> type)
   {
@@ -73,6 +76,12 @@ public abstract class EntityBuilder<B extends EntityBuilder<B>> implements IEnti
   public IImmutableJsonDomNode getJsonDomNode()
   {
     return getJsonObject();
+  }
+  
+  @Override
+  public ImmutableSet<String> getCanonUnknownKeys()
+  {
+    return unknownKeys_;
   }
 
   @Override
