@@ -39,7 +39,7 @@
  Constructor from Json
  
 ------------------------------------------------------------------------------------------------------------------------------->
-  protected static ImmutableJsonObject setType(MutableJsonObject mutableJsonObject)
+  public static ImmutableJsonObject setType(MutableJsonObject mutableJsonObject)
   {
     if(mutableJsonObject.get(CanonRuntime.JSON_TYPE) == null)
       mutableJsonObject.addIfNotNull(CanonRuntime.JSON_TYPE, TYPE_ID);
