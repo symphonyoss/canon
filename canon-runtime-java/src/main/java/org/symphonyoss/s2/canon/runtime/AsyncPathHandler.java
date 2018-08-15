@@ -25,11 +25,14 @@ package org.symphonyoss.s2.canon.runtime;
 
 import java.util.concurrent.ExecutorService;
 
+import javax.annotation.Nullable;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.symphonyoss.s2.canon.runtime.http.IRequestAuthenticator;
 
-public abstract class AsyncPathHandler
-extends PathHandler
+public abstract class AsyncPathHandler<T>
+extends PathHandler<T>
 {
   private static final Logger log_ = LoggerFactory.getLogger(AsyncPathHandler.class);
   
@@ -40,9 +43,10 @@ extends PathHandler
   public AsyncPathHandler(
       ExecutorService processExecutor,
       ExecutorService responseExecutor,
+      @Nullable IRequestAuthenticator<T> authenticator, 
       int variableCnt, String[] parts)
   {
-    super(variableCnt, parts);
+    super(authenticator, variableCnt, parts);
     
     if(processExecutor == null)
       throw new IllegalArgumentException("processExecutor is required");

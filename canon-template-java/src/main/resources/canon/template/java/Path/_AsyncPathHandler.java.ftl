@@ -31,6 +31,7 @@ import org.symphonyoss.s2.canon.runtime.exception.CanonException;
 import org.symphonyoss.s2.canon.runtime.exception.NoSuchRecordException;
 import org.symphonyoss.s2.canon.runtime.exception.PermissionDeniedException;
 import org.symphonyoss.s2.canon.runtime.exception.ServerErrorException;
+import org.symphonyoss.s2.canon.runtime.http.IRequestAuthenticator;
 import org.symphonyoss.s2.canon.runtime.http.ParameterLocation;
 import org.symphonyoss.s2.canon.runtime.http.RequestContext;
 import org.symphonyoss.s2.fugue.pipeline.IConsumer;
@@ -41,13 +42,14 @@ import org.symphonyoss.s2.fugue.pipeline.IConsumer;
 <#include "Path.ftl">
 @Immutable
 @SuppressWarnings("unused")
-public abstract class ${modelJavaClassName}AsyncPathHandler extends AsyncPathHandler implements I${modelJavaClassName}AsyncPathHandler
+public abstract class ${modelJavaClassName}AsyncPathHandler<A> extends AsyncPathHandler<A> implements I${modelJavaClassName}AsyncPathHandler<A>
 {
   public ${modelJavaClassName}AsyncPathHandler(
     ExecutorService processExecutor,
-    ExecutorService responseExecutor)
+    ExecutorService responseExecutor,
+    @Nullable IRequestAuthenticator<A> authenticator)
   {
-    super(processExecutor, responseExecutor, ${model.pathParamCnt}, new String[] {
+    super(processExecutor, responseExecutor, authenticator, ${model.pathParamCnt}, new String[] {
 <#list model.partList as part>
         "${part}"<#sep>,
 </#list>
@@ -62,7 +64,7 @@ public abstract class ${modelJavaClassName}AsyncPathHandler extends AsyncPathHan
   }
 
   @Override
-  public void handle(RequestContext context, List<String> pathParams) throws IOException, CanonException
+  public void handle(A auth, RequestContext context, List<String> pathParams) throws IOException, CanonException
   {
     switch(context.getMethod())
     {
@@ -70,14 +72,14 @@ public abstract class ${modelJavaClassName}AsyncPathHandler extends AsyncPathHan
   <#list model.unsupportedOperations as operation>
       case ${operation}:
   </#list>
-        unsupportedMethod(context);
+        unsupportedMethod(auth, context);
         break;
         
 </#if>
 <#list model.operations as operation>
   <@setJavaMethod operation/>
       case ${operation.camelCapitalizedName}:
-        do${operation.camelCapitalizedName}(context, pathParams);
+        do${operation.camelCapitalizedName}(auth, context, pathParams);
         break;
         
 </#list>
@@ -87,7 +89,7 @@ public abstract class ${modelJavaClassName}AsyncPathHandler extends AsyncPathHan
   
   <@setJavaMethod operation/>
   
-  private void do${operation.camelCapitalizedName}(RequestContext context, List<String> pathParams) throws IOException, CanonException
+  private void do${operation.camelCapitalizedName}(A auth, RequestContext context, List<String> pathParams) throws IOException, CanonException
   {
   <#include "GetParams.ftl">
 
@@ -106,13 +108,13 @@ public abstract class ${modelJavaClassName}AsyncPathHandler extends AsyncPathHan
   <#switch methodStyle>
     <#case "PayloadResponse">
       // Method has both Payload and Response
-      PayloadResponseRequestManager<${methodPayloadType}, ${methodResponseType}> manager =
-        new PayloadResponseRequestManager<${methodPayloadType}, ${methodResponseType}>(in, out, context.getTrace(), async, getProcessExecutor(), getResponseExecutor())
+      PayloadResponseRequestManager<A,${methodPayloadType}, ${methodResponseType}> manager =
+        new PayloadResponseRequestManager<A,${methodPayloadType}, ${methodResponseType}>(in, out, auth, context.getTrace(), async, getProcessExecutor(), getResponseExecutor())
       {
         @Override
         public void handle(${methodPayloadDecl} payload, IConsumer<${methodResponseType}> consumer) throws CanonException
         {
-          handle${operation.camelCapitalizedName}(payload, consumer, getTrace()<#if operation.parameters?size != 0>,</#if>
+          handle${operation.camelCapitalizedName}(payload, consumer, getAuth(), getTrace()<#if operation.parameters?size != 0>,</#if>
       <#list operation.parameters as parameter>
         final${parameter.camelCapitalizedName}<#sep>,</#sep>
       </#list>
@@ -135,18 +137,17 @@ public abstract class ${modelJavaClassName}AsyncPathHandler extends AsyncPathHan
       
       out.setWriteListener(manager);
       in.setReadListener(manager);
-      System.err.println("isReady=" + in.isReady());
       <#break>
      
     <#case "Payload">
       // Method has a Payload but no Response
-      PayloadOnlyRequestManager<${methodPayloadType}> manager =
-        new PayloadOnlyRequestManager<${methodPayloadType}>(in, out, context.getTrace(), async, getProcessExecutor())
+      PayloadOnlyRequestManager<A,${methodPayloadType}> manager =
+        new PayloadOnlyRequestManager<A,${methodPayloadType}>(in, out, auth, context.getTrace(), async, getProcessExecutor())
       {
         @Override
         public void handle(${methodPayloadDecl} payload) throws CanonException
         {
-          handle${operation.camelCapitalizedName}(payload, getTrace()<#if operation.parameters?size != 0>,</#if>
+          handle${operation.camelCapitalizedName}(payload, getAuth(), getTrace()<#if operation.parameters?size != 0>,</#if>
       <#list operation.parameters as parameter>
         final${parameter.camelCapitalizedName}<#sep>,</#sep>
       </#list>
@@ -168,18 +169,17 @@ public abstract class ${modelJavaClassName}AsyncPathHandler extends AsyncPathHan
       };
       
       in.setReadListener(manager);
-      System.err.println("isReady=" + in.isReady());
       <#break>
      
     <#case "Response">
       // Method has no Payload but does have a Response
-      ResponseOnlyRequestManager<${methodResponseType}> manager =
-        new ResponseOnlyRequestManager<${methodResponseType}>(in, out, context.getTrace(), async, getProcessExecutor(), getResponseExecutor())
+      ResponseOnlyRequestManager<A,${methodResponseType}> manager =
+        new ResponseOnlyRequestManager<A,${methodResponseType}>(in, out, auth, context.getTrace(), async, getProcessExecutor(), getResponseExecutor())
       {
         @Override
         public void handle(IConsumer<${methodResponseType}> consumer) throws CanonException
         {
-          handle${operation.camelCapitalizedName}(consumer, getTrace()<#if operation.parameters?size != 0>,</#if>
+          handle${operation.camelCapitalizedName}(consumer, getAuth(), getTrace()<#if operation.parameters?size != 0>,</#if>
       <#list operation.parameters as parameter>
             final${parameter.camelCapitalizedName}<#sep>,</#sep>
       </#list>
@@ -194,21 +194,19 @@ public abstract class ${modelJavaClassName}AsyncPathHandler extends AsyncPathHan
     
     <#default>
       // Method has neither Payload nor Response
-      EmptyRequestManager manager =
-        new EmptyRequestManager(in, out, context.getTrace(), async, getProcessExecutor())
+      EmptyRequestManager<A> manager =
+        new EmptyRequestManager<A>(in, out, auth, context.getTrace(), async, getProcessExecutor())
       {
         @Override
         public void handle() throws CanonException
         {
-          handle${operation.camelCapitalizedName}(getTrace()<#if operation.parameters?size != 0>,</#if>
+          handle${operation.camelCapitalizedName}(getAuth(), getTrace()<#if operation.parameters?size != 0>,</#if>
       <#list operation.parameters as parameter>
         final${parameter.camelCapitalizedName}<#sep>,</#sep>
       </#list>
           );
         }
       };
-      
-      System.err.println("isReady=" + in.isReady());
       
       manager.start();
   </#switch>   

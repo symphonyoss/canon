@@ -1,5 +1,7 @@
 <#include "../canon-template-java-Prologue.ftl">
 <@setPrologueJavaType model/>
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import javax.annotation.concurrent.Immutable;
 
 import java.io.IOException;
@@ -17,6 +19,7 @@ import org.symphonyoss.s2.canon.runtime.exception.CanonException;
 import org.symphonyoss.s2.canon.runtime.exception.NoSuchRecordException;
 import org.symphonyoss.s2.canon.runtime.exception.PermissionDeniedException;
 import org.symphonyoss.s2.canon.runtime.exception.ServerErrorException;
+import org.symphonyoss.s2.canon.runtime.http.IRequestAuthenticator;
 import org.symphonyoss.s2.canon.runtime.http.ParameterLocation;
 import org.symphonyoss.s2.canon.runtime.http.RequestContext;
 
@@ -26,11 +29,11 @@ import org.symphonyoss.s2.canon.runtime.http.RequestContext;
 <#include "Path.ftl">
 @Immutable
 @SuppressWarnings("unused")
-public abstract class ${modelJavaClassName}PathHandler extends PathHandler implements I${modelJavaClassName}PathHandler
+public abstract class ${modelJavaClassName}PathHandler<T> extends PathHandler<T> implements I${modelJavaClassName}PathHandler<T>
 {
-  public ${modelJavaClassName}PathHandler()
+  public ${modelJavaClassName}PathHandler(@Nullable IRequestAuthenticator<T> authenticator)
   {
-    super(${model.pathParamCnt}, new String[] {
+    super(authenticator, ${model.pathParamCnt}, new String[] {
 <#list model.partList as part>
         "${part}"<#sep>,
 </#list>
@@ -45,7 +48,7 @@ public abstract class ${modelJavaClassName}PathHandler extends PathHandler imple
   }
 
   @Override
-  public void handle(RequestContext context, List<String> pathParams) throws IOException, CanonException
+  public void handle(T auth, RequestContext context, List<String> pathParams) throws IOException, CanonException
   {
     switch(context.getMethod())
     {
@@ -53,13 +56,13 @@ public abstract class ${modelJavaClassName}PathHandler extends PathHandler imple
   <#list model.unsupportedOperations as operation>
       case ${operation}:
   </#list>
-        unsupportedMethod(context);
+        unsupportedMethod(auth, context);
         break;
         
 </#if>
 <#list model.operations as operation>
       case ${operation.camelCapitalizedName}:
-        do${operation.camelCapitalizedName}(context, pathParams);
+        do${operation.camelCapitalizedName}(auth, context, pathParams);
         break;
         
 </#list>
@@ -67,7 +70,7 @@ public abstract class ${modelJavaClassName}PathHandler extends PathHandler imple
   }
 <#list model.operations as operation>
 
-  private void do${operation.camelCapitalizedName}(RequestContext context, List<String> pathParams) throws IOException, CanonException
+  private void do${operation.camelCapitalizedName}(T auth, RequestContext context, List<String> pathParams) throws IOException, CanonException
   {
   <#include "GetParams.ftl">
 
@@ -93,6 +96,7 @@ public abstract class ${modelJavaClassName}PathHandler extends PathHandler imple
   <#if operation.payload??>
             canonPayload,
   </#if>
+            auth,
             context.getTrace()<#if operation.parameters?size != 0>,</#if>
   <#list operation.parameters as parameter>
     <@setJavaType parameter.schema/>

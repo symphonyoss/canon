@@ -82,7 +82,7 @@ public class ModelHandlerTest
 
   private PathHandler testHandler(int varCnt, final String path, String ...parts)
   {
-    return new PathHandler(varCnt, parts)
+    return new PathHandler<Void>(null, varCnt, parts)
     {
       @Override
       public String getPath()
@@ -91,7 +91,7 @@ public class ModelHandlerTest
       }
 
       @Override
-      protected void handle(RequestContext context, List<String> variables)
+      protected void handle(Void authenticator, RequestContext context, List<String> variables)
       {
         // TODO Auto-generated method stub
         

@@ -31,6 +31,7 @@ import org.symphonyoss.s2.canon.runtime.exception.ServerErrorException;
 import org.symphonyoss.s2.canon.runtime.http.ParameterLocation;
 import org.symphonyoss.s2.canon.runtime.http.RequestContext;
 import org.symphonyoss.s2.canon.runtime.http.client.HttpParameter;
+import org.symphonyoss.s2.canon.runtime.http.client.IAuthenticationProvider;
 
 <#list model.parameters as parameter>
   <@setJavaType parameter.schema/>
@@ -84,6 +85,11 @@ public class ${model.parent.camelCapitalizedName}${model.camelCapitalizedName}Ht
       </#list>
         )
       );
+    
+    IAuthenticationProvider auth = getCanonClient().getAuthenticationProvider();
+    
+    if(auth != null)
+      auth.authenticate(builder);
     <#if model.payload??>
       <#if model.payload.isMultiple>
     if(other.getCanonPayload() == null)
@@ -160,9 +166,6 @@ public class ${model.parent.camelCapitalizedName}${model.camelCapitalizedName}Ht
     {
   <#if model.response??>
       HttpEntity entity = response.getEntity();
-      
-      System.err.println("Entity is streaming=" + entity.isStreaming());
-      
       
       JsonArrayParser arrayParser = new JsonArrayParser()
       {

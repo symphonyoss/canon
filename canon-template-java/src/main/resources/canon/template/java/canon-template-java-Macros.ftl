@@ -1125,6 +1125,7 @@ ${indent}    ${var}.add(${model.camelCapitalizedName}.newBuilder().build(${value
   <@setJavaType operation.response.schema/>
    * @param canonConsumer A consumer into which responses may be passed.
   </#if>
+   * @param canonAuth An authentication token.
    * @param canonTrace A trace context.
   <#list operation.parameters as parameter>
     <@setJavaType parameter.schema/>

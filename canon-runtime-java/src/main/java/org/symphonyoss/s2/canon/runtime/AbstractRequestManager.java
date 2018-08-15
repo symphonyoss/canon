@@ -12,11 +12,12 @@ import org.symphonyoss.s2.canon.runtime.exception.CanonException;
 import org.symphonyoss.s2.common.exception.InvalidValueException;
 import org.symphonyoss.s2.fugue.core.trace.ITraceContext;
 
-public abstract class AbstractRequestManager<P,R extends IBaseEntity>
+public abstract class AbstractRequestManager<A,P,R extends IBaseEntity>
 {
   private final ServletInputStream  in_;
   private final ServletOutputStream out_;
   private final ITraceContext       trace_;
+  private final A                   auth_;
   private final AsyncContext        async_;
   private final ExecutorService     processExecutor_;
   private final ExecutorService     responseExecutor_;
@@ -26,11 +27,12 @@ public abstract class AbstractRequestManager<P,R extends IBaseEntity>
   private byte[]                    inputBuffer_ = new byte[1024];
   private JsonArrayParser           arrayParser_;
   
-  public AbstractRequestManager(ServletInputStream in, ServletOutputStream out, ITraceContext trace, AsyncContext async,
+  public AbstractRequestManager(ServletInputStream in, ServletOutputStream out, A auth, ITraceContext trace, AsyncContext async,
       ExecutorService processExecutor, ExecutorService responseExecutor)
   {
     in_ = in;
     out_ = out;
+    auth_ = auth;
     trace_ = trace;
     async_ = async;
     processExecutor_ = processExecutor;
@@ -46,7 +48,7 @@ public abstract class AbstractRequestManager<P,R extends IBaseEntity>
       {
         try
         {
-          System.err.println("sendResponse: " + response);
+          //System.err.println("sendResponse: " + response);
 
           if(responseBuffer_ != null)
           {
@@ -68,7 +70,7 @@ public abstract class AbstractRequestManager<P,R extends IBaseEntity>
       {
         boolean ready = out_.isReady();
         
-        System.err.println("isReady() = " + ready);
+        //System.err.println("isReady() = " + ready);
         
         return ready;
       }
@@ -76,7 +78,7 @@ public abstract class AbstractRequestManager<P,R extends IBaseEntity>
       @Override
       protected void finish()
       {
-        System.err.println("Response finish()");
+        //System.err.println("Response finish()");
         
         if(responseBuffer_ != null)
         {
@@ -173,16 +175,16 @@ public abstract class AbstractRequestManager<P,R extends IBaseEntity>
 
   public void onDataAvailable() throws IOException
   {
-    System.err.println("onDataAvailable()");
+    //System.err.println("onDataAvailable()");
     do
     {
-      System.err.println("onDataAvailable() - LOOP");
+      //System.err.println("onDataAvailable() - LOOP");
       
       int nbytes = in_.read(inputBuffer_);
       
       if(nbytes == -1)
       {
-        System.err.println("onDataAvailable() - EOF");
+        //System.err.println("onDataAvailable() - EOF");
         return;
       }
       
@@ -191,12 +193,12 @@ public abstract class AbstractRequestManager<P,R extends IBaseEntity>
     }while(in_.isReady());
     
     
-    System.err.println("onDataAvailable() - DONE");
+    //System.err.println("onDataAvailable() - DONE");
   }
   
   public void onAllDataRead() throws IOException
   {
-    System.err.println("onAllDataRead()");
+    //System.err.println("onAllDataRead()");
     
     arrayParser_.close();
     processTask_.close();
@@ -204,13 +206,13 @@ public abstract class AbstractRequestManager<P,R extends IBaseEntity>
 
   public void onWritePossible() throws IOException
   {
-    System.err.println("onWritePossible()");
+    //System.err.println("onWritePossible()");
     responseTask_.schedule();
   }
 
   public void onError(Throwable t)
   {
-    System.err.println("ERROR");
+    //System.err.println("ERROR");
     t.printStackTrace();
     async_.complete();
   }
@@ -218,6 +220,11 @@ public abstract class AbstractRequestManager<P,R extends IBaseEntity>
   protected ITraceContext getTrace()
   {
     return trace_;
+  }
+
+  protected A getAuth()
+  {
+    return auth_;
   }
 
 

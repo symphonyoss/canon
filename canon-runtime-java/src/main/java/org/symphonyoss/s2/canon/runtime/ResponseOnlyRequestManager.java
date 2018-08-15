@@ -10,16 +10,16 @@ import javax.servlet.WriteListener;
 import org.symphonyoss.s2.canon.runtime.exception.CanonException;
 import org.symphonyoss.s2.fugue.core.trace.ITraceContext;
 
-public abstract class ResponseOnlyRequestManager<R extends IBaseEntity>
-extends AbstractRequestManager<Void,R>
+public abstract class ResponseOnlyRequestManager<A, R extends IBaseEntity>
+extends AbstractRequestManager<A,Void,R>
 implements WriteListener, IResponseOnlyRequestManager<R>
 {
   private ITraceContext trace_;
 
-  public ResponseOnlyRequestManager(ServletInputStream in, ServletOutputStream out, ITraceContext trace, AsyncContext async,
+  public ResponseOnlyRequestManager(ServletInputStream in, ServletOutputStream out, A canonAuth, ITraceContext trace, AsyncContext async,
       ExecutorService processExecutor, ExecutorService responseExecutor)
   {
-    super(in, out, trace, async, processExecutor, responseExecutor);
+    super(in, out, canonAuth, trace, async, processExecutor, responseExecutor);
     trace_ = trace;
   }
 
@@ -32,7 +32,6 @@ implements WriteListener, IResponseOnlyRequestManager<R>
   @Override
   protected void finishRequest()
   {
-    System.err.println("Request finish()");
     getResponseTask().close();
   }
   

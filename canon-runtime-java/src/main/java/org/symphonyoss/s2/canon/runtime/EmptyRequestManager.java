@@ -33,16 +33,16 @@ import org.symphonyoss.s2.canon.runtime.exception.CanonException;
 import org.symphonyoss.s2.common.exception.InvalidValueException;
 import org.symphonyoss.s2.fugue.core.trace.ITraceContext;
 
-public abstract class EmptyRequestManager
-extends AbstractRequestManager<Void,IBaseEntity>
+public abstract class EmptyRequestManager<A>
+extends AbstractRequestManager<A,Void,IBaseEntity>
 implements IEmptyRequestManager
 {
   private final ITraceContext trace_;
 
-  public EmptyRequestManager(ServletInputStream in, ServletOutputStream out, ITraceContext trace, AsyncContext async,
+  public EmptyRequestManager(ServletInputStream in, ServletOutputStream out, A canonAuth, ITraceContext trace, AsyncContext async,
       ExecutorService processExecutor)
   {
-    super(in, out, trace, async, processExecutor, null);
+    super(in, out, canonAuth, trace, async, processExecutor, null);
     trace_ = trace;
   }
   

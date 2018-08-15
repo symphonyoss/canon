@@ -21,41 +21,38 @@
  * under the License.
  */
 
-package org.symphonyoss.s2.canon.runtime.http.client;
+package org.symphonyoss.s2.canon.runtime.jjwt;
 
-import org.symphonyoss.s2.canon.runtime.IModelRegistry;
+import java.security.Key;
 
-public class HttpModelClient
+import javax.crypto.SecretKey;
+import javax.crypto.spec.SecretKeySpec;
+
+import org.apache.commons.codec.binary.Base64;
+
+import io.jsonwebtoken.JwtBuilder;
+import io.jsonwebtoken.SignatureAlgorithm;
+
+public class Hmac256JwtGenerator extends JwtGenerator<Hmac256JwtGenerator>
 {
-  private final IModelRegistry          registry_;
-  private final String                  uri_;
-  private final IAuthenticationProvider auth_;
+  public static final SignatureAlgorithm signatureAlgorithm = SignatureAlgorithm.HS256;
   
-  public HttpModelClient(IModelRegistry registry, String baseUri, String basePath, IAuthenticationProvider auth)
+  private SecretKey key_;
+  
+  public Hmac256JwtGenerator(String secretKeyBase64)
   {
-    if(baseUri.endsWith("/"))
-      throw new IllegalArgumentException("baseUri must not end with a slash");
-
-    if(!basePath.startsWith("/"))
-      throw new IllegalArgumentException("basePath must start with a slash");
+    super(Hmac256JwtGenerator.class);
     
-    registry_ = registry;
-    uri_ = baseUri + basePath;
-    auth_ = auth;
+    key_ = new SecretKeySpec(Base64.decodeBase64(secretKeyBase64), signatureAlgorithm.getJcaName());
   }
 
-  public String getUri()
+  public Key getKey()
   {
-    return uri_;
+    return key_;
   }
 
-  public IModelRegistry getRegistry()
+  protected String sign(JwtBuilder builder)
   {
-    return registry_;
-  }
-  
-  public IAuthenticationProvider getAuthenticationProvider()
-  {
-    return auth_;
+    return builder.signWith(signatureAlgorithm, key_).compact();
   }
 }

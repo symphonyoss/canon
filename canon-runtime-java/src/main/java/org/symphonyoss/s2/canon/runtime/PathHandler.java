@@ -33,18 +33,21 @@ import javax.servlet.http.HttpServletResponse;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.symphonyoss.s2.canon.runtime.exception.CanonException;
+import org.symphonyoss.s2.canon.runtime.http.IRequestAuthenticator;
 import org.symphonyoss.s2.canon.runtime.http.RequestContext;
 
-public abstract class PathHandler implements IEntityHandler
+public abstract class PathHandler<T> implements IEntityHandler
 {
   private static final Logger log_ = LoggerFactory.getLogger(PathHandler.class);
+
+  private final IRequestAuthenticator<T> authenticator_;
+  private final int                      variableCnt_;
+  private final String[]                 parts_;
+  private final int                      partsLength_;
   
-  private final int      variableCnt_;
-  private final String[] parts_;
-  private final int      partsLength_;
-  
-  public PathHandler(int variableCnt, String[] parts)
+  public PathHandler(@Nullable IRequestAuthenticator<T> authenticator, int variableCnt, String[] parts)
   {
+    authenticator_ = authenticator;
     parts_ = parts;
     variableCnt_ = variableCnt;
     
@@ -66,7 +69,7 @@ public abstract class PathHandler implements IEntityHandler
 
     try
     {
-      handle(context, variables);
+       handle(authenticator_==null ? null : authenticator_.authenticate(context), context, variables);
     }
     catch (CanonException e)
     {
@@ -89,7 +92,6 @@ public abstract class PathHandler implements IEntityHandler
     List<String>  variables = new ArrayList<>();
     StringBuilder var = null;
     
-    System.out.printf("Try path \"%s\"\n", path);
     for(int i=0 ; i<path.length() ; i++)
     {
       if(var == null)
@@ -110,7 +112,7 @@ public abstract class PathHandler implements IEntityHandler
         else
         {
           // Does not match
-          System.out.println(parts_[part] + " not matched at " + partIndex + " by " + path.substring(i));
+          //System.out.println(parts_[part] + " not matched at " + partIndex + " by " + path.substring(i));
           return null;
         }
       }
@@ -124,7 +126,7 @@ public abstract class PathHandler implements IEntityHandler
         if(part >= parts_.length)
         {
           // no match for this slash
-          System.out.println("/ not matched by " + path.substring(i));
+          //System.out.println("/ not matched by " + path.substring(i));
           
           return null;
         }
@@ -145,7 +147,7 @@ public abstract class PathHandler implements IEntityHandler
     if(part < parts_.length)
     {
       // no match for parts_[partIndex]
-      System.out.println("No match for part \"" + parts_[part] + "\" by whole of " + path);
+      //System.out.println("No match for part \"" + parts_[part] + "\" by whole of " + path);
       return null;
     }
     
@@ -155,12 +157,12 @@ public abstract class PathHandler implements IEntityHandler
     if(variables.size() != variableCnt_)
     {
       // wrong number of variables
-      System.out.println("Parts match but wanted " + variableCnt_ + " variables and found " + variables.size());
+      //System.out.println("Parts match but wanted " + variableCnt_ + " variables and found " + variables.size());
       return null;
     }
-    System.out.println("Handle " + path + " by " + getPath());
-    for(String s : variables)
-      System.out.println("with " + s);
+    //System.out.println("Handle " + path + " by " + getPath());
+//    for(String s : variables)
+//      System.out.println("with " + s);
  
     return variables;
   }
@@ -171,15 +173,15 @@ public abstract class PathHandler implements IEntityHandler
     return partsLength_;
   }
 
-  protected abstract void handle(RequestContext context, List<String> variables) throws IOException, CanonException;
+  protected abstract void handle(T canonAuth, RequestContext context, List<String> variables) throws IOException, CanonException;
   
   /**
    * Called by generated servlets for unsupported methods.
-   * 
+   * @param canonAuth  The token produced by the authentication method.
    * @param context    The request context which contains servlet request, response etc.
    * @throws IOException  If the response cannot be sent.
    */
-  public void unsupportedMethod(RequestContext context) throws IOException
+  public void unsupportedMethod(T canonAuth, RequestContext context) throws IOException
   {
     context.getResponse().sendError(HttpServletResponse.SC_METHOD_NOT_ALLOWED, "Method \"" + context.getMethod() + "\" is not supported.");
   }

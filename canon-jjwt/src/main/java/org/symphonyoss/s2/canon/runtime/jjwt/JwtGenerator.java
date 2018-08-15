@@ -1,0 +1,76 @@
+/*
+ *
+ *
+ * Copyright 2018 Symphony Communication Services, LLC.
+ *
+ * Licensed to The Symphony Software Foundation (SSF) under one
+ * or more contributor license agreements.  See the NOTICE file
+ * distributed with this work for additional information
+ * regarding copyright ownership.  The ASF licenses this file
+ * to you under the Apache License, Version 2.0 (the
+ * "License"); you may not use this file except in compliance
+ * with the License.  You may obtain a copy of the License at
+ *
+ *    http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing,
+ * software distributed under the License is distributed on an
+ * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+ * KIND, either express or implied.  See the License for the
+ * specific language governing permissions and limitations
+ * under the License.
+ */
+
+package org.symphonyoss.s2.canon.runtime.jjwt;
+
+import java.util.Date;
+
+import org.apache.http.client.methods.RequestBuilder;
+import org.symphonyoss.s2.canon.runtime.http.client.IAuthenticationProvider;
+import org.symphonyoss.s2.common.fluent.Fluent;
+
+import io.jsonwebtoken.JwtBuilder;
+import io.jsonwebtoken.Jwts;
+
+public abstract class JwtGenerator<T extends JwtGenerator<T>> extends Fluent<T> implements IAuthenticationProvider
+{
+  public JwtGenerator(Class<T> type)
+  {
+    super(type);
+  }
+
+  private String subject_;
+  private Long ttl_;
+  
+  @Override
+  public void authenticate(RequestBuilder builder)
+  {
+    Date now = new Date();
+    
+    JwtBuilder jwt = Jwts.builder().setIssuedAt(now);
+    
+    if(subject_ != null)
+      jwt.setSubject(subject_);
+    
+    if(ttl_ != null)
+      jwt.setExpiration(new Date(now.getTime() + ttl_));
+    
+    String token = sign(jwt);
+    
+    builder.addHeader(JwtBase.AUTH_HEADER_KEY, JwtBase.AUTH_HEADER_VALUE_PREFIX + token);
+  }
+  
+  public JwtGenerator withSubject(String subject)
+  {
+    subject_ = subject;
+    return self();
+  }
+  
+  public JwtGenerator withTTL(long ttl)
+  {
+    ttl_ = ttl;
+    return self();
+  }
+  
+  protected abstract String sign(JwtBuilder builder);
+}

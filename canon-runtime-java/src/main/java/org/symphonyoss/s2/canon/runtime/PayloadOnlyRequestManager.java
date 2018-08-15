@@ -34,15 +34,15 @@ import org.symphonyoss.s2.canon.runtime.exception.CanonException;
 import org.symphonyoss.s2.common.exception.InvalidValueException;
 import org.symphonyoss.s2.fugue.core.trace.ITraceContext;
 
-public abstract class PayloadOnlyRequestManager<P>
-extends AbstractRequestManager<P,IBaseEntity>
+public abstract class PayloadOnlyRequestManager<A,P>
+extends AbstractRequestManager<A,P,IBaseEntity>
 implements ReadListener, IPayloadOnlyRequestManager<P>
 {
 
-  public PayloadOnlyRequestManager(ServletInputStream in, ServletOutputStream out, ITraceContext trace, AsyncContext async,
+  public PayloadOnlyRequestManager(ServletInputStream in, ServletOutputStream out, A canonAuth, ITraceContext trace, AsyncContext async,
       ExecutorService processExecutor)
   {
-    super(in, out, trace, async, processExecutor, null);
+    super(in, out, canonAuth, trace, async, processExecutor, null);
   }
 
   protected abstract P parsePayload(String payload) throws InvalidValueException;
@@ -56,7 +56,7 @@ implements ReadListener, IPayloadOnlyRequestManager<P>
   @Override
   protected void finishRequest()
   {
-    System.err.println("Request finish()");
+    //System.err.println("Request finish()");
     getAsync().complete();
   }
 }
