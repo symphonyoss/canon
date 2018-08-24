@@ -62,6 +62,11 @@ public class HttpRequestOrBuilder<MC extends HttpModelClient>
     return number.toString();
   }
   
+  public String asString(Boolean v)
+  {
+    return v.toString();
+  }
+  
   public String asString(String s)
   {
     return s;
@@ -72,18 +77,18 @@ public class HttpRequestOrBuilder<MC extends HttpModelClient>
     int statusCode = response.getStatusLine().getStatusCode();
     
     if(statusCode == HttpStatus.SC_FORBIDDEN)
-      throw new PermissionDeniedException(response.getStatusLine().getReasonPhrase());
+      throw new PermissionDeniedException(response);
     
     if(statusCode < 200 || statusCode > 599)
-      throw new ServerErrorException("Unexpected HTTP response " + response.getStatusLine());
+      throw new ServerErrorException("Unexpected HTTP response", response);
     
     if(statusCode >= 300 && statusCode <= 399)
-      throw new ServerErrorException("Unexpected HTTP response " + response.getStatusLine());
+      throw new ServerErrorException("Unexpected HTTP response", response);
     
     if(statusCode >= 500)
-      throw new ServerErrorException(response.getStatusLine().toString());
+      throw new ServerErrorException(response);
     
     if(statusCode >= 400)
-      throw new BadRequestException(response.getStatusLine().toString());
+      throw new BadRequestException(response);
   }
 }

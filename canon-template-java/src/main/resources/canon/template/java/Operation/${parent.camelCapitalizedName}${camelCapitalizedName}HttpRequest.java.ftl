@@ -111,7 +111,11 @@ public class ${model.parent.camelCapitalizedName}${model.camelCapitalizedName}Ht
       builder.setEntity(entity);
     }
     </#if>
-    <#list model.parent.nonPathParameters as parameter>
+    <#list model.nonPathParameters as parameter>
+    // op parameter ${parameter}
+    </#list>
+    <#list model.nonPathParameters as parameter>
+    // parameter ${parameter}
       <@setJavaType parameter.schema/>
     if(${parameter.camelName}_ != null)
       <#switch parameter.location>

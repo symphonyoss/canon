@@ -23,6 +23,15 @@
 
 package org.symphonyoss.s2.canon.runtime.exception;
 
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+
+import javax.annotation.Nullable;
+
+import org.apache.http.Header;
+import org.apache.http.client.methods.CloseableHttpResponse;
+
 /**
  * An Exception which may be thrown by JAPIGEN implementing methods to indicate an
  * exceptional return.
@@ -37,6 +46,8 @@ public class CanonException extends Exception
   private static final long serialVersionUID = 1L;
 
   private final int         httpStatusCode_;
+  private String            responseBody_;
+  private Header[]          responseHeaders_;
 
   public CanonException(int httpStatusCode)
   {
@@ -68,8 +79,44 @@ public class CanonException extends Exception
     httpStatusCode_ = httpStatusCode;
   }
 
+  public CanonException(int httpStatusCode, @Nullable String message, CloseableHttpResponse response)
+  {
+    super(message == null ? response.getStatusLine().toString() : message + " " + response.getStatusLine());
+    httpStatusCode_ = httpStatusCode;
+    
+    responseHeaders_ = response.getAllHeaders();
+    
+    try(InputStream in = response.getEntity().getContent())
+    {
+      byte[] buf = new byte[1024];
+      int nbytes;
+      ByteArrayOutputStream bout = new ByteArrayOutputStream();
+      
+      while((nbytes = in.read(buf))>0)
+      {
+        bout.write(buf, 0, nbytes);
+      }
+      
+      responseBody_ = bout.toString();
+    }
+    catch (IOException e)
+    {
+      responseBody_ = e.toString();
+    }
+  }
+
   public int getHttpStatusCode()
   {
     return httpStatusCode_;
+  }
+
+  public @Nullable String getResponseBody()
+  {
+    return responseBody_;
+  }
+
+  public @Nullable Header[] getResponseHeaders()
+  {
+    return responseHeaders_;
   }
 }

@@ -130,7 +130,7 @@ public abstract class ${modelJavaClassName}PathHandler<T> extends PathHandler<T>
       {
         throw e;
       }
-      catch(CanonException | RuntimeException e)
+      catch(RuntimeException e)
       {
         throw new ServerErrorException(e);
       }

@@ -25,6 +25,8 @@ package org.symphonyoss.s2.canon.runtime.exception;
 
 import javax.servlet.http.HttpServletResponse;
 
+import org.apache.http.client.methods.CloseableHttpResponse;
+
 /**
  * An Exception which may be thrown by Canon implementing methods to indicate
  * that the request has no authentication information.
@@ -62,5 +64,10 @@ public class NotAuthenticatedException extends CanonException
       boolean writableStackTrace)
   {
     super(HTTP_STATUS_CODE, message, cause, enableSuppression, writableStackTrace);
+  }
+
+  public NotAuthenticatedException(CloseableHttpResponse response)
+  {
+    super(HTTP_STATUS_CODE, null, response);
   }
 }

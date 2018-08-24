@@ -25,6 +25,8 @@ package org.symphonyoss.s2.canon.runtime.exception;
 
 import javax.servlet.http.HttpServletResponse;
 
+import org.apache.http.client.methods.CloseableHttpResponse;
+
 /**
  * An Exception which may be thrown by JAPIGEN implementing methods to indicate
  * that the request is understood but the caller lacks the necessary entitlements
@@ -63,5 +65,10 @@ public class PermissionDeniedException extends CanonException
       boolean writableStackTrace)
   {
     super(HTTP_STATUS_CODE, message, cause, enableSuppression, writableStackTrace);
+  }
+
+  public PermissionDeniedException(CloseableHttpResponse response)
+  {
+    super(HTTP_STATUS_CODE, null, response);
   }
 }

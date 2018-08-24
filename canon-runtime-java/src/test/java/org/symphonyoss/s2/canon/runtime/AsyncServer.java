@@ -56,7 +56,7 @@ public class AsyncServer
   {
     ExecutorService     executor_ = Executors.newFixedThreadPool(5);
     
-    HttpServerBuilder builder = new HttpServerBuilder().setHttpPort(8080).addServlet("/", new AsyncServlet(executor_));
+    HttpServerBuilder builder = new HttpServerBuilder().withHttpPort(8080).withServlet("/", new AsyncServlet(executor_));
 
     HttpServer server = builder.build();
 

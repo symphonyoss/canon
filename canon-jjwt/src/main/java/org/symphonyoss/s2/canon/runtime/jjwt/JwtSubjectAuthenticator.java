@@ -29,15 +29,23 @@ import io.jsonwebtoken.Claims;
 
 public class JwtSubjectAuthenticator extends JwtAuthenticator<String>
 {
-  public JwtSubjectAuthenticator(Key key, Long maxAge)
+  private String defaultSubject_;
+
+  public JwtSubjectAuthenticator(Key key, Long maxAge, String defaultSubject)
   {
     super(key, maxAge);
+    defaultSubject_ = defaultSubject;
   }
 
   @Override
   protected String extractAuth(Claims claims)
   {
-    return claims.getSubject();
+    String subject = claims.getSubject();
+    
+    if(subject == null)
+      return defaultSubject_;
+    
+    return subject;
   }
 
 }

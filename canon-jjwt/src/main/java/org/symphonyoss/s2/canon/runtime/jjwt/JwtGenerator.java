@@ -41,6 +41,7 @@ public abstract class JwtGenerator<T extends JwtGenerator<T>> extends Fluent<T> 
 
   private String subject_;
   private Long ttl_;
+  private String issuer_;
   
   @Override
   public void authenticate(RequestBuilder builder)
@@ -48,6 +49,9 @@ public abstract class JwtGenerator<T extends JwtGenerator<T>> extends Fluent<T> 
     Date now = new Date();
     
     JwtBuilder jwt = Jwts.builder().setIssuedAt(now);
+    
+    if(issuer_ != null)
+      jwt.setIssuer(issuer_);
     
     if(subject_ != null)
       jwt.setSubject(subject_);
@@ -60,13 +64,19 @@ public abstract class JwtGenerator<T extends JwtGenerator<T>> extends Fluent<T> 
     builder.addHeader(JwtBase.AUTH_HEADER_KEY, JwtBase.AUTH_HEADER_VALUE_PREFIX + token);
   }
   
-  public JwtGenerator withSubject(String subject)
+  public T withIssuer(String issuer)
+  {
+    issuer_ = issuer;
+    return self();
+  }
+  
+  public T withSubject(String subject)
   {
     subject_ = subject;
     return self();
   }
   
-  public JwtGenerator withTTL(long ttl)
+  public T withTTL(long ttl)
   {
     ttl_ = ttl;
     return self();

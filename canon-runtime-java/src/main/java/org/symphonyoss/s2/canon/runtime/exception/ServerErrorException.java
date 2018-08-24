@@ -25,6 +25,8 @@ package org.symphonyoss.s2.canon.runtime.exception;
 
 import javax.servlet.http.HttpServletResponse;
 
+import org.apache.http.client.methods.CloseableHttpResponse;
+
 /**
  * An Exception which may be thrown by JAPIGEN implementing methods to indicate
  * that something went wrong. This has the same effect as throwing any RuntimeException,
@@ -64,5 +66,15 @@ public class ServerErrorException extends CanonException
       boolean writableStackTrace)
   {
     super(HTTP_STATUS_CODE, message, cause, enableSuppression, writableStackTrace);
+  }
+
+  public ServerErrorException(String message, CloseableHttpResponse response)
+  {
+    super(HTTP_STATUS_CODE, message, response);
+  }
+
+  public ServerErrorException(CloseableHttpResponse response)
+  {
+    super(HTTP_STATUS_CODE, null, response);
   }
 }

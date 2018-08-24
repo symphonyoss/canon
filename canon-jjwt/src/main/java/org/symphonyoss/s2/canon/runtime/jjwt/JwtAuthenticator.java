@@ -102,5 +102,5 @@ public abstract class JwtAuthenticator<T> extends JwtBase implements IRequestAut
     throw new NotAuthenticatedException("Invalid auth header");
   }
 
-  protected abstract T extractAuth(Claims claims);
+  protected abstract T extractAuth(Claims claims) throws NotAuthenticatedException, PermissionDeniedException;
 }

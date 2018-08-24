@@ -96,6 +96,11 @@ public class RequestContext
     return trace_;
   }
 
+  public @Nullable Boolean  getParameterAsBoolean(String name, ParameterLocation location, boolean required)
+  {
+    return asBoolean(name, getParameterAsString(name, location, required));
+  }
+
   public @Nullable Long  getParameterAsLong(String name, ParameterLocation location, boolean required)
   {
     return asLong(name, getParameterAsString(name, location, required));
@@ -114,6 +119,22 @@ public class RequestContext
   public ImmutableByteArray getParameterAsImmutableByteArray(String name, ParameterLocation location, boolean required)
   {
     return asImmutableByteArray(name, getParameterAsString(name, location, required));
+  }
+
+  public @Nullable Boolean asBoolean(String parameterName, String value)
+  {
+    if(value == null)
+      return null;
+    
+    try
+    {
+      return Boolean.parseBoolean(value);
+    }
+    catch(NumberFormatException e)
+    {
+      error("Parameter %s requires a Boolean value but we found \"%s\"", parameterName, value);
+      return null;
+    }
   }
 
   public @Nullable Long asLong(String parameterName, String value)
