@@ -38,13 +38,14 @@ import javax.servlet.http.HttpServletResponse;
 import org.symphonyoss.s2.canon.runtime.http.HttpMethod;
 import org.symphonyoss.s2.canon.runtime.http.RequestContext;
 import org.symphonyoss.s2.fugue.core.trace.ITraceContext;
-import org.symphonyoss.s2.fugue.core.trace.ITraceContextFactory;
+import org.symphonyoss.s2.fugue.core.trace.ITraceContextTransaction;
+import org.symphonyoss.s2.fugue.core.trace.ITraceContextTransactionFactory;
 
 public abstract class ModelServlet extends HttpServlet implements IModelServlet
 {
   private static final long serialVersionUID = 1L;
 
-  private final ITraceContextFactory                    traceFactory_;
+  private final ITraceContextTransactionFactory                    traceFactory_;
   private final TreeMap<Integer, List<IEntityHandler>>  handlerMap_   = new TreeMap<>(new Comparator<Integer>()
       {
         /*
@@ -62,7 +63,7 @@ public abstract class ModelServlet extends HttpServlet implements IModelServlet
           return 0;
         }});
   
-  public ModelServlet(ITraceContextFactory traceFactory)
+  public ModelServlet(ITraceContextTransactionFactory traceFactory)
   {
     traceFactory_ = traceFactory;
   }
@@ -82,25 +83,28 @@ public abstract class ModelServlet extends HttpServlet implements IModelServlet
   
   private void handle(HttpMethod method, HttpServletRequest req, HttpServletResponse resp) throws IOException
   {
-    ITraceContext trace = traceFactory_.createTransaction("HTTP " + method, UUID.randomUUID().toString());
-    
-    RequestContext context = new RequestContext(method, req, resp, trace);
-    
-    for(List<IEntityHandler> list : handlerMap_.values())
+    try(ITraceContextTransaction traceTransaction = traceFactory_.createTransaction("HTTP " + method, UUID.randomUUID().toString()))
     {
-      for(IEntityHandler handler : list)
+      ITraceContext trace = traceTransaction.open();
+      
+      RequestContext context = new RequestContext(method, req, resp, trace);
+      
+      for(List<IEntityHandler> list : handlerMap_.values())
       {
-        if(handler.handle(context))
+        for(IEntityHandler handler : list)
         {
-          trace.finished();
-          return;
+          if(handler.handle(context))
+          {
+            traceTransaction.finished();
+            return;
+          }
         }
       }
+      
+      context.error("No handler found for " + context.getRequest().getPathInfo());
+      context.sendErrorResponse(HttpServletResponse.SC_NOT_FOUND);
+      traceTransaction.aborted();
     }
-    
-    context.error("No handler found for " + context.getRequest().getPathInfo());
-    context.sendErrorResponse(HttpServletResponse.SC_NOT_FOUND);
-    trace.aborted();
   }
 
   @Override

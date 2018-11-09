@@ -5,7 +5,7 @@ import javax.annotation.concurrent.Immutable;
 
 import org.symphonyoss.s2.canon.runtime.ModelServlet;
 import org.symphonyoss.s2.fugue.http.IUrlPathServlet;
-import org.symphonyoss.s2.fugue.core.trace.ITraceContextFactory;
+import org.symphonyoss.s2.fugue.core.trace.ITraceContextTransactionFactory;
 
 @Immutable
 @SuppressWarnings("unused")
@@ -13,7 +13,7 @@ public class ${modelJavaClassName}ModelServlet extends ModelServlet
 {
   private static final long serialVersionUID = 1L;
 
-  public ${modelJavaClassName}ModelServlet(ITraceContextFactory traceFactory,
+  public ${modelJavaClassName}ModelServlet(ITraceContextTransactionFactory traceFactory,
     I${model.model.camelCapitalizedName}EntityHandler ...handlers)
   {
     super(traceFactory);

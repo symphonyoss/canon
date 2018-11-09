@@ -40,8 +40,9 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.symphonyoss.s2.fugue.core.trace.ITraceContext;
-import org.symphonyoss.s2.fugue.core.trace.ITraceContextFactory;
-import org.symphonyoss.s2.fugue.core.trace.log.LoggerTraceContextFactory;
+import org.symphonyoss.s2.fugue.core.trace.ITraceContextTransaction;
+import org.symphonyoss.s2.fugue.core.trace.ITraceContextTransactionFactory;
+import org.symphonyoss.s2.fugue.core.trace.log.LoggerTraceContextTransactionFactory;
 import org.symphonyoss.s2.fugue.http.HttpServer;
 import org.symphonyoss.s2.fugue.http.HttpServerBuilder;
 
@@ -73,18 +74,13 @@ public class AsyncServer
 
     System.out.println("Finished.");
   }
-
-  public AsyncServer()
-  {
-  }
-
 }
 
 class AsyncServlet extends HttpServlet
 {
   private static final long serialVersionUID = 1L;
   private ExecutorService executor_;
-  private ITraceContextFactory                    traceFactory_ = new LoggerTraceContextFactory();
+  private ITraceContextTransactionFactory                    traceFactory_ = new LoggerTraceContextTransactionFactory();
 
   public AsyncServlet(ExecutorService executor)
   {
@@ -111,15 +107,19 @@ class AsyncServlet extends HttpServlet
     ServletOutputStream out = response.getOutputStream();
     AsyncContext async=request.startAsync();
     
-    RequestHandler handler = new RequestHandler(executor_, in, out, async, createTraceContext(request.getMethod() + " " + request.getRequestURI()));
-    
-    out.setWriteListener(handler);
-    in.setReadListener(handler);
-    
-    System.err.println("isReady=" + in.isReady());
+    try(ITraceContextTransaction traceTransaction = createTraceContext(request.getMethod() + " " + request.getRequestURI()))
+    {
+      RequestHandler handler = new RequestHandler(executor_, in, out, async, traceTransaction.open());
+      
+      out.setWriteListener(handler);
+      in.setReadListener(handler);
+      
+      System.err.println("isReady=" + in.isReady());
+      traceTransaction.finished();
+    }
   }
   
-  protected ITraceContext createTraceContext(String request)
+  protected ITraceContextTransaction createTraceContext(String request)
   {
     return traceFactory_.createTransaction("HTTP Request", request);
   }
