@@ -24,6 +24,7 @@
 package org.symphonyoss.s2.canon.runtime.http;
 
 import java.io.IOException;
+import java.io.PrintWriter;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
@@ -275,6 +276,28 @@ public class RequestContext
     response_.getWriter().println(response.serialize());
   }
 
+  public void sendOKResponse(List<? extends IBaseEntity> response) throws IOException
+  {
+    response_.setStatus(HttpServletResponse.SC_OK);
+    PrintWriter out = response_.getWriter();
+    boolean first = true;
+    
+    out.print("[");
+    for(IBaseEntity entity : response)
+    {
+      if(first)
+        first=false;
+      else
+        out.println(",");
+      out.print("  ");
+      out.print(entity.serialize());
+    }
+    if(!first)
+      out.println();
+    
+    out.println("]");
+  }
+
   public void sendErrorResponse(int statusCode)
   {
     ObjectMapper mapper = new ObjectMapper();
@@ -356,5 +379,55 @@ public class RequestContext
       
       return null;
     }
+  }
+  
+  public <E extends IEntity> List<E> parseListPayload(IEntityFactory<E,?,?> factory)
+  {
+    List<E> result = new LinkedList<>();
+    
+    try
+    {
+      for(ImmutableJsonObject jsonObject : ModelRegistry.parseListOfJsonObjects(getRequest().getReader()))
+      {
+        result.add(factory.newInstance(jsonObject));
+      }
+    }
+    catch (InvalidValueException | IOException e)
+    {
+      log_.error("Failed to parse payload", e);
+      error("Unable to parse payload");
+      
+      String message = e.getMessage();
+      
+      if(message != null)
+        error(message);
+    }
+    
+    return result;
+  }
+
+  public <M,T> List<M> parseListPayload(TypeDefBuilder<M,T> builder)
+  {
+    List<M> result = new LinkedList<>();
+    
+    try
+    {
+      for(JsonValue<?, ?> jsonObject : ModelRegistry.parseListOfJsonValues(getRequest().getReader()))
+      {
+        result.add(builder.build(jsonObject));
+      }
+    }
+    catch (InvalidValueException | IOException e)
+    {
+      log_.error("Failed to parse payload", e);
+      error("Unable to parse payload");
+      
+      String message = e.getMessage();
+      
+      if(message != null)
+        error(message);
+    }
+    
+    return result;
   }
 }

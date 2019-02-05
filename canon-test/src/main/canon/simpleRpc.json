@@ -13,6 +13,27 @@
 		"javaFacadePackage": "org.symphonyoss.s2.canon.test.unit.facade"
 	},
 	"methods": {
+    "/keystore/cryptoRotationInfo/multiple": {
+      "post": {
+        "tags": [
+          "Crypto"
+        ],
+        "payload": {
+          "required": true,
+          "multiple": true,
+          "schema": {
+            "$ref": "#/components/schemas/SbeId"
+          }
+        },
+        "response": {
+          "required": true,
+          "multiple": true,
+          "schema": {
+            "$ref": "#/components/schemas/RotationIdInfo"
+          }
+        }
+      }
+    },
 		"/invoices": {
 			"summary": "Invoice operations.",
 			"description": "Various operations at the invoice level.",
@@ -147,6 +168,24 @@
 	},
 	"components": {
 		"schemas": {
+      "SbeId": {
+        "type": "string"
+      },
+      "RotationIdInfo": {
+        "type": "object",
+        "properties": {
+          "myCurrentThreadId": {
+            "type": "string"
+          },
+          "prettyName": {
+            "type": "string"
+          },
+          "userName": {
+            "type": "integer",
+            "format": "int64"
+          }
+        }
+      },
 			"CustomerId": {
 				"description": "A customer ID.",
 				"type": "integer",

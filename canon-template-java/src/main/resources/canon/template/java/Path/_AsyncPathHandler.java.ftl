@@ -108,11 +108,11 @@ public abstract class ${modelJavaClassName}AsyncPathHandler<A> extends AsyncPath
   <#switch methodStyle>
     <#case "PayloadResponse">
       // Method has both Payload and Response
-      PayloadResponseRequestManager<A,${methodPayloadType}, ${methodResponseType}> manager =
-        new PayloadResponseRequestManager<A,${methodPayloadType}, ${methodResponseType}>(in, out, auth, context.getTrace(), async, getProcessExecutor(), getResponseExecutor())
+      PayloadResponseRequestManager<A,${methodPayloadElementType}, ${methodResponseElementType}> manager =
+        new PayloadResponseRequestManager<A,${methodPayloadElementType}, ${methodResponseElementType}>(in, out, auth, context.getTrace(), async, getProcessExecutor(), getResponseExecutor())
       {
         @Override
-        public void handle(${methodPayloadDecl} payload, IConsumer<${methodResponseType}> consumer) throws CanonException
+        public void handle(@Nonnull ${methodPayloadElementType} payload, IConsumer<${methodResponseElementType}> consumer) throws CanonException
         {
           handle${operation.camelCapitalizedName}(payload, consumer, getAuth(), getTrace()<#if operation.parameters?size != 0>,</#if>
       <#list operation.parameters as parameter>
@@ -123,7 +123,7 @@ public abstract class ${modelJavaClassName}AsyncPathHandler<A> extends AsyncPath
       <@setJavaType operation.payload.schema/>
   
         @Override
-        protected ${methodPayloadType} parsePayload(String request) throws InvalidValueException
+        protected ${methodPayloadElementType} parsePayload(String request) throws InvalidValueException
         {
       <#if operation.payload.schema.isTypeDef>
           JsonValue<?, ?> jsonValue = ModelRegistry.parseOneJsonValue(new StringReader(request));
@@ -141,8 +141,8 @@ public abstract class ${modelJavaClassName}AsyncPathHandler<A> extends AsyncPath
      
     <#case "Payload">
       // Method has a Payload but no Response
-      PayloadOnlyRequestManager<A,${methodPayloadType}> manager =
-        new PayloadOnlyRequestManager<A,${methodPayloadType}>(in, out, auth, context.getTrace(), async, getProcessExecutor())
+      PayloadOnlyRequestManager<A,${methodPayloadElementType}> manager =
+        new PayloadOnlyRequestManager<A,${methodPayloadElementType}>(in, out, auth, context.getTrace(), async, getProcessExecutor())
       {
         @Override
         public void handle(${methodPayloadDecl} payload) throws CanonException
@@ -156,7 +156,7 @@ public abstract class ${modelJavaClassName}AsyncPathHandler<A> extends AsyncPath
       <@setJavaType operation.payload.schema/>
   
         @Override
-        protected ${methodPayloadType} parsePayload(String request) throws InvalidValueException
+        protected ${methodPayloadElementType} parsePayload(String request) throws InvalidValueException
         {
       <#if operation.payload.schema.isTypeDef>
           JsonValue<?, ?> jsonValue = ModelRegistry.parseOneJsonValue(new StringReader(request));
@@ -173,11 +173,11 @@ public abstract class ${modelJavaClassName}AsyncPathHandler<A> extends AsyncPath
      
     <#case "Response">
       // Method has no Payload but does have a Response
-      ResponseOnlyRequestManager<A,${methodResponseType}> manager =
-        new ResponseOnlyRequestManager<A,${methodResponseType}>(in, out, auth, context.getTrace(), async, getProcessExecutor(), getResponseExecutor())
+      ResponseOnlyRequestManager<A,${methodResponseElementType}> manager =
+        new ResponseOnlyRequestManager<A,${methodResponseElementType}>(in, out, auth, context.getTrace(), async, getProcessExecutor(), getResponseExecutor())
       {
         @Override
-        public void handle(IConsumer<${methodResponseType}> consumer) throws CanonException
+        public void handle(IConsumer<${methodResponseElementType}> consumer) throws CanonException
         {
           handle${operation.camelCapitalizedName}(consumer, getAuth(), getTrace()<#if operation.parameters?size != 0>,</#if>
       <#list operation.parameters as parameter>

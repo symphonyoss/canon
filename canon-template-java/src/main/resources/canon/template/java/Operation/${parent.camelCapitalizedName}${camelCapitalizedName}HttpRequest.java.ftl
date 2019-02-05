@@ -28,6 +28,7 @@ import org.symphonyoss.s2.canon.runtime.JsonArrayParser;
 import org.symphonyoss.s2.canon.runtime.exception.BadRequestException;
 import org.symphonyoss.s2.canon.runtime.exception.PermissionDeniedException;
 import org.symphonyoss.s2.canon.runtime.exception.ServerErrorException;
+import org.symphonyoss.s2.common.fault.TransactionFault;
 import org.symphonyoss.s2.canon.runtime.http.ParameterLocation;
 import org.symphonyoss.s2.canon.runtime.http.RequestContext;
 import org.symphonyoss.s2.canon.runtime.http.client.HttpParameter;
@@ -46,6 +47,10 @@ import ${fieldFQType};
 @Immutable
 public class ${model.parent.camelCapitalizedName}${model.camelCapitalizedName}HttpRequest extends ${model.parent.camelCapitalizedName}${model.camelCapitalizedName}HttpRequestOrBuilder
 {
+  <#if model.response??>
+  private static String  RESPONSE_TYPE_ID = "${model.model.canonId}.${model.response.schema.baseSchema.camelCapitalizedName}";
+
+  </#if>
   <#list model.parameters as parameter>
     <@setJavaType parameter.schema/>
   private ${("final " + javaClassName)?right_pad(25)  } ${parameter.camelName}_;
@@ -61,10 +66,10 @@ public class ${model.parent.camelCapitalizedName}${model.camelCapitalizedName}Ht
   
   <#if model.response??>
     <#if model.response.isMultiple>
-    private ${"List<" + methodResponseType + ">"?right_pad(25)          } canonResult_ = new LinkedList<>();
+  private ${"List<" + methodResponseElementType + ">"?right_pad(25)          } canonResult_ = new LinkedList<>();
 
     <#else>
-    private ${methodResponseType?right_pad(25)          } canonResult_;
+  private ${methodResponseType?right_pad(25)          } canonResult_;
     </#if>
   </#if>
   
@@ -157,7 +162,7 @@ public class ${model.parent.camelCapitalizedName}${model.camelCapitalizedName}Ht
   </#list>
   
   <#if model.response?? && model.response.isMultiple>
-  public List<${methodResponseType}> execute(CloseableHttpClient httpClient) throws IOException, PermissionDeniedException, BadRequestException, ServerErrorException
+  public List<${methodResponseElementType}> execute(CloseableHttpClient httpClient) throws IOException, PermissionDeniedException, BadRequestException, ServerErrorException
   <#else>
   public ${methodResponseDecl} execute(CloseableHttpClient httpClient) throws IOException, PermissionDeniedException, BadRequestException, ServerErrorException
   </#if>
@@ -179,21 +184,20 @@ public class ${model.parent.camelCapitalizedName}${model.camelCapitalizedName}Ht
         {
           try
           {
-            IEntity result = getCanonClient().getRegistry().parseOne(new StringReader(input));
+            IEntity result = getCanonClient().getRegistry().parseOne(new StringReader(input), RESPONSE_TYPE_ID);
             
-            if(result instanceof ${methodResponseType})
+            if(result instanceof ${methodResponseElementType})
             {
               <#if model.response.isMultiple>
-              canonResult_.add((${methodResponseType}) result);
+              canonResult_.add((${methodResponseElementType}) result);
               <#else>
-              canonResult_ = (${methodResponseType}) result;
+              canonResult_ = (${methodResponseElementType}) result;
               </#if>
             }
           }
-          catch (InvalidValueException | IOException e)
+          catch (InvalidValueException e)
           {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
+            throw new TransactionFault(e);
           }
         }
       };

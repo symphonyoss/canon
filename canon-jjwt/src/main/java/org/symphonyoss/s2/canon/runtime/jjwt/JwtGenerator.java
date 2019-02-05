@@ -46,6 +46,12 @@ public abstract class JwtGenerator<T extends JwtGenerator<T>> extends Fluent<T> 
   @Override
   public void authenticate(RequestBuilder builder)
   {
+    builder.addHeader(JwtBase.AUTH_HEADER_KEY, JwtBase.AUTH_HEADER_VALUE_PREFIX + createJwt());
+  }
+  
+  @Override
+  public String createJwt()
+  {
     Date now = new Date();
     
     JwtBuilder jwt = Jwts.builder().setIssuedAt(now);
@@ -59,11 +65,9 @@ public abstract class JwtGenerator<T extends JwtGenerator<T>> extends Fluent<T> 
     if(ttl_ != null)
       jwt.setExpiration(new Date(now.getTime() + ttl_));
     
-    String token = sign(jwt);
-    
-    builder.addHeader(JwtBase.AUTH_HEADER_KEY, JwtBase.AUTH_HEADER_VALUE_PREFIX + token);
+    return sign(jwt);
   }
-  
+
   public T withIssuer(String issuer)
   {
     issuer_ = issuer;

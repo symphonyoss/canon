@@ -27,5 +27,17 @@ import org.apache.http.client.methods.RequestBuilder;
 
 public interface IAuthenticationProvider
 {
+  /**
+   * Add an authentication header to the given request.
+   * 
+   * @param builder A request builder to add an authentication header to.
+   */
   void authenticate(RequestBuilder builder);
+  
+  /**
+   * Create a signed JWT token.
+   * 
+   * @return The encoded JWT token.
+   */
+  String createJwt();
 }

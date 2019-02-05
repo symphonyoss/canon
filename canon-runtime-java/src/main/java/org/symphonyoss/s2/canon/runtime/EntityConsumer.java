@@ -44,7 +44,7 @@ public abstract class EntityConsumer<P, E extends IEntity, C extends IThreadSafe
         invalidMessageConsumer_.consume(item, trace, "Received an entity which is not an instance of " + entityType_.getName(), null);
       }
     }
-    catch (InvalidValueException | IOException e)
+    catch (InvalidValueException e)
     {
       invalidMessageConsumer_.consume(item, trace, "Received an entity which is not a known type", e);
     }

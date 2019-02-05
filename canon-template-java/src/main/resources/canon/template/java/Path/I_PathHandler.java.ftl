@@ -1,5 +1,7 @@
 <#include "../canon-template-java-Prologue.ftl">
 <@setPrologueJavaType model/>
+import java.util.List;
+
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
@@ -18,12 +20,20 @@ public interface I${modelJavaClassName}PathHandler<T> extends I${model.model.cam
   <@printMethodJavadoc operation false/>
   ${methodResponseDecl} handle${operation.camelCapitalizedName}(
   <#if operation.payload??>
-  <@setJavaType operation.payload.schema/>
-  <#if operation.payload.isRequired>
+    <@setJavaType operation.payload.schema/>
+    <#if operation.payload.isMultiple>
+      <#if operation.payload.isRequired>
+    @Nonnull  ${"List<${fieldType}>"?right_pad(25)} canonPayload,
+      <#else>
+    @Nullable ${"List<${fieldType}>"?right_pad(25)} canonPayload,
+      </#if>
+    <#else>
+      <#if operation.payload.isRequired>
     @Nonnull  ${fieldType?right_pad(25)} canonPayload,
-  <#else>
+      <#else>
     @Nullable ${fieldType?right_pad(25)} canonPayload,
-  </#if>
+      </#if>
+    </#if>
   </#if>
               T canonAuth, 
               ${"ITraceContext"?right_pad(25)} canonTrace<#if operation.parameters?size != 0>,</#if>

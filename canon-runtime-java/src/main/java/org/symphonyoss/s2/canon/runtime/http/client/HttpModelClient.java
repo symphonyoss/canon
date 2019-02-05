@@ -36,7 +36,7 @@ public class HttpModelClient
     if(baseUri.endsWith("/"))
       throw new IllegalArgumentException("baseUri must not end with a slash");
 
-    if(!basePath.startsWith("/"))
+    if(basePath.length() > 0 && !basePath.startsWith("/"))
       throw new IllegalArgumentException("basePath must start with a slash");
     
     registry_ = registry;

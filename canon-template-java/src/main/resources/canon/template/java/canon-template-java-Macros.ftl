@@ -1066,12 +1066,17 @@ ${indent}    ${var}.add(${model.camelCapitalizedName}.newBuilder().build(${value
 <#macro setJavaMethod operation>
   <#if operation.response??>
     <@setJavaType operation.response.schema/>
-    <#assign methodResponseType="${fieldType}">
+    <#assign methodResponseElementType="${fieldType}">
+    <#if operation.response.isMultiple>
+      <#assign methodResponseType="List<${fieldType}>">
+    <#else>
+      <#assign methodResponseType="${fieldType}">
+    </#if>
     <#if operation.response.isRequired>
-      <#assign methodResponseDecl="@Nonnull ${fieldType}">
+      <#assign methodResponseDecl="@Nonnull ${methodResponseType}">
       <#assign methodThrows="throws PermissionDeniedException, ServerErrorException">
     <#else>
-      <#assign methodResponseDecl="@Nullable ${fieldType}">
+      <#assign methodResponseDecl="@Nullable ${methodResponseType}">
       <#assign methodThrows="throws PermissionDeniedException, NoSuchRecordException, ServerErrorException">
     </#if>
     <#if operation.payload??>
@@ -1091,7 +1096,12 @@ ${indent}    ${var}.add(${model.camelCapitalizedName}.newBuilder().build(${value
   </#if>
   <#if operation.payload??>
     <@setJavaType operation.payload.schema/>
-    <#assign methodPayloadType="${fieldType}">
+    <#assign methodPayloadElementType="${fieldType}">
+    <#if operation.payload.isMultiple>
+      <#assign methodPayloadType="List<${fieldType}>">
+    <#else>
+      <#assign methodPayloadType="${fieldType}">
+    </#if>
     <#if operation.payload.isRequired>
       <#assign methodPayloadDecl="@Nonnull ${fieldType}">
     <#else>

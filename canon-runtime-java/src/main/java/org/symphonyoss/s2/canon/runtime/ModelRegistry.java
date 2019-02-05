@@ -28,7 +28,11 @@ import java.io.InputStream;
 import java.io.Reader;
 import java.io.StringReader;
 import java.util.HashMap;
+import java.util.LinkedList;
+import java.util.List;
 import java.util.Map;
+
+import javax.annotation.Nullable;
 
 import org.symphonyoss.s2.common.dom.json.IJsonDomNode;
 import org.symphonyoss.s2.common.dom.json.IJsonObject;
@@ -72,13 +76,86 @@ public class ModelRegistry implements IModelRegistry
   @Override
   public IEntity newInstance(ImmutableJsonObject jsonObject) throws InvalidValueException
   {
-    String typeId = jsonObject.getString(CanonRuntime.JSON_TYPE);
+    return newInstance(jsonObject, null);
+  }
+
+  @Override
+  public IEntity newInstance(ImmutableJsonObject jsonObject, @Nullable String expectedTypeId) throws InvalidValueException
+  {
+    String typeId;
+    
+    if(expectedTypeId == null)
+    {
+      typeId = jsonObject.getRequiredString(CanonRuntime.JSON_TYPE);
+    }
+    else
+    {
+      typeId = jsonObject.getString(CanonRuntime.JSON_TYPE, null);
+      
+      if(typeId == null)
+      {
+        typeId = expectedTypeId;
+      }
+      else if(!expectedTypeId.equals(typeId))
+      {
+        throw new InvalidValueException("Expected instance of " + expectedTypeId + " but found a " + typeId);
+      }
+    }
+    
     IEntityFactory<?,?,?> factory = factoryMap_.get(typeId);
     
     if(factory == null)
       throw new InvalidValueException("Unknown type \"" + typeId + "\"");
     
     return factory.newInstance(jsonObject);
+  }
+  
+  /**
+   * Parse a list of JSON objects from the given Reader.
+   * 
+   * This method does not do a partial read, it is expected that the contents of the Reader
+   * are a single list of objects.
+   * 
+   * @param reader  The source of a JSON object.
+   * @return  The parsed list of ImmutableJsonObjects.
+   * 
+   * @throws InvalidValueException If the input cannot be parsed or does not contain a list of objects.
+   */
+  public static List<ImmutableJsonObject> parseListOfJsonObjects(Reader reader) throws InvalidValueException
+  {
+    List<ImmutableJsonObject>  result = new LinkedList<>();
+    ObjectMapper  mapper = new ObjectMapper().configure(Feature.AUTO_CLOSE_SOURCE, false);
+    
+    try
+    {
+      JsonNode tree = mapper.readTree(reader);
+      
+      if(tree.isArray())
+      {
+        for(JsonNode node : tree)
+        {
+          IJsonDomNode adapted = JacksonAdaptor.adapt(node);
+          
+          if(adapted instanceof IJsonObject)
+          {
+            result.add((ImmutableJsonObject) adapted.immutify());
+          }
+          else
+          {
+            throw new InvalidValueException("Expected an array of JSON objects but read a " + tree.getClass().getName());
+          }
+        }
+      }
+      else
+      {
+        throw new InvalidValueException("Expected a JSON array but read a " + tree.getClass().getName());
+      }
+    }
+    catch(IOException e)
+    {
+      throw new InvalidValueException("Failed to parse input", e);
+    }
+    return result;
   }
   
   /**
@@ -118,6 +195,53 @@ public class ModelRegistry implements IModelRegistry
   }
   
   /**
+   * Parse a list of JSON values from the given Reader.
+   * 
+   * This method does not do a partial read, it is expected that the contents of the Reader
+   * are a single value.
+   * 
+   * @param reader  The source of a JSON value.
+   * @return  The parsed list of (Immutable) JsonValues.
+   * 
+   * @throws InvalidValueException If the input cannot be parsed or does not contain a list of objects.
+   */
+  public static List<JsonValue<?,?>> parseListOfJsonValues(Reader reader) throws InvalidValueException
+  {
+    List<JsonValue<?,?>>  result = new LinkedList<>();
+    ObjectMapper  mapper = new ObjectMapper().configure(Feature.AUTO_CLOSE_SOURCE, false);
+    
+    try
+    {
+      JsonNode tree = mapper.readTree(reader);
+      
+      if(tree.isArray())
+      {
+        for(JsonNode node : tree)
+        {
+          if(node.isValueNode())
+          {
+            result.add((JsonValue<?,?>)JacksonAdaptor.adapt(node));
+          }
+          else
+          {
+            throw new InvalidValueException("Expected an array of JSON values but read a " + tree.getClass().getName());
+          }
+        }
+      }
+      else
+      {
+        throw new InvalidValueException("Expected a JSON array but read a " + tree.getClass().getName());
+      }
+    }
+    catch(IOException e)
+    {
+      throw new InvalidValueException("Failed to parse input", e);
+    }
+    
+    return result;
+  }
+  
+  /**
    * Parse a single JSON value from the given Reader.
    * 
    * This method does not do a partial read, it is expected that the contents of the Reader
@@ -152,9 +276,15 @@ public class ModelRegistry implements IModelRegistry
   }
   
   @Override
-  public IEntity parseOne(Reader reader) throws IOException, InvalidValueException
+  public IEntity parseOne(Reader reader) throws InvalidValueException
   {
-    return newInstance(parseOneJsonObject(reader));
+    return parseOne(reader, null);
+  }
+  
+  @Override
+  public IEntity parseOne(Reader reader, @Nullable String typeId) throws InvalidValueException
+  {
+    return newInstance(parseOneJsonObject(reader), typeId);
   }
 
   @Override
@@ -172,7 +302,7 @@ public class ModelRegistry implements IModelRegistry
           
           consumer.consume(result);
         }
-        catch (InvalidValueException | IOException e)
+        catch (InvalidValueException e)
         {
           // TODO I think handle needs to throw BadFormatException
           throw new TransactionFault(e);

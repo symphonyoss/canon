@@ -77,10 +77,18 @@ public abstract class ${modelJavaClassName}PathHandler<T> extends PathHandler<T>
   <#if operation.payload??>
   
     <@setJavaType operation.payload.schema/>
-    <#if operation.payload.schema.isTypeDef>
-    ${fieldType} canonPayload = context.parsePayload(${javaClassName}.newBuilder());
+    <#if operation.payload.isMultiple>
+      <#if operation.payload.schema.isTypeDef>
+    List<${fieldType}> canonPayload = context.parseListPayload(${javaClassName}.newBuilder());
+      <#else>
+    <${fieldType}> canonPayload = context.parseListPayload(${javaClassName}.FACTORY);
+      </#if>
     <#else>
+      <#if operation.payload.schema.isTypeDef>
+    ${fieldType} canonPayload = context.parsePayload(${javaClassName}.newBuilder());
+      <#else>
     ${fieldType} canonPayload = context.parsePayload(${javaClassName}.FACTORY);
+      </#if>
     </#if>
   </#if>
   
@@ -90,7 +98,11 @@ public abstract class ${modelJavaClassName}PathHandler<T> extends PathHandler<T>
       {
   <#if operation.response??>
     <@setJavaType operation.response.schema/>
+    <#if operation.response.isMultiple>
+        List<${fieldType}> response =
+    <#else>
         ${fieldType} response =
+    </#if>
   </#if> 
           handle${operation.camelCapitalizedName}(
   <#if operation.payload??>
@@ -106,7 +118,11 @@ public abstract class ${modelJavaClassName}PathHandler<T> extends PathHandler<T>
           );
   <#if operation.response??>
     <@setJavaType operation.response.schema/>
+      <#if operation.response.isMultiple>
+        if(response == null || response.isEmpty())
+      <#else>
         if(response == null)
+      </#if>
         {
     <#if operation.response.isRequired>
           throw new ServerErrorException("Required return value is null");        

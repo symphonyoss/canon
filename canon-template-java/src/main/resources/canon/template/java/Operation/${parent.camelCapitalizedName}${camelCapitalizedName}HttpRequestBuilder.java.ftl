@@ -31,7 +31,7 @@ public class ${javaModelClassName} extends ${model.parent.camelCapitalizedName}$
     <#if model.payload.isMultiple>
   private ${"MutableJsonList"?right_pad(25)          } canonPayload_ = new MutableJsonList();
     <#else>
-  private ${methodPayloadType?right_pad(25)           } canonPayload_;
+  private ${methodPayloadElementType?right_pad(25)           } canonPayload_;
     </#if>
   </#if>
   <#list model.parameters as parameter>
@@ -50,7 +50,7 @@ public class ${javaModelClassName} extends ${model.parent.camelCapitalizedName}$
   }
   <#if model.payload??>
   
-  <#if model.payload.isMultiple>
+    <#if model.payload.isMultiple>
   <@setJavaType model.payload.schema/>
   @Override
   public MutableJsonList getCanonPayload()
@@ -58,27 +58,27 @@ public class ${javaModelClassName} extends ${model.parent.camelCapitalizedName}$
     return canonPayload_;
   }
   
-  public ${javaModelClassName} withCanonPayload(${methodPayloadType} canonPayload)
+  public ${javaModelClassName} withCanonPayload(${methodPayloadElementType} canonPayload)
   {
     canonPayload_.add(${javaGetValuePrefix}canonPayload${javaGetValuePostfix});
     return this;
   }
   
-  public ${javaModelClassName} withCanonPayload(Collection<${methodPayloadType}> canonPayload)
+  public ${javaModelClassName} withCanonPayload(Collection<${methodPayloadElementType}> canonPayload)
   {
-    for(${methodPayloadType} item : canonPayload)
+    for(${methodPayloadElementType} item : canonPayload)
       canonPayload_.add(${javaGetValuePrefix}item${javaGetValuePostfix});
       
     return this;
   }
     <#else>
   @Override
-  public ${methodPayloadType} getCanonPayload()
+  public ${methodPayloadElementType} getCanonPayload()
   {
     return canonPayload_;
   }
   
-  public ${javaModelClassName} withCanonPayload(${methodPayloadType} canonPayload)
+  public ${javaModelClassName} withCanonPayload(${methodPayloadElementType} canonPayload)
   {
     canonPayload_ = canonPayload;
     return this;

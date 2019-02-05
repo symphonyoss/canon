@@ -27,6 +27,8 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.Reader;
 
+import javax.annotation.Nullable;
+
 import org.symphonyoss.s2.common.dom.json.ImmutableJsonObject;
 import org.symphonyoss.s2.common.exception.InvalidValueException;
 
@@ -35,10 +37,13 @@ public interface IModelRegistry
 //  IModelRegistry register(IModel factory);
 //
 //  IModelRegistry register(String name, IEntityFactory<?,?,?> factory);
-
+//
   IEntity newInstance(ImmutableJsonObject jsonObject) throws InvalidValueException;
 
-  IEntity parseOne(Reader reader) throws IOException, InvalidValueException;
+  IEntity newInstance(ImmutableJsonObject jsonObject, @Nullable String expectedTypeId) throws InvalidValueException;
+
+  IEntity parseOne(Reader reader) throws InvalidValueException;
+  IEntity parseOne(Reader reader, String typeId) throws InvalidValueException;
   
   void parseStream(InputStream in, IEntityConsumer consumer) throws InvalidValueException, IOException;
   
