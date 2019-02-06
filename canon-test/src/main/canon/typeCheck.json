@@ -19,6 +19,11 @@
         "description": "An integer typedef.",
         "type": "integer"
       },
+      "MessageId": {
+        "type": "string",
+        "format": "byte",
+        "facade": true
+      },
       "DoubleTypedef": {
         "description": "A double typedef with a facade.",
         "facade": true,

@@ -24,7 +24,8 @@ import ${javaFacadePackage}.${modelJavaClassName};
 <#include "TypeDefHeader.ftl">
 <@setJavaType model/>
 @Immutable
-public class ${modelJavaClassName}TypeDef<#if isComparable(model)> extends TypeDef implements I${modelJavaFieldClassName}Provider, Comparable<${modelJavaClassName}TypeDef></#if>
+// TypeDefTemplate
+public class ${modelJavaClassName}TypeDef extends TypeDef implements I${modelJavaFieldClassName}Provider<#if isComparable(model)>, Comparable<${modelJavaClassName}TypeDef></#if>
 {
   private @Nonnull ${modelJavaFieldClassName} value_;
 
