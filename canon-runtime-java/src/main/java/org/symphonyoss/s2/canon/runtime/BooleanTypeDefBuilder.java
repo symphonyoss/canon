@@ -23,19 +23,20 @@
 
 package org.symphonyoss.s2.canon.runtime;
 
+import javax.annotation.Nonnull;
+
 import org.symphonyoss.s2.common.dom.json.JsonBoolean;
 import org.symphonyoss.s2.common.dom.json.JsonValue;
-import org.symphonyoss.s2.common.exception.InvalidValueException;
 
 public abstract class BooleanTypeDefBuilder<M> extends TypeDefBuilder<M,Boolean>
 {
   @Override
-  public M build(JsonValue<?, ?> jsonValue) throws InvalidValueException
+  public M build(@Nonnull JsonValue<?, ?> jsonValue)
   {
     if(jsonValue instanceof JsonBoolean)
       return build(((JsonBoolean)jsonValue).asBoolean());
     
-    throw new InvalidValueException("Expected an boolean but found a " + jsonValue.getClass().getName());
+    throw new IllegalArgumentException("Expected an boolean but found a " + jsonValue.getClass().getName());
   }
 
 }

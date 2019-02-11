@@ -9,7 +9,6 @@ import javax.servlet.ServletOutputStream;
 import javax.servlet.WriteListener;
 
 import org.symphonyoss.s2.canon.runtime.exception.CanonException;
-import org.symphonyoss.s2.common.exception.InvalidValueException;
 import org.symphonyoss.s2.fugue.core.trace.ITraceContext;
 
 public abstract class PayloadResponseRequestManager<A,P,R extends IBaseEntity>
@@ -23,10 +22,10 @@ implements ReadListener, WriteListener, IPayloadResponseRequestManager<P,R>
     super(in, out, canonAuth, trace, async, processExecutor, responseExecutor);
   }
 
-  protected abstract P parsePayload(String payload) throws InvalidValueException;
+  protected abstract P parsePayload(String payload);
   
   @Override
-  protected void handleRequest(String request) throws InvalidValueException, CanonException
+  protected void handleRequest(String request) throws CanonException
   {
     handle(parsePayload(request), getResponseTask());
   }

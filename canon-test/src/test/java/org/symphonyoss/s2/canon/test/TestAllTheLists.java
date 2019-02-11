@@ -35,7 +35,6 @@ import org.symphonyoss.s2.common.dom.json.IJsonDomNode;
 import org.symphonyoss.s2.common.dom.json.IJsonObject;
 import org.symphonyoss.s2.common.dom.json.ImmutableJsonObject;
 import org.symphonyoss.s2.common.dom.json.jackson.JacksonAdaptor;
-import org.symphonyoss.s2.common.exception.InvalidValueException;
 import org.symphonyoss.s2.common.immutable.ImmutableByteArray;
 
 import com.fasterxml.jackson.databind.JsonNode;
@@ -45,7 +44,7 @@ import com.google.common.collect.ImmutableList;
 public class TestAllTheLists extends AbstractModelObjectTest
 { 
   @Test
-  public void testRoundTrip() throws IOException, InvalidValueException
+  public void testRoundTrip() throws IOException
   {
     IAllTheLists obj;
     
@@ -94,7 +93,7 @@ public class TestAllTheLists extends AbstractModelObjectTest
         
         assertEquals(obj, obj2);
       }
-      catch(InvalidValueException e)
+      catch(IllegalArgumentException e)
       {
         System.err.println("Failed to deserialize from JSON");
         e.printStackTrace();
@@ -113,7 +112,7 @@ public class TestAllTheLists extends AbstractModelObjectTest
 
   
 
-  private IAllTheLists createTestObject1() throws InvalidValueException
+  private IAllTheLists createTestObject1()
   {
     return AllTheLists.BUILDER.newInstance()
           .withBooleanListField(ImmutableList.of(true, false))

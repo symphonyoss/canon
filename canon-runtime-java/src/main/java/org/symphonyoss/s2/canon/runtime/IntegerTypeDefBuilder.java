@@ -25,17 +25,16 @@ package org.symphonyoss.s2.canon.runtime;
 
 import org.symphonyoss.s2.common.dom.json.JsonInteger;
 import org.symphonyoss.s2.common.dom.json.JsonValue;
-import org.symphonyoss.s2.common.exception.InvalidValueException;
 
 public abstract class IntegerTypeDefBuilder<M> extends TypeDefBuilder<M,Integer>
 {
   @Override
-  public M build(JsonValue<?, ?> jsonValue) throws InvalidValueException
+  public M build(JsonValue<?, ?> jsonValue)
   {
     if(jsonValue instanceof JsonInteger)
       return build(((JsonInteger)jsonValue).asInteger());
     
-    throw new InvalidValueException("Expected an int but found a " + jsonValue.getClass().getName());
+    throw new IllegalArgumentException("Expected an int but found a " + jsonValue.getClass().getName());
   }
 
 }

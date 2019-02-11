@@ -27,7 +27,6 @@ import org.symphonyoss.s2.common.dom.DomSerializer;
 import org.symphonyoss.s2.common.dom.json.IImmutableJsonDomNode;
 import org.symphonyoss.s2.common.dom.json.IJsonDomNodeProvider;
 import org.symphonyoss.s2.common.dom.json.MutableJsonObject;
-import org.symphonyoss.s2.common.exception.InvalidValueException;
 import org.symphonyoss.s2.common.immutable.ImmutableByteArray;
 
 import com.google.common.collect.ImmutableSet;
@@ -90,5 +89,5 @@ public abstract class EntityBuilder<B extends EntityBuilder<B>> implements IEnti
     return ImmutableByteArray.newInstance(SERIALIZER.serialize(getJsonObject()));
   }
   
-  public abstract IEntity build() throws InvalidValueException;
+  public abstract IEntity build();
 }

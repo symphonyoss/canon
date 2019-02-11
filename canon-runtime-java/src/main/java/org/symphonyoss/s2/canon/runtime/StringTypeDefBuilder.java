@@ -23,19 +23,20 @@
 
 package org.symphonyoss.s2.canon.runtime;
 
+import javax.annotation.Nonnull;
+
 import org.symphonyoss.s2.common.dom.json.JsonString;
 import org.symphonyoss.s2.common.dom.json.JsonValue;
-import org.symphonyoss.s2.common.exception.InvalidValueException;
 
 public abstract class StringTypeDefBuilder<M> extends TypeDefBuilder<M,String>
 {
   @Override
-  public M build(JsonValue<?, ?> jsonValue) throws InvalidValueException
+  public M build(@Nonnull JsonValue<?, ?> jsonValue)
   {
     if(jsonValue instanceof JsonString)
       return build(((JsonString)jsonValue).asString());
     
-    throw new InvalidValueException("Expected a string but found a " + jsonValue.getClass().getName());
+    throw new IllegalArgumentException("Expected a string but found a " + jsonValue.getClass().getName());
   }
 
 }

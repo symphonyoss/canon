@@ -21,7 +21,6 @@ import org.symphonyoss.s2.common.dom.json.IJsonDomNode;
 import org.symphonyoss.s2.common.dom.json.Json${modelJavaCardinality};
 import org.symphonyoss.s2.common.dom.json.MutableJsonList;
 import org.symphonyoss.s2.common.dom.json.MutableJsonSet;
-import org.symphonyoss.s2.common.exception.InvalidValueException;
 
 import org.symphonyoss.s2.canon.runtime.Entity${modelJavaCardinality};
 
@@ -30,14 +29,14 @@ import org.symphonyoss.s2.canon.runtime.Entity${modelJavaCardinality};
 @Immutable
 public class ${modelJavaClassName}EntityArray extends Entity${modelJavaCardinality}<${modelJavaElementClassName}>
 {
-  protected ${modelJavaClassName}EntityArray(IEntity${modelJavaCardinality}<${modelJavaElementClassName}> other)<#if model.canFailValidation> throws InvalidValueException</#if>
+  protected ${modelJavaClassName}EntityArray(IEntity${modelJavaCardinality}<${modelJavaElementClassName}> other)
   {
     super(other);
 <@checkItemLimits "    " model "Array" "this"/>
   }
   
   <#-- Constructor from Json   -->  
-  protected ${modelJavaClassName}EntityArray(Json${modelJavaCardinality}<?> json${modelJavaCardinality}) throws InvalidValueException
+  protected ${modelJavaClassName}EntityArray(Json${modelJavaCardinality}<?> json${modelJavaCardinality})
   {
     super(json${modelJavaCardinality}.immutify(), json${modelJavaCardinality}.asImmutable${modelJavaCardinality}Of(${modelJavaElementClassName}.class));
 <@checkItemLimits "    " model "Array" "this"/>
@@ -89,7 +88,7 @@ public class ${modelJavaClassName}EntityArray extends Entity${modelJavaCardinali
       return (${modelJavaClassName}.Builder)this;
     }
 
-    public ${modelJavaClassName}.Builder with(Json${modelJavaCardinality}<?> node) throws InvalidValueException
+    public ${modelJavaClassName}.Builder with(Json${modelJavaCardinality}<?> node)
     {
       elements__.addAll(node.asImmutableListOf(${modelJavaElementClassName}.class));
       return (${modelJavaClassName}.Builder)this;
@@ -116,7 +115,7 @@ public class ${modelJavaClassName}EntityArray extends Entity${modelJavaCardinali
       return getJson${javaCardinality}();
     }
     
-    public abstract ${modelJavaClassName} build() throws InvalidValueException;
+    public abstract ${modelJavaClassName} build();
   }
 }
 <#include "../canon-template-java-Epilogue.ftl">

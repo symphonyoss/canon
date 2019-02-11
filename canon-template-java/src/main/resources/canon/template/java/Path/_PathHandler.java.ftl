@@ -9,9 +9,6 @@ import java.io.IOException;
 import java.util.Iterator;
 import java.util.List;
 
-
-import org.symphonyoss.s2.common.exception.InvalidValueException;
-
 import org.symphonyoss.s2.canon.runtime.PathHandler;
 import org.symphonyoss.s2.canon.runtime.ModelRegistry;
 import org.symphonyoss.s2.canon.runtime.exception.BadRequestException;

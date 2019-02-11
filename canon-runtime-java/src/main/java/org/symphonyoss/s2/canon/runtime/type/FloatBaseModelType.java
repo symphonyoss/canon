@@ -27,24 +27,23 @@ import javax.annotation.Nonnull;
 
 import org.symphonyoss.s2.common.dom.json.IJsonDomNode;
 import org.symphonyoss.s2.common.dom.json.JsonFloat;
-import org.symphonyoss.s2.common.exception.InvalidValueException;
 
 public class FloatBaseModelType
 {
   private final @Nonnull JsonFloat jsonValue_;
 
-  public FloatBaseModelType(Float value) throws InvalidValueException
+  public FloatBaseModelType(Float value)
   {
     if(value == null)
-      throw new InvalidValueException("value is required.");
+      throw new IllegalArgumentException("value is required.");
 
     jsonValue_ = new JsonFloat(value);
   }
   
-  public FloatBaseModelType(@Nonnull IJsonDomNode node) throws InvalidValueException
+  public FloatBaseModelType(@Nonnull IJsonDomNode node)
   {
     if(node == null)
-      throw new InvalidValueException("value is required.");
+      throw new IllegalArgumentException("value is required.");
       
     if(node instanceof JsonFloat)
     {
@@ -52,7 +51,7 @@ public class FloatBaseModelType
     }
     else
     {
-      throw new InvalidValueException("value must be an instance of Float not " + node.getClass().getName());
+      throw new IllegalArgumentException("value must be an instance of Float not " + node.getClass().getName());
     }
   }
 

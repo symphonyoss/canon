@@ -18,7 +18,6 @@ import javax.servlet.ServletOutputStream;
 
 import org.symphonyoss.s2.common.dom.json.ImmutableJsonObject;
 import org.symphonyoss.s2.common.dom.json.JsonValue;
-import org.symphonyoss.s2.common.exception.InvalidValueException;
 
 import org.symphonyoss.s2.canon.runtime.AsyncPathHandler;
 import org.symphonyoss.s2.canon.runtime.EmptyRequestManager;
@@ -123,7 +122,7 @@ public abstract class ${modelJavaClassName}AsyncPathHandler<A> extends AsyncPath
       <@setJavaType operation.payload.schema/>
   
         @Override
-        protected ${methodPayloadElementType} parsePayload(String request) throws InvalidValueException
+        protected ${methodPayloadElementType} parsePayload(String request)
         {
       <#if operation.payload.schema.isTypeDef>
           JsonValue<?, ?> jsonValue = ModelRegistry.parseOneJsonValue(new StringReader(request));
@@ -156,7 +155,7 @@ public abstract class ${modelJavaClassName}AsyncPathHandler<A> extends AsyncPath
       <@setJavaType operation.payload.schema/>
   
         @Override
-        protected ${methodPayloadElementType} parsePayload(String request) throws InvalidValueException
+        protected ${methodPayloadElementType} parsePayload(String request)
         {
       <#if operation.payload.schema.isTypeDef>
           JsonValue<?, ?> jsonValue = ModelRegistry.parseOneJsonValue(new StringReader(request));

@@ -32,8 +32,6 @@ import org.symphonyoss.s2.common.dom.json.JsonArray;
 import org.symphonyoss.s2.common.dom.json.JsonList;
 import org.symphonyoss.s2.common.dom.json.JsonSet;
 
-import org.symphonyoss.s2.common.exception.InvalidValueException;
-
 import java.util.HashSet;
 import java.util.Set;
 import java.util.Iterator;

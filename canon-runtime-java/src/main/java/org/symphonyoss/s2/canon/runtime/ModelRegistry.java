@@ -39,7 +39,6 @@ import org.symphonyoss.s2.common.dom.json.IJsonObject;
 import org.symphonyoss.s2.common.dom.json.ImmutableJsonObject;
 import org.symphonyoss.s2.common.dom.json.JsonValue;
 import org.symphonyoss.s2.common.dom.json.jackson.JacksonAdaptor;
-import org.symphonyoss.s2.common.exception.InvalidValueException;
 import org.symphonyoss.s2.common.fault.TransactionFault;
 
 import com.fasterxml.jackson.core.JsonParser.Feature;
@@ -74,13 +73,13 @@ public class ModelRegistry implements IModelRegistry
   }
 
   @Override
-  public IEntity newInstance(ImmutableJsonObject jsonObject) throws InvalidValueException
+  public IEntity newInstance(ImmutableJsonObject jsonObject)
   {
     return newInstance(jsonObject, null);
   }
 
   @Override
-  public IEntity newInstance(ImmutableJsonObject jsonObject, @Nullable String expectedTypeId) throws InvalidValueException
+  public IEntity newInstance(ImmutableJsonObject jsonObject, @Nullable String expectedTypeId)
   {
     String typeId;
     
@@ -98,14 +97,14 @@ public class ModelRegistry implements IModelRegistry
       }
       else if(!expectedTypeId.equals(typeId))
       {
-        throw new InvalidValueException("Expected instance of " + expectedTypeId + " but found a " + typeId);
+        throw new IllegalArgumentException("Expected instance of " + expectedTypeId + " but found a " + typeId);
       }
     }
     
     IEntityFactory<?,?,?> factory = factoryMap_.get(typeId);
     
     if(factory == null)
-      throw new InvalidValueException("Unknown type \"" + typeId + "\"");
+      throw new IllegalArgumentException("Unknown type \"" + typeId + "\"");
     
     return factory.newInstance(jsonObject);
   }
@@ -121,7 +120,7 @@ public class ModelRegistry implements IModelRegistry
    * 
    * @throws InvalidValueException If the input cannot be parsed or does not contain a list of objects.
    */
-  public static List<ImmutableJsonObject> parseListOfJsonObjects(Reader reader) throws InvalidValueException
+  public static List<ImmutableJsonObject> parseListOfJsonObjects(Reader reader)
   {
     List<ImmutableJsonObject>  result = new LinkedList<>();
     ObjectMapper  mapper = new ObjectMapper().configure(Feature.AUTO_CLOSE_SOURCE, false);
@@ -142,18 +141,18 @@ public class ModelRegistry implements IModelRegistry
           }
           else
           {
-            throw new InvalidValueException("Expected an array of JSON objects but read a " + tree.getClass().getName());
+            throw new IllegalArgumentException("Expected an array of JSON objects but read a " + tree.getClass().getName());
           }
         }
       }
       else
       {
-        throw new InvalidValueException("Expected a JSON array but read a " + tree.getClass().getName());
+        throw new IllegalArgumentException("Expected a JSON array but read a " + tree.getClass().getName());
       }
     }
     catch(IOException e)
     {
-      throw new InvalidValueException("Failed to parse input", e);
+      throw new IllegalArgumentException("Failed to parse input", e);
     }
     return result;
   }
@@ -167,9 +166,9 @@ public class ModelRegistry implements IModelRegistry
    * @param reader  The source of a JSON object.
    * @return  The parsed object as an ImmutableJsonObject.
    * 
-   * @throws InvalidValueException If the input cannot be parsed or does not contain a single object.
+   * @throws IllegalArgumentException If the input cannot be parsed or does not contain a single object.
    */
-  public static ImmutableJsonObject parseOneJsonObject(Reader reader) throws InvalidValueException
+  public static ImmutableJsonObject parseOneJsonObject(Reader reader)
   {
     ObjectMapper  mapper = new ObjectMapper().configure(Feature.AUTO_CLOSE_SOURCE, false);
     
@@ -185,12 +184,12 @@ public class ModelRegistry implements IModelRegistry
       }
       else
       {
-        throw new InvalidValueException("Expected a JSON Object but read a " + adapted.getClass().getName());
+        throw new IllegalArgumentException("Expected a JSON Object but read a " + adapted.getClass().getName());
       }
     }
     catch(IOException e)
     {
-      throw new InvalidValueException("Failed to parse input", e);
+      throw new IllegalArgumentException("Failed to parse input", e);
     }
   }
   
@@ -203,9 +202,9 @@ public class ModelRegistry implements IModelRegistry
    * @param reader  The source of a JSON value.
    * @return  The parsed list of (Immutable) JsonValues.
    * 
-   * @throws InvalidValueException If the input cannot be parsed or does not contain a list of objects.
+   * @throws IllegalArgumentException If the input cannot be parsed or does not contain a list of objects.
    */
-  public static List<JsonValue<?,?>> parseListOfJsonValues(Reader reader) throws InvalidValueException
+  public static List<JsonValue<?,?>> parseListOfJsonValues(Reader reader)
   {
     List<JsonValue<?,?>>  result = new LinkedList<>();
     ObjectMapper  mapper = new ObjectMapper().configure(Feature.AUTO_CLOSE_SOURCE, false);
@@ -224,18 +223,18 @@ public class ModelRegistry implements IModelRegistry
           }
           else
           {
-            throw new InvalidValueException("Expected an array of JSON values but read a " + tree.getClass().getName());
+            throw new IllegalArgumentException("Expected an array of JSON values but read a " + tree.getClass().getName());
           }
         }
       }
       else
       {
-        throw new InvalidValueException("Expected a JSON array but read a " + tree.getClass().getName());
+        throw new IllegalArgumentException("Expected a JSON array but read a " + tree.getClass().getName());
       }
     }
     catch(IOException e)
     {
-      throw new InvalidValueException("Failed to parse input", e);
+      throw new IllegalArgumentException("Failed to parse input", e);
     }
     
     return result;
@@ -250,9 +249,9 @@ public class ModelRegistry implements IModelRegistry
    * @param reader  The source of a JSON value.
    * @return  The parsed value as an (Immutable) JsonValue.
    * 
-   * @throws InvalidValueException If the input cannot be parsed or does not contain a single object.
+   * @throws IllegalArgumentException If the input cannot be parsed or does not contain a single object.
    */
-  public static JsonValue<?,?> parseOneJsonValue(Reader reader) throws InvalidValueException
+  public static JsonValue<?,?> parseOneJsonValue(Reader reader)
   {
     ObjectMapper  mapper = new ObjectMapper().configure(Feature.AUTO_CLOSE_SOURCE, false);
     
@@ -266,29 +265,29 @@ public class ModelRegistry implements IModelRegistry
       }
       else
       {
-        throw new InvalidValueException("Expected a JSON value but read a " + tree.getClass().getName());
+        throw new IllegalArgumentException("Expected a JSON value but read a " + tree.getClass().getName());
       }
     }
     catch(IOException e)
     {
-      throw new InvalidValueException("Failed to parse input", e);
+      throw new IllegalArgumentException("Failed to parse input", e);
     }
   }
   
   @Override
-  public IEntity parseOne(Reader reader) throws InvalidValueException
+  public IEntity parseOne(Reader reader)
   {
     return parseOne(reader, null);
   }
   
   @Override
-  public IEntity parseOne(Reader reader, @Nullable String typeId) throws InvalidValueException
+  public IEntity parseOne(Reader reader, @Nullable String typeId)
   {
     return newInstance(parseOneJsonObject(reader), typeId);
   }
 
   @Override
-  public void parseStream(InputStream in, IEntityConsumer consumer) throws InvalidValueException, IOException
+  public void parseStream(InputStream in, IEntityConsumer consumer)
   {
     JsonArrayParser arrayParser = new JsonArrayParser()
     {
@@ -296,17 +295,9 @@ public class ModelRegistry implements IModelRegistry
       @Override
       protected void handle(String input)
       {
-        try
-        {
-          IEntity result = parseOne(new StringReader(input));
+        IEntity result = parseOne(new StringReader(input));
           
-          consumer.consume(result);
-        }
-        catch (InvalidValueException e)
-        {
-          // TODO I think handle needs to throw BadFormatException
-          throw new TransactionFault(e);
-        }
+        consumer.consume(result);
       }
     };
     
@@ -320,6 +311,10 @@ public class ModelRegistry implements IModelRegistry
       {
         arrayParser.process(buf, nbytes);
       }
+    }
+    catch(IOException e)
+    {
+      throw new IllegalArgumentException("Failed to parse input", e);
     }
     finally
     {

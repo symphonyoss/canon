@@ -30,23 +30,82 @@ import java.io.Reader;
 import javax.annotation.Nullable;
 
 import org.symphonyoss.s2.common.dom.json.ImmutableJsonObject;
-import org.symphonyoss.s2.common.exception.InvalidValueException;
 
+/**
+ * A model registry holds a set of entity factories and provided methods to deserialize entities using any of those
+ * factories.
+ * 
+ * To do this it looks for meta data in the _type attribute of the serialized objects to select the correct factory.
+ * 
+ * @author Bruce Skingle
+ *
+ */
 public interface IModelRegistry
 {
-//  IModelRegistry register(IModel factory);
-//
-//  IModelRegistry register(String name, IEntityFactory<?,?,?> factory);
-//
-  IEntity newInstance(ImmutableJsonObject jsonObject) throws InvalidValueException;
+  /**
+   * Return a new entity instance parsed from the given JSON object.
+   * 
+   * @param jsonObject A JSON object containing the serialized form of an entity.
+   * 
+   * @return The deserialized entity.
+   * 
+   * @throws NullPointerException if the value is null.
+   * @throws IllegalArgumentException if the value is otherwise invalid.
+   * This may be the case if the schema defines limits on the magnitude of the value, or if a facade
+   * has been written for the type.
+   */
+  IEntity newInstance(ImmutableJsonObject jsonObject);
 
-  IEntity newInstance(ImmutableJsonObject jsonObject, @Nullable String expectedTypeId) throws InvalidValueException;
+  /**
+   * Return a new entity instance of the given type, parsed from the given JSON object.
+   * 
+   * @param jsonObject A JSON object containing the serialized form of an entity.
+   * @param expectedTypeId The type ID of the expected type.
+   * 
+   * @return The deserialized entity.
+   * 
+   * @throws NullPointerException if the value is null.
+   * @throws IllegalArgumentException if the value is not of the expected type or is otherwise invalid.
+   * This may be the case if the schema defines limits on the magnitude of the value, or if a facade
+   * has been written for the type.
+   */
+  IEntity newInstance(ImmutableJsonObject jsonObject, @Nullable String expectedTypeId);
 
-  IEntity parseOne(Reader reader) throws InvalidValueException;
-  IEntity parseOne(Reader reader, String typeId) throws InvalidValueException;
+  /**
+   * Return a new entity instance parsed from the given input.
+   * 
+   * @param reader A Reader containing the serialized form of an entity.
+   * 
+   * @return The deserialized entity.
+   * 
+   * @throws NullPointerException if the value is null.
+   * @throws IllegalArgumentException if the value is not of the expected type or is otherwise invalid.
+   * This may be the case if the schema defines limits on the magnitude of the value, or if a facade
+   * has been written for the type.
+   */
+  IEntity parseOne(Reader reader);
   
-  void parseStream(InputStream in, IEntityConsumer consumer) throws InvalidValueException, IOException;
+  /**
+   * Return a new entity instance of the given type, parsed from the given input.
+   * 
+   * @param reader A Reader containing the serialized form of an entity.
+   * @param typeId The type ID of the expected type.
+   * 
+   * @return The deserialized entity.
+   * 
+   * @throws NullPointerException if the value is null.
+   * @throws IllegalArgumentException if the value is not of the expected type or is otherwise invalid.
+   * This may be the case if the schema defines limits on the magnitude of the value, or if a facade
+   * has been written for the type.
+   */
+  IEntity parseOne(Reader reader, String typeId);
   
-//  Collection<IUrlPathServlet> getServlets();
-//  void register(IUrlPathServlet servlet);
+  /**
+   * Parse a stream of entitied from the giben input and pass them to the given consumer.
+   * 
+   * @param in            A input stream containing serialised entities.
+   * @param consumer      A sink for the parsed entities.
+   * @throws IOException  If there is a read error on the given input.
+   */
+  void parseStream(InputStream in, IEntityConsumer consumer) throws IOException;
 }

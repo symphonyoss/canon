@@ -26,13 +26,12 @@ package org.symphonyoss.s2.canon.runtime;
 import org.apache.commons.codec.binary.Base64;
 import org.symphonyoss.s2.common.dom.json.JsonString;
 import org.symphonyoss.s2.common.dom.json.JsonValue;
-import org.symphonyoss.s2.common.exception.InvalidValueException;
 import org.symphonyoss.s2.common.immutable.ImmutableByteArray;
 
 public abstract class ImmutableByteArrayTypeDefBuilder<M> extends TypeDefBuilder<M,ImmutableByteArray>
 {
   @Override
-  public M build(JsonValue<?, ?> jsonValue) throws InvalidValueException
+  public M build(JsonValue<?, ?> jsonValue)
   {
     if(jsonValue instanceof JsonString)
     {
@@ -45,7 +44,7 @@ public abstract class ImmutableByteArrayTypeDefBuilder<M> extends TypeDefBuilder
       );
     }
     
-    throw new InvalidValueException("Expected a string but found a " + jsonValue.getClass().getName());
+    throw new IllegalArgumentException("Expected a Base64 string but found a " + jsonValue.getClass().getName());
   }
 
 }

@@ -338,7 +338,10 @@ public class Canon
       for (File d : templateDirs_)
         generationContext.addTemplateDirectory(d);
 
-      // generationContext.put("templateDebug", "true");
+      if (verbose_)
+      {
+        generationContext.put("templateDebug", "true");
+      }
 
       modelSetContext.generate(generationContext);
     }

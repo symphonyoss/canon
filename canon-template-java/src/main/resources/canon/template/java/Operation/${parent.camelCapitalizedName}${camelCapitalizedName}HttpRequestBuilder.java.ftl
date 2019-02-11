@@ -20,9 +20,7 @@ import org.symphonyoss.s2.canon.runtime.http.client.HttpParameter;
 import ${fieldFQType};
   </#if>
 </#list>
-<#if model.payload??>
 <@importFacadePackages model/>
-</#if>
 
 @Immutable
 public class ${javaModelClassName} extends ${model.parent.camelCapitalizedName}${model.camelCapitalizedName}HttpRequestOrBuilder

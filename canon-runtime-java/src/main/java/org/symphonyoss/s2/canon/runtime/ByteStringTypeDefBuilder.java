@@ -23,17 +23,18 @@
 
 package org.symphonyoss.s2.canon.runtime;
 
+import javax.annotation.Nonnull;
+
 import org.apache.commons.codec.binary.Base64;
 import org.symphonyoss.s2.common.dom.json.JsonString;
 import org.symphonyoss.s2.common.dom.json.JsonValue;
-import org.symphonyoss.s2.common.exception.InvalidValueException;
 
 import com.google.protobuf.ByteString;
 
 public abstract class ByteStringTypeDefBuilder<M> extends TypeDefBuilder<M,ByteString>
 {
   @Override
-  public M build(JsonValue<?, ?> jsonValue) throws InvalidValueException
+  public M build(@Nonnull JsonValue<?, ?> jsonValue)
   {
     if(jsonValue instanceof JsonString)
     {
@@ -46,7 +47,7 @@ public abstract class ByteStringTypeDefBuilder<M> extends TypeDefBuilder<M,ByteS
       );
     }
     
-    throw new InvalidValueException("Expected a string but found a " + jsonValue.getClass().getName());
+    throw new IllegalArgumentException("Expected a string but found a " + jsonValue.getClass().getName());
   }
 
 }

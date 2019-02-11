@@ -27,12 +27,11 @@ import org.symphonyoss.s2.common.dom.json.JsonFloat;
 import org.symphonyoss.s2.common.dom.json.JsonInteger;
 import org.symphonyoss.s2.common.dom.json.JsonLong;
 import org.symphonyoss.s2.common.dom.json.JsonValue;
-import org.symphonyoss.s2.common.exception.InvalidValueException;
 
 public abstract class FloatTypeDefBuilder<M> extends TypeDefBuilder<M,Float>
 {
   @Override
-  public M build(JsonValue<?, ?> jsonValue) throws InvalidValueException
+  public M build(JsonValue<?, ?> jsonValue)
   {
     if(jsonValue instanceof JsonFloat)
       return build(((JsonFloat)jsonValue).asFloat());
@@ -43,7 +42,7 @@ public abstract class FloatTypeDefBuilder<M> extends TypeDefBuilder<M,Float>
     if(jsonValue instanceof JsonInteger)
       return build((float)((JsonInteger)jsonValue).asInteger());
     
-    throw new InvalidValueException("Expected a float but found a " + jsonValue.getClass().getName());
+    throw new IllegalArgumentException("Expected a float but found a " + jsonValue.getClass().getName());
   }
 
 }

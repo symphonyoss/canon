@@ -13,9 +13,7 @@ import org.symphonyoss.s2.canon.runtime.http.client.HttpRequestOrBuilder;
 import ${fieldFQType};
   </#if>
 </#list>
-<#if model.payload?? && !model.payload.isMultiple>
 <@importFacadePackages model/>
-</#if>
   
 @Immutable
 public abstract class ${model.parent.camelCapitalizedName}${model.camelCapitalizedName}HttpRequestOrBuilder extends HttpRequestOrBuilder<${model.model.camelCapitalizedName}HttpModelClient>

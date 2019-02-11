@@ -4,17 +4,17 @@
 @SuppressWarnings("unused")
 public class ${model.camelCapitalizedName} extends ${model.camelCapitalizedName}Entity implements I${model.camelCapitalizedName}
 {
-  public ${model.camelCapitalizedName}(Abstract${modelJavaClassName}Builder<?> other)<@checkLimitsClassThrows model/>
+  public ${model.camelCapitalizedName}(Abstract${modelJavaClassName}Builder<?> other)
   {
     super(other);
   }
   
-  public ${model.camelCapitalizedName}(ImmutableJsonObject jsonObject) throws InvalidValueException
+  public ${model.camelCapitalizedName}(ImmutableJsonObject jsonObject)
   {
     super(jsonObject);
   }
   
-  public ${modelJavaClassName}(MutableJsonObject mutableJsonObject) throws InvalidValueException
+  public ${modelJavaClassName}(MutableJsonObject mutableJsonObject)
   {
     super(mutableJsonObject);
   }

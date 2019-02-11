@@ -12,7 +12,7 @@
     {
       ${parameter.camelName} = ${javaConstructTypePrefix}${parameter.camelName}Value${javaConstructTypePostfix};
     }
-    catch(InvalidValueException e)
+    catch(NullPointerException | IllegalArgumentException e)
     {
       context.error("Parameter \"${parameter.camelName}\" has invalid value \"%s\" (%s)", ${parameter.camelName}Value, e.getMessage());
     }
@@ -23,7 +23,7 @@
     {
       <@checkLimits "      " parameter.schema parameter.camelName/>
     }
-    catch(InvalidValueException e)
+    catch(NullPointerException | IllegalArgumentException e)
     {
       context.error(e.getMessage());
     }
@@ -46,13 +46,11 @@
       {
         ${parameter.camelName} = ${javaConstructTypePrefix}${parameter.camelName}Value${javaConstructTypePostfix};
       }
-      catch(InvalidValueException e)
+      catch(NullPointerException | IllegalArgumentException e)
       {
         context.error("Parameter \"${parameter.camelName}\" has invalid value \"%s\" (%s)", ${parameter.camelName}Value, e.getMessage());
       }
     <#else>
-    // parameter.canFailValidation = ${parameter.canFailValidation?c}
-    // parameter.camelName = ${parameter.camelName}
       ${parameter.camelName} = ${javaConstructTypePrefix}${parameter.camelName}Value${javaConstructTypePostfix};
       <#if parameter.canFailValidation>
       try
@@ -60,11 +58,11 @@
         <@checkLimits "        " parameter.schema parameter.camelName/>
         <#if parameter.isRequired>     
         if(${parameter.camelName} == null)
-          throw new InvalidValueException("${parameter.name} is required.");
+          throw new NullPointerException("${parameter.name} is required.");
 
       </#if>
       }
-      catch(InvalidValueException e)
+      catch(NullPointerException | IllegalArgumentException e)
       {
         context.error(e.getMessage());
       }

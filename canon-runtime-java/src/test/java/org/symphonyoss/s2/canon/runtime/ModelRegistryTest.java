@@ -30,12 +30,11 @@ import org.junit.Test;
 import org.symphonyoss.s2.canon.runtime.ModelRegistry;
 import org.symphonyoss.s2.common.dom.json.IJsonDomNode;
 import org.symphonyoss.s2.common.dom.json.ImmutableJsonObject;
-import org.symphonyoss.s2.common.exception.InvalidValueException;
 
 public class ModelRegistryTest
 {
   @Test
-  public void testObject() throws InvalidValueException, IOException
+  public void testObject() throws IOException
   {
     ImmutableJsonObject result = ModelRegistry.parseOneJsonObject(new StringReader("{\"a\": true}"));
     
@@ -43,7 +42,7 @@ public class ModelRegistryTest
   }
 
   @Test
-  public void testNumber() throws InvalidValueException, IOException
+  public void testNumber() throws IOException
   {
     IJsonDomNode result = ModelRegistry.parseOneJsonValue(new StringReader("66"));
     

@@ -759,7 +759,7 @@ import ${fieldElementFQBuilder};
 <#macro javadocLimitsClassThrows model>
   <#list model.fields as field>
     <#if isCheckLimits(field)>
-     * @throws InvalidValueException If the given values are not valid.
+     * @throws IllegalArgumentException If the given values are not valid.
       <#return>
     </#if>
   </#list>
@@ -768,12 +768,9 @@ import ${fieldElementFQBuilder};
   </#if>
 </#macro>
 
-<#macro checkLimitsClassThrows model><#list model.fields as field><#if isCheckLimits(field)> throws InvalidValueException<#return></#if></#list><#if model.superSchema??><@checkLimitsClassThrows model.superSchema.baseSchema/></#if></#macro>
 <#macro checkLimitsClassThrowsJavaDoc model><#list model.fields as field><#if isCheckLimits(field)>
-     * @throws InvalidValueException If the given values are not valid.
+     * @throws IllegalArgumentException If the given values are not valid.
 <#return></#if></#list><#if model.superSchema??><@checkLimitsClassThrowsJavaDoc model.superSchema.baseSchema/></#if></#macro>
-
-<#macro checkLimitsThrows model><#if isCheckLimits(model)> throws InvalidValueException</#if></#macro>
 
 <#function isCheckLimits model>
   <#switch model.elementType>
@@ -812,12 +809,12 @@ import ${fieldElementFQBuilder};
 <#macro checkLimits2 indent model name>
   <#if model.minimum??>
 ${indent}if(${name} != null && ${name} < ${model.minimumAsString})
-${indent}  throw new InvalidValueException("Value " + ${name} + " of ${name} is less than the minimum allowed of ${model.minimum}");
+${indent}  throw new IllegalArgumentException("Value " + ${name} + " of ${name} is less than the minimum allowed of ${model.minimum}");
 
   </#if>
   <#if model.maximum??>
 ${indent}if(${name} != null && ${name} > ${model.maximumAsString})
-${indent}  throw new InvalidValueException("Value " + ${name} + " of ${name} is more than the maximum allowed of ${model.maximum}");
+${indent}  throw new IllegalArgumentException("Value " + ${name} + " of ${name} is more than the maximum allowed of ${model.maximum}");
 
   </#if>
 </#macro>
@@ -840,7 +837,7 @@ ${indent}  throw new InvalidValueException("Value " + ${name} + " of ${name} is 
     <#case "Field">
       <#if model.required>     
 ${indent}if(${name} == null)
-${indent}  throw new InvalidValueException("${name} is required.");
+${indent}  throw new IllegalArgumentException("${name} is required.");
 
       </#if>
       <@checkLimits2 indent model.type name/>
@@ -864,13 +861,13 @@ ${indent}  throw new InvalidValueException("${name} is required.");
 
 ${indent}if(${var}.size() < ${model.minItems})
 ${indent}{
-${indent}  throw new InvalidValueException("${name} has " + ${var}.size() + " items but at least ${model.minItems} are required");
+${indent}  throw new IllegalArgumentException("${name} has " + ${var}.size() + " items but at least ${model.minItems} are required");
 ${indent}}
       </#if>
       <#if model.maxItems??>
 ${indent}if(${var}.size() > ${model.maxItems})
 ${indent}{
-${indent}  throw new InvalidValueException("${name} has " + ${var}.size() + " items but at most ${model.maxItems} are allowed");
+${indent}  throw new IllegalArgumentException("${name} has " + ${var}.size() + " items but at most ${model.maxItems} are allowed");
 ${indent}}
       </#if>
       <#break>
@@ -953,7 +950,7 @@ ${indent}  ${var} = ${field.elementSchema.camelCapitalizedName}.FACTORY.newInsta
 ${indent}}
 ${indent}else ${ifValidation}
 ${indent}{
-${indent}  throw new InvalidValueException("${field.camelName} must be an Object node not " + node.getClass().getName());
+${indent}  throw new IllegalArgumentException("${field.camelName} must be an Object node not " + node.getClass().getName());
 ${indent}}
     <#else>
       <#if field.isArraySchema>
@@ -964,7 +961,7 @@ ${indent}  ${var} = ${fieldType}.newBuilder().with((Json${fieldCardinality}<?>)n
 ${indent}}
 ${indent}else ${ifValidation}
 ${indent}{
-${indent}  throw new InvalidValueException("${field.camelName} must be an array node not " + node.getClass().getName());
+${indent}  throw new IllegalArgumentException("${field.camelName} must be an array node not " + node.getClass().getName());
 ${indent}}
       <#else>
 ${indent}if(node instanceof I${javaElementFieldClassName}Provider)
@@ -977,12 +974,12 @@ ${indent}    ${var} = ${javaConstructTypePrefix}value${javaConstructTypePostfix}
 ${indent}  }
 ${indent}  catch(RuntimeException e)
 ${indent}  {
-${indent}     ${ifValidation} throw new InvalidValueException("Value \"" + value + "\" for ${field.camelName} is not a valid value", e);
+${indent}     ${ifValidation} throw new IllegalArgumentException("Value \"" + value + "\" for ${field.camelName} is not a valid value", e);
 ${indent}  }
 ${indent}}
 ${indent}else ${ifValidation}
 ${indent}{
-${indent}    throw new InvalidValueException("${field.camelName} must be an instance of ${javaFieldClassName} not " + node.getClass().getName());
+${indent}    throw new IllegalArgumentException("${field.camelName} must be an instance of ${javaFieldClassName} not " + node.getClass().getName());
 ${indent}}     
         </#if>
       </#if>
@@ -1018,7 +1015,7 @@ ${indent}  ${var} = ((JsonArray<?>)node).asImmutable${fieldCardinality}Of(${java
 ${indent}}
 ${indent}else ${ifValidation}
 ${indent}{
-${indent}  throw new InvalidValueException("${field.camelName} must be an array not " + node.getClass().getName());
+${indent}  throw new IllegalArgumentException("${field.camelName} must be an array not " + node.getClass().getName());
 ${indent}}
     <#else> 
 ${indent}if(node instanceof I${javaElementFieldClassName}Provider)
@@ -1031,7 +1028,7 @@ ${indent}  ${var} = ${javaTypeCopyPrefix}value${javaTypeCopyPostfix};
 ${indent}}
 ${indent}else ${ifValidation}
 ${indent}{
-${indent}    throw new InvalidValueException("${field.camelName} must be an instance of ${javaFieldClassName} not " + node.getClass().getName());
+${indent}    throw new IllegalArgumentException("${field.camelName} must be an instance of ${javaFieldClassName} not " + node.getClass().getName());
 ${indent}}
     </#if>
   </#if>

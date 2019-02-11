@@ -24,7 +24,7 @@
 package org.symphonyoss.s2.canon.runtime.exception;
 
 /**
- * An Exception which may be thrown by JAPIGEN implementing methods to indicate
+ * An Exception which may be thrown by Canon implementing methods to indicate
  * that the business logic for the method has not yet been implemented. The generated
  * server stubs throw this exception, which should be replaced by the real business logic.
  * 
@@ -35,6 +35,9 @@ public class NotImplementedException extends ServerErrorException
 {
   private static final long serialVersionUID = 1L;
 
+  /**
+   * Default constructor.
+   */
   public NotImplementedException()
   {
     super("Method not implemented");

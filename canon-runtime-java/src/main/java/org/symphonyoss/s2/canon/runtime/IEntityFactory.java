@@ -30,7 +30,6 @@ import javax.annotation.Nonnull;
 
 import org.symphonyoss.s2.common.dom.json.ImmutableJsonObject;
 import org.symphonyoss.s2.common.dom.json.JsonArray;
-import org.symphonyoss.s2.common.exception.InvalidValueException;
 
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableSet;
@@ -60,9 +59,9 @@ public interface IEntityFactory<E extends IEntity, S extends IEntity, B extends 
    * 
    * @return An instance of the entity represented by the given serialized form.
    * 
-   * @throws InvalidValueException If the given JSON is not valid.
+   * @throws IllegalArgumentException If the given JSON is not valid.
    */
-  E  newInstance(ImmutableJsonObject jsonObject) throws InvalidValueException;
+  E  newInstance(ImmutableJsonObject jsonObject);
   
   /**
    * Return a new entity instance created from the given other instance.
@@ -73,9 +72,9 @@ public interface IEntityFactory<E extends IEntity, S extends IEntity, B extends 
    * 
    * @return An instance of the entity represented by the given values.
    * 
-   * @throws InvalidValueException If the given values are not valid.
+   * @throws IllegalArgumentException If the given values are not valid.
    */
-  E newInstance(B builder) throws InvalidValueException;
+  E newInstance(B builder);
 
   /**
    * Return a list of new entity instances created from the given JSON array.
@@ -84,9 +83,9 @@ public interface IEntityFactory<E extends IEntity, S extends IEntity, B extends 
    * 
    * @return A list of instances of the entity represented by the given serialized form.
    * 
-   * @throws InvalidValueException If the given JSON is not valid.
+   * @throws IllegalArgumentException If the given JSON is not valid.
    */
-  List<E> newMutableList(JsonArray<?> jsonArray) throws InvalidValueException;
+  List<E> newMutableList(JsonArray<?> jsonArray);
 
   /**
    * Return a set of new entity instances created from the given JSON array.
@@ -95,9 +94,9 @@ public interface IEntityFactory<E extends IEntity, S extends IEntity, B extends 
    * 
    * @return A set of instances of the entity represented by the given serialized form.
    * 
-   * @throws InvalidValueException If the given JSON is not valid.
+   * @throws IllegalArgumentException If the given JSON is not valid.
    */
-  Set<E> newMutableSet(JsonArray<?> jsonArray) throws InvalidValueException;
+  Set<E> newMutableSet(JsonArray<?> jsonArray);
 
   /**
    * Return a list of new entity instances created from the given JSON array.
@@ -106,9 +105,9 @@ public interface IEntityFactory<E extends IEntity, S extends IEntity, B extends 
    * 
    * @return A list of instances of the entity represented by the given serialized form.
    * 
-   * @throws InvalidValueException If the given JSON is not valid.
+   * @throws IllegalArgumentException If the given JSON is not valid.
    */
-  ImmutableList<E> newImmutableList(JsonArray<?> jsonArray) throws InvalidValueException;
+  ImmutableList<E> newImmutableList(JsonArray<?> jsonArray);
 
   /**
    * Return a set of new entity instances created from the given JSON array.
@@ -117,7 +116,7 @@ public interface IEntityFactory<E extends IEntity, S extends IEntity, B extends 
    * 
    * @return A set of instances of the entity represented by the given serialized form.
    * 
-   * @throws InvalidValueException If the given JSON is not valid.
+   * @throws IllegalArgumentException If the given JSON is not valid.
    */
-  ImmutableSet<E> newImmutableSet(JsonArray<?> jsonArray) throws InvalidValueException;
+  ImmutableSet<E> newImmutableSet(JsonArray<?> jsonArray);
 }

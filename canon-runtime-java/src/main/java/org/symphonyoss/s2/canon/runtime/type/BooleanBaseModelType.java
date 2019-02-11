@@ -27,24 +27,23 @@ import javax.annotation.Nonnull;
 
 import org.symphonyoss.s2.common.dom.json.IJsonDomNode;
 import org.symphonyoss.s2.common.dom.json.JsonBoolean;
-import org.symphonyoss.s2.common.exception.InvalidValueException;
 
 public class BooleanBaseModelType
 {
   private final @Nonnull JsonBoolean jsonValue_;
 
-  public BooleanBaseModelType(Boolean value) throws InvalidValueException
+  public BooleanBaseModelType(Boolean value)
   {
     if(value == null)
-      throw new InvalidValueException("value is required.");
+      throw new IllegalArgumentException("value is required.");
 
     jsonValue_ = new JsonBoolean(value);
   }
   
-  public BooleanBaseModelType(@Nonnull IJsonDomNode node) throws InvalidValueException
+  public BooleanBaseModelType(@Nonnull IJsonDomNode node)
   {
     if(node == null)
-      throw new InvalidValueException("value is required.");
+      throw new IllegalArgumentException("value is required.");
       
     if(node instanceof JsonBoolean)
     {
@@ -52,7 +51,7 @@ public class BooleanBaseModelType
     }
     else
     {
-      throw new InvalidValueException("value must be an instance of Boolean not " + node.getClass().getName());
+      throw new IllegalArgumentException("value must be an instance of Boolean not " + node.getClass().getName());
     }
   }
 

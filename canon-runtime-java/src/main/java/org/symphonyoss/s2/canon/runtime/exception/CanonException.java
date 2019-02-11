@@ -33,7 +33,7 @@ import org.apache.http.Header;
 import org.apache.http.client.methods.CloseableHttpResponse;
 
 /**
- * An Exception which may be thrown by JAPIGEN implementing methods to indicate an
+ * An Exception which may be thrown by Canon implementing methods to indicate an
  * exceptional return.
  * 
  *  This class defines the mapping of HTTP status codes where applicable.
@@ -41,7 +41,7 @@ import org.apache.http.client.methods.CloseableHttpResponse;
  * @author Bruce Skingle
  *
  */
-public class CanonException extends Exception
+public class CanonException extends RuntimeException
 {
   private static final long serialVersionUID = 1L;
 
@@ -49,23 +49,47 @@ public class CanonException extends Exception
   private String            responseBody_;
   private Header[]          responseHeaders_;
 
+  /**
+   * Constructor with HTTP status code.
+   * 
+   * @param httpStatusCode The HTTP status code relating to the cause of this exception.
+   */
   public CanonException(int httpStatusCode)
   {
     httpStatusCode_ = httpStatusCode;
   }
 
+  /**
+   * Constructor with HTTP status code and message.
+   * 
+   * @param httpStatusCode The HTTP status code relating to the cause of this exception.
+   * @param message A message describing the detail of the exception.
+   */
   public CanonException(int httpStatusCode, String message)
   {
     super(message);
     httpStatusCode_ = httpStatusCode;
   }
 
+  /**
+   * Constructor with HTTP status code, message and cause.
+   * 
+   * @param httpStatusCode The HTTP status code relating to the cause of this exception.
+   * @param message A message describing the detail of the exception.
+   * @param cause The underlying cause of the exception.
+   */
   public CanonException(int httpStatusCode, String message, Throwable cause)
   {
     super(message, cause);
     httpStatusCode_ = httpStatusCode;
   }
 
+  /**
+   * Constructor with HTTP status code and cause.
+   * 
+   * @param httpStatusCode The HTTP status code relating to the cause of this exception.
+   * @param cause The underlying cause of the exception.
+   */
   public CanonException(int httpStatusCode, Throwable cause)
   {
     super(cause);
@@ -79,6 +103,15 @@ public class CanonException extends Exception
     httpStatusCode_ = httpStatusCode;
   }
 
+  /**
+   * Constructor with HTTP status code, message and HTTP response.
+   * 
+   * The body of the response is saved and can be retrieved with @see getResponseBody
+   * 
+   * @param httpStatusCode The HTTP status code relating to the cause of this exception.
+   * @param message A message describing the detail of the exception.
+   * @param response An HTTP response which is saved as the cause of the exception.
+   */
   public CanonException(int httpStatusCode, @Nullable String message, CloseableHttpResponse response)
   {
     super(message == null ? response.getStatusLine().toString() : message + " " + response.getStatusLine());
@@ -105,16 +138,28 @@ public class CanonException extends Exception
     }
   }
 
+  /**
+   * 
+   * @return The HTTP status code relating to the exception.
+   */
   public int getHttpStatusCode()
   {
     return httpStatusCode_;
   }
 
+  /**
+   * 
+   * @return The response body returned by any HTTP request.
+   */
   public @Nullable String getResponseBody()
   {
     return responseBody_;
   }
 
+  /**
+   * 
+   * @return The response headers returned by any HTTP request.
+   */
   public @Nullable Header[] getResponseHeaders()
   {
     return responseHeaders_;

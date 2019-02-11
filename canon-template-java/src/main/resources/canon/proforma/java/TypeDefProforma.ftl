@@ -4,8 +4,6 @@ import javax.annotation.concurrent.Immutable;
 
 import org.symphonyoss.s2.common.immutable.ImmutableByteArray;
 
-import org.symphonyoss.s2.common.exception.InvalidValueException;
-
 import ${javaGenPackage}.${modelJavaClassName}TypeDef;
 
 <#include "../../template/java/TypeDefHeader.ftl">
@@ -15,7 +13,7 @@ public class ${modelJavaClassName} extends ${modelJavaClassName}TypeDef
 {
   private static Builder theBuilder = new Builder();
   
-  private ${modelJavaClassName}(@Nonnull ${modelJavaFieldClassName} value) throws InvalidValueException
+  private ${modelJavaClassName}(@Nonnull ${modelJavaFieldClassName} value)
   {
     super(value);
   }
@@ -36,8 +34,11 @@ public class ${modelJavaClassName} extends ${modelJavaClassName}TypeDef
     }
     
     @Override
-    public ${modelJavaClassName} build(@Nonnull ${modelJavaFieldClassName} value) throws InvalidValueException
+    public ${modelJavaClassName} build(@Nonnull ${modelJavaFieldClassName} value)
     {
+      if(value == null)
+        throw new NullPointerException("value is required.");
+        
       return new ${modelJavaClassName}(value);
     }
     

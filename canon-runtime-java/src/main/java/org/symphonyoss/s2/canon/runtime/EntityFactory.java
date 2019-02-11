@@ -33,7 +33,6 @@ import org.symphonyoss.s2.common.dom.json.ImmutableJsonObject;
 import org.symphonyoss.s2.common.dom.json.JsonArray;
 import org.symphonyoss.s2.common.dom.json.JsonObject;
 import org.symphonyoss.s2.common.dom.json.jackson.JacksonAdaptor;
-import org.symphonyoss.s2.common.exception.InvalidValueException;
 import org.symphonyoss.s2.common.immutable.ImmutableByteArray;
 
 import com.google.common.collect.ImmutableList;
@@ -52,7 +51,7 @@ public abstract class EntityFactory<E extends IEntity, S extends IEntity, B exte
 implements IEntityFactory<E,S,B>
 {
   @Override
-  public List<E> newMutableList(JsonArray<?> jsonArray) throws InvalidValueException
+  public List<E> newMutableList(JsonArray<?> jsonArray)
   {
     List<E> list = new LinkedList<>();
     
@@ -61,14 +60,14 @@ implements IEntityFactory<E,S,B>
       if(node instanceof JsonObject)
         list.add(newInstance((ImmutableJsonObject) node));
       else
-        throw new InvalidValueException("Expected an array of JSON objectcs, but encountered a " + node.getClass().getName());
+        throw new IllegalArgumentException("Expected an array of JSON objectcs, but encountered a " + node.getClass().getName());
     }
     
     return list;
   }
   
   @Override
-  public Set<E> newMutableSet(JsonArray<?> jsonArray) throws InvalidValueException
+  public Set<E> newMutableSet(JsonArray<?> jsonArray)
   {
     Set<E> list = new HashSet<>();
     
@@ -79,11 +78,11 @@ implements IEntityFactory<E,S,B>
         list.add(newInstance((ImmutableJsonObject) node.immutify()));
 // there isnt a lot of point in this I think....
 //        if(!list.add(newInstance((ImmutableJsonObject) node.immutify())))
-//          throw new InvalidValueException("Duplicate value " + node + " encountered in Set.");
+//          throw new IllegalArgumentException("Duplicate value " + node + " encountered in Set.");
       }
       else
       {
-        throw new InvalidValueException("Expected an array of JSON objectcs, but encountered a " + node.getClass().getName());
+        throw new IllegalArgumentException("Expected an array of JSON objectcs, but encountered a " + node.getClass().getName());
       }
     }
     
@@ -91,18 +90,18 @@ implements IEntityFactory<E,S,B>
   }
   
   @Override
-  public ImmutableList<E> newImmutableList(JsonArray<?> jsonArray) throws InvalidValueException
+  public ImmutableList<E> newImmutableList(JsonArray<?> jsonArray)
   {
     return ImmutableList.copyOf(newMutableList(jsonArray));
   }
   
   @Override
-  public ImmutableSet<E> newImmutableSet(JsonArray<?> jsonArray) throws InvalidValueException
+  public ImmutableSet<E> newImmutableSet(JsonArray<?> jsonArray)
   {
     return ImmutableSet.copyOf(newMutableSet(jsonArray));
   }
 
-  public E newInstance(ImmutableByteArray bytes) throws InvalidValueException
+  public E newInstance(ImmutableByteArray bytes)
   {
     return newInstance(JacksonAdaptor.parseObject(bytes).immutify());
   }

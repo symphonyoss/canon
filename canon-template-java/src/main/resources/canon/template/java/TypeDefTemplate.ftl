@@ -13,8 +13,6 @@ import org.symphonyoss.s2.common.dom.IDoubleProvider;
 import org.symphonyoss.s2.common.dom.IImmutableByteArrayProvider;
 import org.symphonyoss.s2.common.dom.json.IJsonDomNode;
 
-import org.symphonyoss.s2.common.exception.InvalidValueException;
-
 import org.symphonyoss.s2.canon.runtime.TypeDef;
 import org.symphonyoss.s2.canon.runtime.${modelJavaFieldClassName}TypeDefBuilder;
 <#if model.baseSchema.isGenerateFacade>
@@ -29,20 +27,20 @@ public class ${modelJavaClassName}TypeDef extends TypeDef implements I${modelJav
 {
   private @Nonnull ${modelJavaFieldClassName} value_;
 
-  protected ${modelJavaClassName}TypeDef(@Nonnull ${modelJavaFieldClassName} value) throws InvalidValueException
+  protected ${modelJavaClassName}TypeDef(@Nonnull ${modelJavaFieldClassName} value)
   {
     if(value == null)
-      throw new InvalidValueException("value is required.");
+      throw new NullPointerException("value is required.");
       
 <@checkLimits "    " model "value"/>
     value_ = value;
   }
 
   <#-- Constructor from Json   -->  
-  protected ${modelJavaClassName}TypeDef(@Nonnull IJsonDomNode node) throws InvalidValueException
+  protected ${modelJavaClassName}TypeDef(@Nonnull IJsonDomNode node)
   {
     if(node == null)
-      throw new InvalidValueException("value is required.");
+      throw new NullPointerException("value is required.");
 
     if(node instanceof I${javaElementFieldClassName}Provider)
     {
@@ -54,7 +52,7 @@ public class ${modelJavaClassName}TypeDef extends TypeDef implements I${modelJav
     }
     else
     {
-      throw new InvalidValueException("value must be an instance of ${javaFieldClassName} not " + node.getClass().getName());
+      throw new IllegalArgumentException("value must be an instance of ${javaFieldClassName} not " + node.getClass().getName());
     }
   }
   

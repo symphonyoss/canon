@@ -23,9 +23,7 @@
 
 package org.symphonyoss.s2.canon.runtime;
 
-import org.symphonyoss.s2.common.exception.InvalidValueException;
-
 public interface IBuilder<E extends IEntity>
 {
-  E build() throws InvalidValueException;
+  E build();
 }

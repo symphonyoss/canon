@@ -25,7 +25,6 @@ package org.symphonyoss.s2.canon.test.oneofeverything;
 
 import org.symphonyoss.s2.common.dom.IImmutableByteArrayProvider;
 import org.symphonyoss.s2.common.dom.json.IJsonDomNode;
-import org.symphonyoss.s2.common.exception.InvalidValueException;
 import org.symphonyoss.s2.common.immutable.ImmutableByteArray;
 
 /**
@@ -50,7 +49,7 @@ public class DirectHash
     someObscureImplementatinoDetail_ = someObscureImplementatinoDetail;
   }
   
-  public static DirectHash someObscureImplementationFactory(ImmutableByteArray value) throws InvalidValueException
+  public static DirectHash someObscureImplementationFactory(ImmutableByteArray value)
   {
     return new DirectHash(value, 7);
   }
@@ -67,9 +66,9 @@ public class DirectHash
 
   /*
    * The following canon standard factory methods have been added so that this class
-   * can be used as a direct external class with JAPIGEN.
+   * can be used as a direct external class with canon.
    */
-  public static DirectHash build(ImmutableByteArray value) throws InvalidValueException
+  public static DirectHash build(ImmutableByteArray value)
   {
     return someObscureImplementationFactory(value);
   }
@@ -79,7 +78,7 @@ public class DirectHash
     return instance.someObscureGetter();
   }
 
-  public static DirectHash build(IJsonDomNode node) throws InvalidValueException
+  public static DirectHash build(IJsonDomNode node)
   {
     if(node instanceof IImmutableByteArrayProvider)
     {
@@ -88,7 +87,7 @@ public class DirectHash
     }
     else
     {
-      throw new InvalidValueException("Hash must be an instance of ImmutableByteArray not " + node.getClass().getName());
+      throw new IllegalArgumentException("Hash must be an instance of ImmutableByteArray not " + node.getClass().getName());
     }
   }
 }

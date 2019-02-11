@@ -45,7 +45,6 @@ import org.symphonyoss.s2.canon.runtime.ModelRegistry;
 import org.symphonyoss.s2.canon.runtime.TypeDefBuilder;
 import org.symphonyoss.s2.common.dom.json.ImmutableJsonObject;
 import org.symphonyoss.s2.common.dom.json.JsonValue;
-import org.symphonyoss.s2.common.exception.InvalidValueException;
 import org.symphonyoss.s2.common.immutable.ImmutableByteArray;
 import org.symphonyoss.s2.fugue.core.trace.ITraceContext;
 
@@ -345,7 +344,7 @@ public class RequestContext
       
       return factory.newInstance(jsonObject);
     }
-    catch (InvalidValueException | IOException e)
+    catch (IllegalArgumentException | IOException e)
     {
       log_.error("Failed to parse payload", e);
       error("Unable to parse payload");
@@ -367,7 +366,7 @@ public class RequestContext
       
       return builder.build(jsonObject);
     }
-    catch (InvalidValueException | IOException e)
+    catch (IllegalArgumentException | IOException e)
     {
       log_.error("Failed to parse payload", e);
       error("Unable to parse payload");
@@ -392,7 +391,7 @@ public class RequestContext
         result.add(factory.newInstance(jsonObject));
       }
     }
-    catch (InvalidValueException | IOException e)
+    catch (IllegalArgumentException | IOException e)
     {
       log_.error("Failed to parse payload", e);
       error("Unable to parse payload");
@@ -417,7 +416,7 @@ public class RequestContext
         result.add(builder.build(jsonObject));
       }
     }
-    catch (InvalidValueException | IOException e)
+    catch (IllegalArgumentException | IOException e)
     {
       log_.error("Failed to parse payload", e);
       error("Unable to parse payload");

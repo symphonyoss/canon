@@ -24,11 +24,49 @@
 package org.symphonyoss.s2.canon.runtime;
 
 import org.symphonyoss.s2.common.dom.json.JsonValue;
-import org.symphonyoss.s2.common.exception.InvalidValueException;
 
+/**
+ * Base class for TypeDef builders.
+ * 
+ * @author Bruce Skingle
+ *
+ * @param <M> The model (TypeDef) type.
+ * @param <T> The value type.
+ */
 public abstract class TypeDefBuilder<M,T>
 {
-  public abstract M build(T value) throws InvalidValueException;
-  public abstract M build(JsonValue<?,?> jsonValue) throws InvalidValueException;
+  /**
+   * Build an instance of the typedef class from the given value.
+   * 
+   * @param value A value to be wrapped in a typedef.
+   * 
+   * @return an instance of the typedef class from the given value.
+   * 
+   * @throws IllegalArgumentException if the value is null or otherwise invalid.
+   * This may be the case if the schema defines limits on the magnitude of the value, or if a facade
+   * has been written for the type.
+   */
+  public abstract M build(T value);
+  
+  /**
+   * Build an instance of the typedef class from the value provided by the given JsonValue.
+   * 
+   * @param jsonValue A JsonValue whose value is to be wrapped in a typedef.
+   * 
+   * @return an instance of the typedef class from the value provided by the given JsonValue.
+   * 
+   * @throws IllegalArgumentException if the value is of the incorrect type of is null or otherwise invalid.
+   * This may be the case if the schema defines limits on the magnitude of the value, or if a facade
+   * has been written for the type.
+   */
+  public abstract M build(JsonValue<?,?> jsonValue);
+  
+  /**
+   * Return the value of the given typedef.
+   * 
+   * @param instance An instance of the typedef.
+   * 
+   * @return The value contained in the typedef instance.
+   */
   public abstract T toValue(M instance);
 }

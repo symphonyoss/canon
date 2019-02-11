@@ -24,9 +24,8 @@
 package org.symphonyoss.s2.canon.runtime;
 
 import org.symphonyoss.s2.common.dom.json.ImmutableJsonList;
-import org.symphonyoss.s2.common.exception.InvalidValueException;
 
 public interface IEntityArrayFactory<M extends IEntityArray>
 {
-  M  newInstance(ImmutableJsonList jsonArray) throws InvalidValueException;
+  M  newInstance(ImmutableJsonList jsonArray);
 }

@@ -9,7 +9,6 @@ import javax.servlet.ServletOutputStream;
 import javax.servlet.http.HttpServletResponse;
 
 import org.symphonyoss.s2.canon.runtime.exception.CanonException;
-import org.symphonyoss.s2.common.exception.InvalidValueException;
 import org.symphonyoss.s2.fugue.core.trace.ITraceContext;
 
 public abstract class AbstractRequestManager<A,P,R extends IBaseEntity>
@@ -109,7 +108,7 @@ public abstract class AbstractRequestManager<A,P,R extends IBaseEntity>
           // delegated to sub-classes
           handleRequest(request);
         }
-        catch(InvalidValueException e)
+        catch(IllegalArgumentException e)
         {
           HttpServletResponse response = (HttpServletResponse)getAsync().getResponse();
           
@@ -170,7 +169,7 @@ public abstract class AbstractRequestManager<A,P,R extends IBaseEntity>
     return async_;
   }
 
-  protected abstract void handleRequest(String request) throws InvalidValueException, CanonException;
+  protected abstract void handleRequest(String request) throws CanonException;
 
 
   public void onDataAvailable() throws IOException

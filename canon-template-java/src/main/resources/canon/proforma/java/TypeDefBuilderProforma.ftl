@@ -9,15 +9,13 @@ import org.symphonyoss.s2.common.dom.IFloatProvider;
 import org.symphonyoss.s2.common.dom.IDoubleProvider;
 import org.symphonyoss.s2.common.dom.IImmutableByteArrayProvider;
 
-import org.symphonyoss.s2.common.exception.InvalidValueException;
-
 import ${modelJavaFullyQualifiedClassName};
 
 @SuppressWarnings("unused")
 public class ${model.camelCapitalizedName}Builder
 {
 <#if model.enum??>
-  public static ${modelJavaClassName} valueOf(${modelJavaFieldClassName} value) throws InvalidValueException
+  public static ${modelJavaClassName} valueOf(${modelJavaFieldClassName} value)
   {
     // TODO Auto-generated method stub
     return ${modelJavaClassName}.valueOf(value);
@@ -29,7 +27,7 @@ public class ${model.camelCapitalizedName}Builder
     return instance.toString();
   }
 <#else>
-  public static ${modelJavaClassName} build(${modelJavaFieldClassName} value) throws InvalidValueException
+  public static ${modelJavaClassName} build(${modelJavaFieldClassName} value)
   {
     // TODO Auto-generated method stub
     return new ${modelJavaClassName}(value);

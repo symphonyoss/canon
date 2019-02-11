@@ -27,24 +27,23 @@ import javax.annotation.Nonnull;
 
 import org.symphonyoss.s2.common.dom.json.IJsonDomNode;
 import org.symphonyoss.s2.common.dom.json.JsonLong;
-import org.symphonyoss.s2.common.exception.InvalidValueException;
 
 public class LongBaseModelType
 {
   private final @Nonnull JsonLong jsonValue_;
 
-  public LongBaseModelType(Long value) throws InvalidValueException
+  public LongBaseModelType(Long value)
   {
     if(value == null)
-      throw new InvalidValueException("value is required.");
+      throw new IllegalArgumentException("value is required.");
 
     jsonValue_ = new JsonLong(value);
   }
   
-  public LongBaseModelType(@Nonnull IJsonDomNode node) throws InvalidValueException
+  public LongBaseModelType(@Nonnull IJsonDomNode node)
   {
     if(node == null)
-      throw new InvalidValueException("value is required.");
+      throw new IllegalArgumentException("value is required.");
       
     if(node instanceof JsonLong)
     {
@@ -52,7 +51,7 @@ public class LongBaseModelType
     }
     else
     {
-      throw new InvalidValueException("value must be an instance of Long not " + node.getClass().getName());
+      throw new IllegalArgumentException("value must be an instance of Long not " + node.getClass().getName());
     }
   }
 

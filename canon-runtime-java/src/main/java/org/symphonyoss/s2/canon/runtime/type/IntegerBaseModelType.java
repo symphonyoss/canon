@@ -27,24 +27,23 @@ import javax.annotation.Nonnull;
 
 import org.symphonyoss.s2.common.dom.json.IJsonDomNode;
 import org.symphonyoss.s2.common.dom.json.JsonInteger;
-import org.symphonyoss.s2.common.exception.InvalidValueException;
 
 public class IntegerBaseModelType
 {
   private final @Nonnull JsonInteger jsonValue_;
 
-  public IntegerBaseModelType(Integer value) throws InvalidValueException
+  public IntegerBaseModelType(Integer value)
   {
     if(value == null)
-      throw new InvalidValueException("value is required.");
+      throw new IllegalArgumentException("value is required.");
 
     jsonValue_ = new JsonInteger(value);
   }
   
-  public IntegerBaseModelType(@Nonnull IJsonDomNode node) throws InvalidValueException
+  public IntegerBaseModelType(@Nonnull IJsonDomNode node)
   {
     if(node == null)
-      throw new InvalidValueException("value is required.");
+      throw new IllegalArgumentException("value is required.");
       
     if(node instanceof JsonInteger)
     {
@@ -52,7 +51,7 @@ public class IntegerBaseModelType
     }
     else
     {
-      throw new InvalidValueException("value must be an instance of Integer not " + node.getClass().getName());
+      throw new IllegalArgumentException("value must be an instance of Integer not " + node.getClass().getName());
     }
   }
 

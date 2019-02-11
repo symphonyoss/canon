@@ -21,7 +21,6 @@ import org.apache.http.impl.client.CloseableHttpClient;
 
 import org.symphonyoss.s2.common.dom.json.ImmutableJsonList;
 import org.symphonyoss.s2.common.dom.json.ImmutableJsonSet;
-import org.symphonyoss.s2.common.exception.InvalidValueException;
 
 import org.symphonyoss.s2.canon.runtime.IEntity;
 import org.symphonyoss.s2.canon.runtime.JsonArrayParser;
@@ -162,17 +161,42 @@ public class ${model.parent.camelCapitalizedName}${model.camelCapitalizedName}Ht
   </#list>
   
   <#if model.response?? && model.response.isMultiple>
-  public List<${methodResponseElementType}> execute(CloseableHttpClient httpClient) throws IOException, PermissionDeniedException, BadRequestException, ServerErrorException
+  /**
+   * Execute the request.
+   * 
+   * @param httpClient  An HTTP client to use.
+   *
+   * @return A List<${methodResponseElementType}>.
+   *
+   * @throws TransactionFault           If the request fails for technical reasons.
+   * @throws BadRequestException        If the request fails due to bad inputs.
+   * @throws PermissionDeniedException  If the request fails due to authentication or authorization problems.
+   * @throws ServerErrorException       If the request fails due to an unexpected server side error.
+   */
+  public List<${methodResponseElementType}> execute(CloseableHttpClient httpClient) throws TransactionFault, PermissionDeniedException, BadRequestException, ServerErrorException
   <#else>
-  public ${methodResponseDecl} execute(CloseableHttpClient httpClient) throws IOException, PermissionDeniedException, BadRequestException, ServerErrorException
+  /**
+   * Execute the request.
+   * 
+   * @param httpClient  An HTTP client to use.
+   *
+   * @return A ${methodResponseDecl}.
+   *
+   * @throws TransactionFault           If the request fails for technical reasons.
+   * @throws BadRequestException        If the request fails due to bad inputs.
+   * @throws PermissionDeniedException  If the request fails due to authentication or authorization problems.
+   * @throws ServerErrorException       If the request fails due to an unexpected server side error.
+   */
+  public ${methodResponseDecl} execute(CloseableHttpClient httpClient) throws TransactionFault, PermissionDeniedException, BadRequestException, ServerErrorException
   </#if>
   {
-    CloseableHttpResponse response = httpClient.execute(canonRequest_);
-    
-    validateResponse(response);
-    
+    CloseableHttpResponse response = null;
     try
     {
+      response = httpClient.execute(canonRequest_);
+      
+      validateResponse(response);
+      
   <#if model.response??>
       HttpEntity entity = response.getEntity();
       
@@ -182,22 +206,15 @@ public class ${model.parent.camelCapitalizedName}${model.camelCapitalizedName}Ht
         @Override
         protected void handle(String input)
         {
-          try
+          IEntity result = getCanonClient().getRegistry().parseOne(new StringReader(input), RESPONSE_TYPE_ID);
+          
+          if(result instanceof ${methodResponseElementType})
           {
-            IEntity result = getCanonClient().getRegistry().parseOne(new StringReader(input), RESPONSE_TYPE_ID);
-            
-            if(result instanceof ${methodResponseElementType})
-            {
-              <#if model.response.isMultiple>
-              canonResult_.add((${methodResponseElementType}) result);
-              <#else>
-              canonResult_ = (${methodResponseElementType}) result;
-              </#if>
-            }
-          }
-          catch (InvalidValueException e)
-          {
-            throw new TransactionFault(e);
+            <#if model.response.isMultiple>
+            canonResult_.add((${methodResponseElementType}) result);
+            <#else>
+            canonResult_ = (${methodResponseElementType}) result;
+            </#if>
           }
         }
       };
@@ -221,17 +238,41 @@ public class ${model.parent.camelCapitalizedName}${model.camelCapitalizedName}Ht
       }
       
     }
+    catch (IOException e)
+    {
+      throw new TransactionFault(e);
+    }
     finally
     {
-      response.close();
+      try
+      {
+        if(response != null)
+          response.close();
+      }
+      catch (IOException e)
+      {
+        throw new TransactionFault(e);
+      }
     }
   
   return canonResult_;
   <#else>
     }
+    catch (IOException e)
+    {
+      throw new TransactionFault(e);
+    }
     finally
     {
-      response.close();
+      try
+      {
+        if(response != null)
+          response.close();
+      }
+      catch (IOException e)
+      {
+        throw new TransactionFault(e);
+      }
     }
     // No response
   </#if>

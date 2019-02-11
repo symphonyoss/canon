@@ -46,7 +46,6 @@ import org.symphonyoss.s2.common.dom.json.IJsonDomNode;
 import org.symphonyoss.s2.common.dom.json.IJsonObject;
 import org.symphonyoss.s2.common.dom.json.ImmutableJsonObject;
 import org.symphonyoss.s2.common.dom.json.jackson.JacksonAdaptor;
-import org.symphonyoss.s2.common.exception.InvalidValueException;
 import org.symphonyoss.s2.common.immutable.ImmutableByteArray;
 
 import com.fasterxml.jackson.databind.JsonNode;
@@ -60,7 +59,7 @@ public class TestOneOfEverything extends AbstractModelObjectTest
   private final ObjectWithOneOfEverything.Factory objectFactory_          = ObjectWithOneOfEverything.FACTORY;
   
   @Test
-  public void testSubset() throws InvalidValueException
+  public void testSubset()
   {
     DomSerializer serializer = DomSerializer.newBuilder()
         .withCanonicalMode(true)
@@ -90,7 +89,7 @@ public class TestOneOfEverything extends AbstractModelObjectTest
 }
   
   @Test
-  public void testInitialize() throws IOException, InvalidValueException
+  public void testInitialize() throws IOException
   {
     IObjectWithOneOfEverything obj1 = createTestObject1();
 
@@ -100,7 +99,7 @@ public class TestOneOfEverything extends AbstractModelObjectTest
   }
   
   @Test
-  public void testRoundTrip() throws IOException, InvalidValueException
+  public void testRoundTrip() throws IOException
   {
     IObjectWithOneOfEverything obj;
     
@@ -149,7 +148,7 @@ public class TestOneOfEverything extends AbstractModelObjectTest
         
         assertEquals(obj, obj2);
       }
-      catch(InvalidValueException e)
+      catch(IllegalArgumentException e)
       {
         System.err.println("Failed to deserialize from JSON");
         e.printStackTrace();
@@ -167,7 +166,7 @@ public class TestOneOfEverything extends AbstractModelObjectTest
   }
 
   @Test
-  public void testOneSchemas() throws InvalidValueException, IOException
+  public void testOneSchemas() throws IOException
   {
     IASimpleObject source = createTestObject3();
     ImmutableByteArray serial = source.serialize();
@@ -177,7 +176,7 @@ public class TestOneOfEverything extends AbstractModelObjectTest
   }
   
   @Test
-  public void testMultipleSchemas() throws InvalidValueException, IOException
+  public void testMultipleSchemas() throws IOException
   {
     ByteArrayOutputStream writer = new ByteArrayOutputStream();
     IEntity[] source = new IEntity[3];
@@ -224,7 +223,7 @@ public class TestOneOfEverything extends AbstractModelObjectTest
     }
   }
   
-  private IASimpleObject createTestObject3() throws InvalidValueException
+  private IASimpleObject createTestObject3()
   {
     return ASimpleObject.BUILDER.newInstance()
         .withName("Simple3")
@@ -232,7 +231,7 @@ public class TestOneOfEverything extends AbstractModelObjectTest
         .build();
   }
 
-  private IASimpleObject createTestObject2() throws InvalidValueException
+  private IASimpleObject createTestObject2()
   {
     return ASimpleObject.BUILDER.newInstance()
         .withName("Simple2")
@@ -240,7 +239,7 @@ public class TestOneOfEverything extends AbstractModelObjectTest
         .build();
   }
 
-  private IObjectWithOneOfEverything createTestObject1() throws InvalidValueException
+  private IObjectWithOneOfEverything createTestObject1()
   {
     return ObjectWithOneOfEverything.BUILDER.newInstance()
         .withABoolean(false)

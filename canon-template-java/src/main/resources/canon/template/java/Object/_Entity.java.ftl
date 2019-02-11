@@ -12,7 +12,7 @@
  Constructor from fields
  
 ------------------------------------------------------------------------------------------------------------------------------->
-  public ${modelJavaClassName}Entity(${modelJavaClassName}.Abstract${modelJavaClassName}Builder<?> other)<@checkLimitsClassThrows model/>
+  public ${modelJavaClassName}Entity(${modelJavaClassName}.Abstract${modelJavaClassName}Builder<?> other)
   {
     super(other);
     
@@ -22,7 +22,7 @@
 <#if field.required>
 
     if(_${field.camelName}_ == null)
-      throw new InvalidValueException("${field.camelName} is required.");
+      throw new IllegalArgumentException("${field.camelName} is required.");
       
 </#if>
 <#if requiresChecks>
@@ -47,17 +47,17 @@
     return mutableJsonObject.immutify();
   }
   
-  public ${modelJavaClassName}Entity(MutableJsonObject mutableJsonObject) throws InvalidValueException
+  public ${modelJavaClassName}Entity(MutableJsonObject mutableJsonObject)
   {
     this(setType(mutableJsonObject));
   }
    
-  public ${modelJavaClassName}Entity(ImmutableJsonObject jsonObject) throws InvalidValueException
+  public ${modelJavaClassName}Entity(ImmutableJsonObject jsonObject)
   {
     super(jsonObject);
     
     if(jsonObject == null)
-      throw new InvalidValueException("jsonObject is required");
+      throw new IllegalArgumentException("jsonObject is required");
   
     Set<String> keySet = new HashSet<>(super.getCanonUnknownKeys());
     
@@ -70,7 +70,7 @@
     else
     {
   <#if field.required>
-      throw new InvalidValueException("${field.camelName} is required.");
+      throw new IllegalArgumentException("${field.camelName} is required.");
   <#else>
       _${field.camelName}_ = null;
   </#if>
@@ -101,11 +101,11 @@
     private final ${"String"?right_pad(25)}  _discriminator_;
     private final ${"Object"?right_pad(25)}  _payload_;
   
-    public ${field.camelCapitalizedName}Entity(Object payload) throws InvalidValueException
+    public ${field.camelCapitalizedName}Entity(Object payload)
     {
       if(payload == null)
       {
-        throw new InvalidValueException("OneOf payload cannot be null");
+        throw new IllegalArgumentException("OneOf payload cannot be null");
       }
       <#list field.children as ref>
       else if(payload instanceof ${fieldType})
@@ -118,7 +118,7 @@
       </#list>
       else
       {
-        throw new InvalidValueException("Unknown payload type \"" + payload.getClass().getName() + "\"");
+        throw new IllegalArgumentException("Unknown payload type \"" + payload.getClass().getName() + "\"");
       }
     }
     public Object getPayload()
@@ -202,9 +202,9 @@
      * 
      * @return An instance of the entity represented by the given serialized form.
      * 
-     * @throws InvalidValueException If the given JSON is not valid.
+     * @throws IllegalArgumentException If the given JSON is not valid.
      */
-    public I${model.camelCapitalizedName} newInstance(ImmutableJsonObject jsonObject) throws InvalidValueException
+    public I${model.camelCapitalizedName} newInstance(ImmutableJsonObject jsonObject)
     {
       return new ${model.camelCapitalizedName}(jsonObject);
     }
@@ -220,7 +220,7 @@
      * 
 <@checkLimitsClassThrowsJavaDoc model/>
      */
-    public I${model.camelCapitalizedName} newInstance(Builder builder)<@checkLimitsClassThrows model/>
+    public I${model.camelCapitalizedName} newInstance(Builder builder)
     {
       return new ${model.camelCapitalizedName}(builder);
     }
@@ -236,9 +236,9 @@
      * 
      * @return A list of instances of the entity represented by the given serialized form.
      * 
-     * @throws InvalidValueException If the given JSON is not valid.
+     * @throws IllegalArgumentException If the given JSON is not valid.
      */
-    public List<I${modelJavaClassName}> newMutableList(JsonArray<?> jsonArray) throws InvalidValueException
+    public List<I${modelJavaClassName}> newMutableList(JsonArray<?> jsonArray)
     {
       List<I${modelJavaClassName}> list = new LinkedList<>();
       
@@ -247,7 +247,7 @@
         if(node instanceof JsonObject)
           list.add(newInstance((ImmutableJsonObject) node));
         else
-          throw new InvalidValueException("Expected an array of JSON objectcs, but encountered a " + node.getClass().getName());
+          throw new IllegalArgumentException("Expected an array of JSON objectcs, but encountered a " + node.getClass().getName());
       }
       
       return list;
@@ -260,9 +260,9 @@
      * 
      * @return A set of instances of the entity represented by the given serialized form.
      * 
-     * @throws InvalidValueException If the given JSON is not valid.
+     * @throws IllegalArgumentException If the given JSON is not valid.
      */
-    public Set<I${modelJavaClassName}> newMutableSet(JsonArray<?> jsonArray) throws InvalidValueException
+    public Set<I${modelJavaClassName}> newMutableSet(JsonArray<?> jsonArray)
     {
       Set<I${modelJavaClassName}> list = new HashSet<>();
       
@@ -274,7 +274,7 @@
         }
         else
         {
-          throw new InvalidValueException("Expected an array of JSON objectcs, but encountered a " + node.getClass().getName());
+          throw new IllegalArgumentException("Expected an array of JSON objectcs, but encountered a " + node.getClass().getName());
         }
       }
       
@@ -288,9 +288,9 @@
      * 
      * @return A list of instances of the entity represented by the given serialized form.
      * 
-     * @throws InvalidValueException If the given JSON is not valid.
+     * @throws IllegalArgumentException If the given JSON is not valid.
      */
-    public ImmutableList<E> newImmutableList(JsonArray<?> jsonArray) throws InvalidValueException
+    public ImmutableList<E> newImmutableList(JsonArray<?> jsonArray)
     {
       return ImmutableList.copyOf(newMutableList(jsonArray));
     }
@@ -302,9 +302,9 @@
      * 
      * @return A set of instances of the entity represented by the given serialized form.
      * 
-     * @throws InvalidValueException If the given JSON is not valid.
+     * @throws IllegalArgumentException If the given JSON is not valid.
      */
-    public ImmutableSet<E> newImmutableSet(JsonArray<?> jsonArray) throws InvalidValueException
+    public ImmutableSet<E> newImmutableSet(JsonArray<?> jsonArray)
     {
       return ImmutableSet.copyOf(newMutableSet(jsonArray));
     }
@@ -351,7 +351,7 @@
       super(Builder.class, initial);
     }
        
-    public I${modelJavaClassName} build() throws InvalidValueException
+    public I${modelJavaClassName} build()
     {
       return new ${model.camelCapitalizedName}(this);
     }
@@ -395,9 +395,9 @@
     }
 
     @Override
-    public abstract I${modelJavaClassName} build() throws InvalidValueException;
+    public abstract I${modelJavaClassName} build();
     
-    public B withValues(ImmutableJsonObject jsonObject, boolean ignoreValidation) throws InvalidValueException
+    public B withValues(ImmutableJsonObject jsonObject, boolean ignoreValidation)
     {
 <#if model.superSchema??>
       super.withValues(jsonObject, ignoreValidation);
@@ -419,7 +419,7 @@
       return _${field.camelName}_;
     }
   
-    public B with${field.camelCapitalizedName}(${fieldType} value)<#if field.canFailValidation> throws InvalidValueException</#if>
+    public B with${field.camelCapitalizedName}(${fieldType} value)
     {
     <@checkLimits "        " field "value"/>
       _${field.camelName}_${javaBuilderTypeCopyPrefix}value${javaBuilderTypeCopyPostfix};
@@ -428,7 +428,7 @@
     <#if field.isArraySchema && ! field.isComponent>
     <@printField/>
   
-    public B with${field.camelCapitalizedName}(${fieldElementType} value)<#if field.canFailValidation> throws InvalidValueException</#if>
+    public B with${field.camelCapitalizedName}(${fieldElementType} value)
     {
     <@checkLimits "        " field "value"/>
       _${field.camelName}_.add(value);
@@ -437,11 +437,11 @@
     </#if>
     <#if field.isTypeDef>
     
-    public B with${field.camelCapitalizedName}(${javaFieldClassName} value) throws InvalidValueException
+    public B with${field.camelCapitalizedName}(${javaFieldClassName} value)
     {
     <#if field.elementType=="Field" && field.required>
       if(value == null)
-        throw new InvalidValueException("${field.camelName} is required.");
+        throw new IllegalArgumentException("${field.camelName} is required.");
   
     </#if>
       _${field.camelName}_ = ${javaConstructTypePrefix}value${javaConstructTypePostfix};
