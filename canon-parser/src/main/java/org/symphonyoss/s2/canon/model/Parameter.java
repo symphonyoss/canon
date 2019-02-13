@@ -71,6 +71,10 @@ public class Parameter extends AbstractParameter
         parameterIn = ParameterLocation.Cookie;
         break;
         
+      case "body":
+        parameterIn = ParameterLocation.Body;
+        break;
+        
       default:
         paramContext.raise(new ParserError("Invalid value for in \"%s\"", in));
         return null;

@@ -42,6 +42,8 @@ public class Operation extends ParameterContainer
   private Payload payload_;
   private List<Parameter> pathParameters_ = new ArrayList<>();
 
+  private boolean hasBodyParams_;
+
   public Operation(PathItem parent, ParserContext parserContext)
   {
     super(parent, parserContext, "Operation", parserContext.getName());
@@ -92,6 +94,17 @@ public class Operation extends ParameterContainer
         pathParameters_.add(param);
       }
     }
+    
+    for(Parameter param : getParameters())
+    {
+      if( param.getLocation() == ParameterLocation.Body)
+        hasBodyParams_ = true;
+    }
+    
+    if(hasBodyParams_ && getPayload() != null)
+    {
+      getContext().raise(new ParserError("Operation may not have body parameters and a payload"));
+    }
   }
   
   public boolean getIsStreamable()
@@ -118,9 +131,14 @@ public class Operation extends ParameterContainer
     return pathParameters_;
   }
 
+  public boolean getHasBodyParams()
+  {
+    return hasBodyParams_;
+  }
+
   @Override
   public String toString()
   {
-    return super.toString() + ", path=" + pathItem_.getPath();
+    return super.toString() + ", path=" + pathItem_.getPath() + " hasBodyParams_=" + hasBodyParams_;
   }
 }

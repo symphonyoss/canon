@@ -13,9 +13,11 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
 import org.apache.http.HttpEntity;
+import org.apache.http.NameValuePair;
 import org.apache.http.client.methods.CloseableHttpResponse;
 import org.apache.http.client.methods.HttpUriRequest;
 import org.apache.http.client.methods.RequestBuilder;
+import org.apache.http.client.utils.URLEncodedUtils;
 import org.apache.http.entity.StringEntity;
 import org.apache.http.impl.client.CloseableHttpClient;
 
@@ -115,6 +117,12 @@ public class ${model.parent.camelCapitalizedName}${model.camelCapitalizedName}Ht
       builder.setEntity(entity);
     }
     </#if>
+    <#if model.hasBodyParams>
+    
+    // We have body parameters
+    List<NameValuePair> bodyParameters = new LinkedList<>();
+    
+    </#if>
     <#list model.nonPathParameters as parameter>
     // op parameter ${parameter}
     </#list>
@@ -131,11 +139,40 @@ public class ${model.parent.camelCapitalizedName}${model.camelCapitalizedName}Ht
       builder.addParameter("${parameter.name}", asString(${javaGetValuePrefix}${parameter.camelName}_${javaGetValuePostfix}));
           <#break>
         
+        <#case "Body">
+    {
+      bodyParameters.add(new NameValuePair()
+      {
+        @Override
+        public String getValue()
+        {
+          return asString(${javaGetValuePrefix}${parameter.camelName}_${javaGetValuePostfix});
+        }
+        
+        @Override
+        public String getName()
+        {
+          return "${parameter.name}";
+        }
+      });
+    }
+      //builder.addBodyParameter("${parameter.name}", asString(${javaGetValuePrefix}${parameter.camelName}_${javaGetValuePostfix}));
+          <#break>
+        
         <#case "Cookie">
           //Cookie not implemented yet!!!
           <#break>
       </#switch>
     </#list>
+    <#if model.hasBodyParams>
+    
+    StringEntity entity = new StringEntity(URLEncodedUtils.format(bodyParameters, StandardCharsets.UTF_8), StandardCharsets.UTF_8);
+      
+    entity.setContentType(RequestContext.FORM_CONTENT_TYPE);
+    
+    builder.setEntity(entity);
+
+    </#if>
     canonRequest_ = builder.build();
   }
   <#if model.payload??>

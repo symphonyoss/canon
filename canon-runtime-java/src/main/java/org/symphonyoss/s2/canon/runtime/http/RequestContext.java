@@ -36,6 +36,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.apache.commons.codec.binary.Base64;
+import org.apache.http.Header;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.symphonyoss.s2.canon.runtime.IBaseEntity;
@@ -56,13 +57,15 @@ public class RequestContext
 {
   public static final String        JSON_CONTENT_TYPE = "application/json; charset=utf-8";
 
+  public static final String        FORM_CONTENT_TYPE = "application/x-www-form-urlencoded; charset=UTF-8";
+
   private static Logger             log_              = LoggerFactory.getLogger(RequestContext.class);
 
   private final HttpMethod          method_;
   private final HttpServletRequest  request_;
   private final HttpServletResponse response_;
   private final ITraceContext       trace_;
-  
+
   private Map<String, Cookie>       cookieMap_;
   private Map<String, String>       pathMap_;
   private List<String>              errors_           = new LinkedList<>();

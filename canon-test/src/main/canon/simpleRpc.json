@@ -34,6 +34,30 @@
         }
       }
     },
+    "/form/params": {
+      "post": {
+        "tags": [
+          "Crypto"
+        ],
+        "parameters": {
+          "customerId": {
+            "description": "The ID of the customer of returned invoices",
+            "in": "body",
+            "required": false,
+            "schema": {
+              "$ref": "#/components/schemas/CustomerId"
+            }
+          }
+        },
+        "response": {
+          "required": true,
+          "multiple": true,
+          "schema": {
+            "$ref": "#/components/schemas/RotationIdInfo"
+          }
+        }
+      }
+    },
 		"/invoices": {
 			"summary": "Invoice operations.",
 			"description": "Various operations at the invoice level.",

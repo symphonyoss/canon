@@ -25,5 +25,5 @@ package org.symphonyoss.s2.canon.runtime.http;
 
 public enum ParameterLocation
 {
-  Query, Header, Path, Cookie;
+  Query, Header, Path, Cookie, Body;
 }
