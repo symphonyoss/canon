@@ -27,6 +27,7 @@ import org.apache.commons.codec.binary.Base64;
 import org.apache.http.HttpStatus;
 import org.apache.http.client.methods.CloseableHttpResponse;
 import org.symphonyoss.s2.canon.runtime.exception.BadRequestException;
+import org.symphonyoss.s2.canon.runtime.exception.NotFoundException;
 import org.symphonyoss.s2.canon.runtime.exception.PermissionDeniedException;
 import org.symphonyoss.s2.canon.runtime.exception.ServerErrorException;
 import org.symphonyoss.s2.common.immutable.ImmutableByteArray;
@@ -79,14 +80,17 @@ public class HttpRequestOrBuilder<MC extends HttpModelClient>
     if(statusCode == HttpStatus.SC_FORBIDDEN)
       throw new PermissionDeniedException(response);
     
+    if(statusCode == HttpStatus.SC_NOT_FOUND)
+      throw new NotFoundException(response);
+    
     if(statusCode < 200 || statusCode > 599)
-      throw new ServerErrorException("Unexpected HTTP response", response);
+      throw new ServerErrorException(statusCode, "Unexpected HTTP response", response);
     
     if(statusCode >= 300 && statusCode <= 399)
-      throw new ServerErrorException("Unexpected HTTP response", response);
+      throw new ServerErrorException(statusCode, "Unexpected HTTP response", response);
     
     if(statusCode >= 500)
-      throw new ServerErrorException(response);
+      throw new ServerErrorException(statusCode, response);
     
     if(statusCode >= 400)
       throw new BadRequestException(response);

@@ -29,25 +29,24 @@ import org.apache.http.client.methods.CloseableHttpResponse;
 
 /**
  * An Exception which may be thrown by Canon implementing methods to indicate
- * that something went wrong. This has the same effect as throwing any RuntimeException,
- * but is more elegant where the implementing code needs to wrap some other
- * checked exception.
+ * that the request is understood but the caller lacks the necessary entitlements
+ * to perform that action.
  * 
  * @author Bruce Skingle
  *
  */
-public class ServerErrorException extends CanonException
+public class NotFoundException extends CanonException
 {
   private static final long serialVersionUID = 1L;
   
-  private static final int HTTP_STATUS_CODE = HttpServletResponse.SC_INTERNAL_SERVER_ERROR;
+  private static final int HTTP_STATUS_CODE = HttpServletResponse.SC_NOT_FOUND;
 
   /**
    * Default constructor.
    * 
-   * HTTP status 500 is implied.
+   * HTTP status 404 is implied.
    */
-  public ServerErrorException()
+  public NotFoundException()
   {
     super(HTTP_STATUS_CODE);
   }
@@ -57,7 +56,7 @@ public class ServerErrorException extends CanonException
    * 
    * @param message A message describing the detail of the fault.
    */
-  public ServerErrorException(String message)
+  public NotFoundException(String message)
   {
     super(HTTP_STATUS_CODE, message);
   }
@@ -68,7 +67,7 @@ public class ServerErrorException extends CanonException
    * @param message A message describing the detail of the fault.
    * @param cause The underlying cause of the fault.
    */
-  public ServerErrorException(String message, Throwable cause)
+  public NotFoundException(String message, Throwable cause)
   {
     super(HTTP_STATUS_CODE, message, cause);
   }
@@ -78,7 +77,7 @@ public class ServerErrorException extends CanonException
    * 
    * @param cause The underlying cause of the fault.
    */
-  public ServerErrorException(Throwable cause)
+  public NotFoundException(Throwable cause)
   {
     super(HTTP_STATUS_CODE, cause);
   }
@@ -94,25 +93,10 @@ public class ServerErrorException extends CanonException
    * @param writableStackTrace whether or not the stack trace should
    *                           be writable
    */
-  public ServerErrorException(String message, Throwable cause, boolean enableSuppression,
+  public NotFoundException(String message, Throwable cause, boolean enableSuppression,
       boolean writableStackTrace)
   {
     super(HTTP_STATUS_CODE, message, cause, enableSuppression, writableStackTrace);
-  }
-
-
-  /**
-   * Constructor with message and HTTP response.
-   * 
-   * The body of the response is saved and can be retrieved with @see getResponseBody
-   * 
-   * @param httpStatusCode The HTTP status code relating to the cause of this exception.
-   * @param message A message describing the detail of the fault.
-   * @param response An HTTP response which is saved as the cause of the exception.
-   */
-  public ServerErrorException(int httpStatusCode, String message, CloseableHttpResponse response)
-  {
-    super(httpStatusCode, message, response);
   }
 
   /**
@@ -120,11 +104,10 @@ public class ServerErrorException extends CanonException
    * 
    * The body of the response is saved and can be retrieved with @see getResponseBody
    * 
-   * @param httpStatusCode The HTTP status code relating to the cause of this exception.
    * @param response An HTTP response which is saved as the cause of the exception.
    */
-  public ServerErrorException(int httpStatusCode, CloseableHttpResponse response)
+  public NotFoundException(CloseableHttpResponse response)
   {
-    super(httpStatusCode, null, response);
+    super(HTTP_STATUS_CODE, null, response);
   }
 }

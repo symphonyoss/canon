@@ -111,4 +111,18 @@ public class BadRequestException extends CanonException
   {
     super(HTTP_STATUS_CODE, null, response);
   }
+
+  /**
+   * Constructor with message and HTTP response.
+   * 
+   * The body of the response is saved and can be retrieved with @see getResponseBody
+   * 
+   * @param httpStatusCode The HTTP status code relating to the cause of this exception.
+   * @param message A message describing the detail of the fault.
+   * @param response An HTTP response which is saved as the cause of the exception.
+   */
+  public BadRequestException(int httpStatusCode, String message, CloseableHttpResponse response)
+  {
+    super(httpStatusCode, message, response);
+  }
 }
