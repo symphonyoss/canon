@@ -203,7 +203,7 @@ public class ${model.parent.camelCapitalizedName}${model.camelCapitalizedName}Ht
    * 
    * @param httpClient  An HTTP client to use.
    *
-   * @return A List<${methodResponseElementType}>.
+   * @return A List of ${methodResponseElementType}.
    *
    * @throws TransactionFault           If the request fails for technical reasons.
    * @throws BadRequestException        If the request fails due to bad inputs.

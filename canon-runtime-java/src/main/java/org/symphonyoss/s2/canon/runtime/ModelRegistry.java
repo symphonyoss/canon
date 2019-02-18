@@ -39,7 +39,6 @@ import org.symphonyoss.s2.common.dom.json.IJsonObject;
 import org.symphonyoss.s2.common.dom.json.ImmutableJsonObject;
 import org.symphonyoss.s2.common.dom.json.JsonValue;
 import org.symphonyoss.s2.common.dom.json.jackson.JacksonAdaptor;
-import org.symphonyoss.s2.common.fault.TransactionFault;
 
 import com.fasterxml.jackson.core.JsonParser.Feature;
 import com.fasterxml.jackson.databind.JsonNode;
@@ -117,8 +116,6 @@ public class ModelRegistry implements IModelRegistry
    * 
    * @param reader  The source of a JSON object.
    * @return  The parsed list of ImmutableJsonObjects.
-   * 
-   * @throws InvalidValueException If the input cannot be parsed or does not contain a list of objects.
    */
   public static List<ImmutableJsonObject> parseListOfJsonObjects(Reader reader)
   {
