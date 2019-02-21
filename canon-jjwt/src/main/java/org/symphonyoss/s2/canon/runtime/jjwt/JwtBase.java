@@ -23,9 +23,30 @@
 
 package org.symphonyoss.s2.canon.runtime.jjwt;
 
+import org.symphonyoss.s2.canon.runtime.exception.NotAuthenticatedException;
+import org.symphonyoss.s2.canon.runtime.http.ParameterLocation;
+import org.symphonyoss.s2.canon.runtime.http.RequestContext;
+
 public class JwtBase
 {
-  protected static final String AUTH_HEADER_KEY = "Authorization";
-  protected static final String AUTH_HEADER_VALUE_PREFIX = "Bearer "; // with trailing space to separate token
-  
+  public static final String AUTH_HEADER_KEY = "Authorization";
+  public static final String AUTH_HEADER_VALUE_PREFIX = "Bearer "; // with trailing space to separate token
+
+  protected String getToken(RequestContext context)
+  {
+    String authHeader = context.getParameterAsString(AUTH_HEADER_KEY, ParameterLocation.Header, true);
+    
+    if(authHeader == null)
+      throw new NotAuthenticatedException("No auth header");
+      
+      
+    if(authHeader.startsWith(AUTH_HEADER_VALUE_PREFIX))
+    {
+      String token = authHeader.substring(AUTH_HEADER_VALUE_PREFIX.length());
+      
+      return token;
+    }
+    
+    throw new NotAuthenticatedException("Invalid auth header");
+  }
 }

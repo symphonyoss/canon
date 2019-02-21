@@ -26,13 +26,13 @@ package org.symphonyoss.s2.canon.runtime.jjwt;
 import java.util.Date;
 
 import org.apache.http.client.methods.RequestBuilder;
-import org.symphonyoss.s2.canon.runtime.http.client.IAuthenticationProvider;
+import org.symphonyoss.s2.canon.runtime.http.client.IJwtAuthenticationProvider;
 import org.symphonyoss.s2.common.fluent.Fluent;
 
 import io.jsonwebtoken.JwtBuilder;
 import io.jsonwebtoken.Jwts;
 
-public abstract class JwtGenerator<T extends JwtGenerator<T>> extends Fluent<T> implements IAuthenticationProvider
+public abstract class JwtGenerator<T extends JwtGenerator<T>> extends Fluent<T> implements IJwtAuthenticationProvider
 {
   public JwtGenerator(Class<T> type)
   {
@@ -49,7 +49,6 @@ public abstract class JwtGenerator<T extends JwtGenerator<T>> extends Fluent<T> 
     builder.addHeader(JwtBase.AUTH_HEADER_KEY, JwtBase.AUTH_HEADER_VALUE_PREFIX + createJwt());
   }
   
-  @Override
   public String createJwt()
   {
     Date now = new Date();

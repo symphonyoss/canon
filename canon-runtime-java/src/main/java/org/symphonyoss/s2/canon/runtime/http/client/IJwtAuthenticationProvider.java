@@ -21,31 +21,14 @@
  * under the License.
  */
 
-package org.symphonyoss.s2.canon.runtime.jjwt;
+package org.symphonyoss.s2.canon.runtime.http.client;
 
-import java.security.Key;
-
-import io.jsonwebtoken.Claims;
-
-public class JwtSubjectAuthenticator extends JwtAuthenticator<String>
+public interface IJwtAuthenticationProvider extends IAuthenticationProvider
 {
-  private String defaultSubject_;
-
-  public JwtSubjectAuthenticator(Key key, Long maxAge, String defaultSubject, String algorithm)
-  {
-    super(key, maxAge, algorithm);
-    defaultSubject_ = defaultSubject;
-  }
-
-  @Override
-  protected String extractAuth(Claims claims)
-  {
-    String subject = claims.getSubject();
-    
-    if(subject == null)
-      return defaultSubject_;
-    
-    return subject;
-  }
-
+  /**
+   * Create a signed JWT token.
+   * 
+   * @return The encoded JWT token.
+   */
+  String createJwt();
 }

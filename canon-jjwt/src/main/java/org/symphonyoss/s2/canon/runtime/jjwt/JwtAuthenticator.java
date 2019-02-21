@@ -34,72 +34,73 @@ import org.symphonyoss.s2.canon.runtime.http.RequestContext;
 
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.ExpiredJwtException;
+import io.jsonwebtoken.Jws;
 import io.jsonwebtoken.Jwts;
-import io.jsonwebtoken.SignatureException;
 
 public abstract class JwtAuthenticator<T> extends JwtBase implements IRequestAuthenticator<T>
 {
-  private Key key_;
-  private Long maxAge_;
+  private final Key key_;
+  private final Long maxAge_;
+  private final String requiredAlgorithm_;
   
-  public JwtAuthenticator(Key key, Long maxAge)
+  public JwtAuthenticator(Key key, Long maxAge, String requiredAlgorithm)
   {
     key_ = key;
     maxAge_ = maxAge;
+    requiredAlgorithm_ = requiredAlgorithm;
   }
-
+  
   @Override
   public T authenticate(RequestContext context) throws NotAuthenticatedException, PermissionDeniedException
   {
-    String authHeader = context.getParameterAsString(AUTH_HEADER_KEY, ParameterLocation.Header, true);
-    
-    if(authHeader == null)
-      throw new NotAuthenticatedException("No auth header");
-      
-      
-    if(authHeader.startsWith(AUTH_HEADER_VALUE_PREFIX))
+    return authenticate(getToken(context));
+  }
+  
+  protected T authenticate(String token) throws NotAuthenticatedException, PermissionDeniedException
+  {  
+    try
     {
-      String token = authHeader.substring(AUTH_HEADER_VALUE_PREFIX.length());
-      
-      try
-      {
-        Claims claims = Jwts.parser()
+      Jws<Claims> parsedJwt = Jwts.parser()
           .setSigningKey(key_)
           .parseClaimsJws(token)
-          .getBody();
-        
-        Date now = new Date();
-        Date expiry = claims.getExpiration();
-        
-        if(expiry != null && expiry.before(now))
-          throw new NotAuthenticatedException("Expired JWT Token");
-        
-        if(maxAge_ != null)
-        {
-          Date issuedAt = claims.getIssuedAt();
-          
-          if(issuedAt == null)
-            throw new NotAuthenticatedException("Invalid JWT Token, no issued at attribute");
-          
-          if(now.getTime() - issuedAt.getTime() > maxAge_)
-            throw new NotAuthenticatedException("Invalid JWT Token, too old");
-        }
-        return extractAuth(claims);
-      }
-      catch(SignatureException e)
-      {
-        throw new PermissionDeniedException(e);
-      }
-      catch(ExpiredJwtException e)
-      {
+          ;
+      
+      if(!requiredAlgorithm_.equals(parsedJwt.getHeader().getAlgorithm()))
+        throw new NotAuthenticatedException("Invalid JWT Token, unacceptable signature algorithm");
+      
+      Claims claims = parsedJwt
+        .getBody();
+      
+      Date now = new Date();
+      Date expiry = claims.getExpiration();
+      
+      if(expiry != null && expiry.before(now))
         throw new NotAuthenticatedException("Expired JWT Token");
-      }
-      catch(RuntimeException e)
+      
+      if(maxAge_ != null)
       {
-        throw new NotAuthenticatedException("Invalid JWT Token", e);
+        Date issuedAt = claims.getIssuedAt();
+        
+        if(issuedAt == null)
+          throw new NotAuthenticatedException("Invalid JWT Token, no issued at attribute");
+        
+        if(now.getTime() - issuedAt.getTime() > maxAge_)
+          throw new NotAuthenticatedException("Invalid JWT Token, too old");
       }
+      return extractAuth(claims);
     }
-    throw new NotAuthenticatedException("Invalid auth header");
+    catch(SecurityException e)
+    {
+      throw new PermissionDeniedException(e);
+    }
+    catch(ExpiredJwtException e)
+    {
+      throw new NotAuthenticatedException("Expired JWT Token");
+    }
+    catch(RuntimeException e)
+    {
+      throw new NotAuthenticatedException("Invalid JWT Token", e);
+    }
   }
 
   protected abstract T extractAuth(Claims claims) throws NotAuthenticatedException, PermissionDeniedException;

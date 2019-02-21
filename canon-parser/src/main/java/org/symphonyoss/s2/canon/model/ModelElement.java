@@ -236,6 +236,11 @@ public class ModelElement
     return parent_.getModel();
   }
   
+  public Model getSourceModel()
+  {
+    return getModel();
+  }
+  
   public String getName()
   {
     return name_;

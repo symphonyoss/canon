@@ -49,7 +49,7 @@ import ${fieldFQType};
 public class ${model.parent.camelCapitalizedName}${model.camelCapitalizedName}HttpRequest extends ${model.parent.camelCapitalizedName}${model.camelCapitalizedName}HttpRequestOrBuilder
 {
   <#if model.response??>
-  private static String  RESPONSE_TYPE_ID = "${model.model.canonId}.${model.response.schema.baseSchema.camelCapitalizedName}";
+  private static String  RESPONSE_TYPE_ID = "${model.response.schema.sourceModel.canonId}.${model.response.schema.baseSchema.camelCapitalizedName}";
 
   </#if>
   <#list model.parameters as parameter>

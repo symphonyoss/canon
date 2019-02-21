@@ -49,6 +49,7 @@ public class ReferenceSchema extends ReferenceOrSchema
 {
   private Reference<Schema> reference_;
   private Schema    type_;
+  private RootParserContext referencedContext_;
   
   
   public ReferenceSchema(ModelElement parent, ParserContext context, ParserContext node, String name)
@@ -62,16 +63,26 @@ public class ReferenceSchema extends ReferenceOrSchema
     {
       try
       {
-        RootParserContext referencedContext = context.getRootParserContext().addReferencedModel(reference_.getBaseUri(), context);
+        referencedContext_ = context.getRootParserContext().addReferencedModel(reference_.getBaseUri(), context);
         
-        if(referencedContext != null)
-          getModel().addReferencedContext(referencedContext);
+        if(referencedContext_ != null)
+          getModel().addReferencedContext(referencedContext_);
       }
       catch (ParsingException e)
       {
         context.raise(new ParserError("Unable to load referenced model from \"%s\" (%s)", reference_.getUri(), e.getMessage()));
       }
     }
+  }
+  
+
+  
+  public Model getSourceModel()
+  {
+    if(referencedContext_ != null)
+      return referencedContext_.getModel();
+    
+    return getModel();
   }
 
   @Override

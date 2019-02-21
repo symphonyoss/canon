@@ -33,11 +33,11 @@ public interface IAuthenticationProvider
    * @param builder A request builder to add an authentication header to.
    */
   void authenticate(RequestBuilder builder);
-  
-  /**
-   * Create a signed JWT token.
-   * 
-   * @return The encoded JWT token.
-   */
-  String createJwt();
+//  
+//  /**
+//   * Create a signed JWT token.
+//   * 
+//   * @return The encoded JWT token.
+//   */
+//  String createJwt();
 }
