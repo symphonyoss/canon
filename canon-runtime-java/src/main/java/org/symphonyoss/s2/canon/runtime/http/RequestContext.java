@@ -42,8 +42,10 @@ import org.slf4j.LoggerFactory;
 import org.symphonyoss.s2.canon.runtime.IBaseEntity;
 import org.symphonyoss.s2.canon.runtime.IEntity;
 import org.symphonyoss.s2.canon.runtime.IEntityFactory;
+import org.symphonyoss.s2.canon.runtime.IModelRegistry;
 import org.symphonyoss.s2.canon.runtime.ModelRegistry;
 import org.symphonyoss.s2.canon.runtime.TypeDefBuilder;
+import org.symphonyoss.s2.canon.runtime.exception.BadRequestException;
 import org.symphonyoss.s2.common.dom.json.ImmutableJsonObject;
 import org.symphonyoss.s2.common.dom.json.JsonValue;
 import org.symphonyoss.s2.common.immutable.ImmutableByteArray;
@@ -65,18 +67,21 @@ public class RequestContext
   private final HttpServletRequest  request_;
   private final HttpServletResponse response_;
   private final ITraceContext       trace_;
+  private final IModelRegistry      modelRegistry_;
 
   private Map<String, Cookie>       cookieMap_;
   private Map<String, String>       pathMap_;
   private List<String>              errors_           = new LinkedList<>();
 
 
-  public RequestContext(HttpMethod method, HttpServletRequest request, HttpServletResponse response, ITraceContext trace)
+
+  public RequestContext(HttpMethod method, HttpServletRequest request, HttpServletResponse response, ITraceContext trace, IModelRegistry modelRegistry)
   {
     method_ = method;
     request_ = request;
     response_ = response;
     trace_ = trace;
+    modelRegistry_ = modelRegistry;
   }
 
   public HttpMethod getMethod()
@@ -339,15 +344,13 @@ public class RequestContext
     errors_.add(String.format(message));
   }
   
-  public <E extends IEntity> E parsePayload(IEntityFactory<E,?,?> factory)
+  public <E extends IEntity> E parsePayload(String typeId, Class<E> type)
   {
     try
     {
-      ImmutableJsonObject jsonObject = ModelRegistry.parseOneJsonObject(getRequest().getReader());
-      
-      return factory.newInstance(jsonObject);
+      return modelRegistry_.parseOne(getRequest().getReader(), typeId, type);
     }
-    catch (IllegalArgumentException | IOException e)
+    catch (RuntimeException | IOException e)
     {
       log_.error("Failed to parse payload", e);
       error("Unable to parse payload");
@@ -383,7 +386,7 @@ public class RequestContext
     }
   }
   
-  public <E extends IEntity> List<E> parseListPayload(IEntityFactory<E,?,?> factory)
+  public <E extends IEntity> List<E> parseListPayload(Class<E> type)
   {
     List<E> result = new LinkedList<>();
     
@@ -391,7 +394,12 @@ public class RequestContext
     {
       for(ImmutableJsonObject jsonObject : ModelRegistry.parseListOfJsonObjects(getRequest().getReader()))
       {
-        result.add(factory.newInstance(jsonObject));
+        IEntity entity = modelRegistry_.newInstance(jsonObject);
+        
+        if(type.isInstance(entity))
+          result.add(type.cast(entity));
+        else
+          throw new BadRequestException("Found a list item of invalid type " + entity.getClass().getName());
       }
     }
     catch (IllegalArgumentException | IOException e)

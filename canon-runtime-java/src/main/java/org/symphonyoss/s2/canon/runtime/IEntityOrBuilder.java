@@ -23,7 +23,34 @@
 
 package org.symphonyoss.s2.canon.runtime;
 
-public interface IEntityBuilder extends IEntityOrBuilder
-{
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 
+import org.symphonyoss.s2.common.dom.json.ImmutableJsonObject;
+
+public interface IEntityOrBuilder
+{
+  /**
+   * Return the JSON object from which this entity was created.
+   * 
+   * @return the JSON object from which this entity was created.
+   */
+  @Nonnull ImmutableJsonObject getJsonObject();
+
+  /**
+   * Return the type identifier (_type JSON attribute) for this entity.
+   * 
+   * @return The type identifier for this object.
+   */
+  @Nonnull String getCanonType();
+  
+  /**
+   * @return The major part of the canon schema version defining this object.
+   */
+  @Nullable Integer getCanonMajorVersion();
+
+  /**
+   * @return The minor part of the canon schema version defining this object.
+   */
+  @Nullable Integer getCanonMinorVersion();
 }

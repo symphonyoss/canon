@@ -26,9 +26,12 @@ package org.symphonyoss.s2.canon.test;
 import java.io.IOException;
 
 import org.junit.Test;
+import org.symphonyoss.s2.canon.runtime.IModelRegistry;
+import org.symphonyoss.s2.canon.runtime.ModelRegistry;
 import org.symphonyoss.s2.canon.test.typeCheck.AllTheLists;
 import org.symphonyoss.s2.canon.test.typeCheck.IAllTheLists;
 import org.symphonyoss.s2.canon.test.typeCheck.SimpleObject;
+import org.symphonyoss.s2.canon.test.typeCheck.TypeCheckModel;
 import org.symphonyoss.s2.common.dom.DomSerializer;
 import org.symphonyoss.s2.common.dom.DomWriter;
 import org.symphonyoss.s2.common.dom.json.IJsonDomNode;
@@ -42,7 +45,9 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.common.collect.ImmutableList;
 
 public class TestAllTheLists extends AbstractModelObjectTest
-{ 
+{
+  private final IModelRegistry                    modelRegistry_          = new ModelRegistry().withFactories(TypeCheckModel.FACTORIES);
+  
   @Test
   public void testRoundTrip() throws IOException
   {
@@ -86,7 +91,7 @@ public class TestAllTheLists extends AbstractModelObjectTest
       //((MutableJsonObject)adapted).addIfNotNull("_type", "foo");
       try
       {
-        IAllTheLists obj2 = AllTheLists.FACTORY.newInstance((ImmutableJsonObject) adapted.immutify());
+        IAllTheLists obj2 = AllTheLists.FACTORY.newInstance((ImmutableJsonObject) adapted.immutify(), modelRegistry_);
         
         System.out.println("Reconstructed object:");
         writer.write(obj2.getJsonObject());

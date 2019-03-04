@@ -84,7 +84,7 @@ public abstract class ${modelJavaClassName}PathHandler<T> extends PathHandler<T>
       <#if operation.payload.schema.isTypeDef>
     ${fieldType} canonPayload = context.parsePayload(${javaClassName}.newBuilder());
       <#else>
-    ${fieldType} canonPayload = context.parsePayload(${javaClassName}.FACTORY);
+    ${fieldType} canonPayload = context.parsePayload(${javaClassName}.TYPE_ID, I${javaClassName}.class);
       </#if>
     </#if>
   </#if>
@@ -136,9 +136,9 @@ public abstract class ${modelJavaClassName}PathHandler<T> extends PathHandler<T>
   </#if>
       }
   <#if operation.response?? && operation.response.isRequired>
-      catch(PermissionDeniedException | ServerErrorException e)
+      catch(BadRequestException | PermissionDeniedException | ServerErrorException e)
   <#else>
-      catch(PermissionDeniedException | ServerErrorException | NoSuchRecordException e)
+      catch(BadRequestException | PermissionDeniedException | ServerErrorException | NoSuchRecordException e)
   </#if>
       {
         throw e;

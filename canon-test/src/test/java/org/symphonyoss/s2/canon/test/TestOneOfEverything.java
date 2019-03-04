@@ -141,7 +141,7 @@ public class TestOneOfEverything extends AbstractModelObjectTest
       //((MutableJsonObject)adapted).addIfNotNull("_type", "foo");
       try
       {
-        IObjectWithOneOfEverything obj2 = objectFactory_.newInstance((ImmutableJsonObject) adapted.immutify());
+        IObjectWithOneOfEverything obj2 = objectFactory_.newInstance((ImmutableJsonObject) adapted.immutify(), modelRegistry_);
         
         System.out.println("Reconstructed object:");
         writer.write(obj2.getJsonObject());

@@ -32,6 +32,7 @@ import javax.annotation.Nullable;
 
 import org.symphonyoss.s2.common.dom.json.ImmutableJsonObject;
 
+import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableSet;
 
 /**
@@ -52,8 +53,9 @@ public class Entity extends BaseEntity implements IEntity
    * Constructor from serialized form.
    * 
    * @param jsonObject A parse tree of the serialized form.
+   * @param modelRegistry A model registry to use to deserialize any nested objects.
    */
-  public Entity(ImmutableJsonObject jsonObject)
+  public Entity(ImmutableJsonObject jsonObject, IModelRegistry modelRegistry)
   {
     super(jsonObject);
     
@@ -104,7 +106,29 @@ public class Entity extends BaseEntity implements IEntity
    */
   public Entity(IEntity canonOther)
   {
-    this(canonOther.getJsonObject());
+    super(canonOther.getJsonObject());
+    
+    jsonObject_   = canonOther.getJsonObject();
+    type_         = canonOther.getCanonType();
+    majorVersion_ = canonOther.getCanonMajorVersion();
+    minorVersion_ = canonOther.getCanonMinorVersion();
+    unknownKeys_  = canonOther.getCanonUnknownKeys();
+  }
+
+  /**
+   * Constructor from another instance, usually a Builder.
+   * 
+   * @param canonOther Another entity containing all values for the required object. This is usually a Builder.
+   */
+  public Entity(IEntityBuilder canonOther)
+  {
+    super(canonOther.getJsonObject());
+    
+    jsonObject_   = canonOther.getJsonObject();
+    type_         = canonOther.getCanonType();
+    majorVersion_ = canonOther.getCanonMajorVersion();
+    minorVersion_ = canonOther.getCanonMinorVersion();
+    unknownKeys_  = ImmutableSet.of();
   }
 
   @Override

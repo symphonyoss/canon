@@ -44,7 +44,9 @@ public abstract class EntityConsumer<P, E extends IEntity, C extends IThreadSafe
     }
     catch (IllegalArgumentException e)
     {
-      invalidMessageConsumer_.consume(item, trace, "Received an entity which is not a known type", e);
+      e.printStackTrace();
+      System.err.println("IGNORE " + item);
+      //invalidMessageConsumer_.consume(item, trace, "Received an entity which is not a known type", e);
     }
   }
   

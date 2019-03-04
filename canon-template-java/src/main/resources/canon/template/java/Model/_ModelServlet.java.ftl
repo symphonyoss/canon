@@ -3,6 +3,7 @@
 <@setPrologueJavaType model/>
 import javax.annotation.concurrent.Immutable;
 
+import org.symphonyoss.s2.canon.runtime.IModelRegistry;
 import org.symphonyoss.s2.canon.runtime.ModelServlet;
 import org.symphonyoss.s2.fugue.http.IUrlPathServlet;
 import org.symphonyoss.s2.fugue.core.trace.ITraceContextTransactionFactory;
@@ -13,10 +14,10 @@ public class ${modelJavaClassName}ModelServlet extends ModelServlet
 {
   private static final long serialVersionUID = 1L;
 
-  public ${modelJavaClassName}ModelServlet(ITraceContextTransactionFactory traceFactory,
+  public ${modelJavaClassName}ModelServlet(ITraceContextTransactionFactory traceFactory, IModelRegistry modelRegistry,
     I${model.model.camelCapitalizedName}EntityHandler ...handlers)
   {
-    super(traceFactory);
+    super(traceFactory, modelRegistry);
     for(I${model.model.camelCapitalizedName}EntityHandler handler : handlers)
       register(handler);
   }

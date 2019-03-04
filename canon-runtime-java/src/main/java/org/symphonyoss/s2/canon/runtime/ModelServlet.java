@@ -43,10 +43,11 @@ import org.symphonyoss.s2.fugue.core.trace.ITraceContextTransactionFactory;
 
 public abstract class ModelServlet extends HttpServlet implements IModelServlet
 {
-  private static final long serialVersionUID = 1L;
+  private static final long                            serialVersionUID = 1L;
 
-  private final ITraceContextTransactionFactory                    traceFactory_;
-  private final TreeMap<Integer, List<IEntityHandler>>  handlerMap_   = new TreeMap<>(new Comparator<Integer>()
+  private final ITraceContextTransactionFactory        traceFactory_;
+  private final IModelRegistry                         modelRegistry_;
+  private final TreeMap<Integer, List<IEntityHandler>> handlerMap_   = new TreeMap<>(new Comparator<Integer>()
       {
         /*
          * We want the map in descending order.
@@ -62,10 +63,12 @@ public abstract class ModelServlet extends HttpServlet implements IModelServlet
           
           return 0;
         }});
+
   
-  public ModelServlet(ITraceContextTransactionFactory traceFactory)
+  public ModelServlet(ITraceContextTransactionFactory traceFactory, IModelRegistry modelRegistry)
   {
     traceFactory_ = traceFactory;
+    modelRegistry_ = modelRegistry;
   }
   
   public void register(IEntityHandler handler)
@@ -87,7 +90,7 @@ public abstract class ModelServlet extends HttpServlet implements IModelServlet
     {
       ITraceContext trace = traceTransaction.open();
       
-      RequestContext context = new RequestContext(method, req, resp, trace);
+      RequestContext context = new RequestContext(method, req, resp, trace, modelRegistry_);
       
       for(List<IEntityHandler> list : handlerMap_.values())
       {

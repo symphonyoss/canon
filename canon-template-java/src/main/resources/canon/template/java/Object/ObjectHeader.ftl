@@ -7,6 +7,7 @@ import javax.annotation.concurrent.Immutable;
 import org.symphonyoss.s2.common.immutable.ImmutableByteArray;
 
 import org.symphonyoss.s2.canon.runtime.IEntity;
+import org.symphonyoss.s2.canon.runtime.IModelRegistry;
 import org.symphonyoss.s2.canon.runtime.CanonRuntime;
 import org.symphonyoss.s2.canon.runtime.Entity;
 import org.symphonyoss.s2.canon.runtime.EntityBuilder;
@@ -33,9 +34,12 @@ import org.symphonyoss.s2.common.dom.json.JsonList;
 import org.symphonyoss.s2.common.dom.json.JsonSet;
 
 import java.util.HashSet;
+import java.util.List;
+import java.util.LinkedList;
 import java.util.Set;
 import java.util.Iterator;
 
+import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableSet;
 <@importFieldTypes model true/>
 <@importFacadePackages model/>
@@ -50,9 +54,15 @@ public abstract class ${modelJavaClassName}Entity extends Entity
 </#if>
  implements I${modelJavaClassName}, I${model.model.camelCapitalizedName}ModelEntity<#list model.superClasses as s><#if s.isComponent>, I${s.camelCapitalizedName}</#if></#list>
 {
+  /** Type ID */
   public static final String  TYPE_ID = "${model.model.canonId}.${model.name}";
+  /** Type version */
   public static final String  TYPE_VERSION = "${model.model.canonVersion}";
+  /** Type major version */
   public static final Integer TYPE_MAJOR_VERSION = ${model.model.canonMajorVersion};
+  /** Type minor version */
   public static final Integer TYPE_MINOR_VERSION = ${model.model.canonMinorVersion};
-  public static final Factory FACTORY = new Factory();;
+  /** Factory instance */
+  public static final Factory FACTORY = new Factory();
+  /** Builder instance */
   public static final IBuilderFactory<I${modelJavaClassName}Entity, Builder> BUILDER = new BuilderFactory();

@@ -105,9 +105,56 @@ public class ModelRegistry implements IModelRegistry
     if(factory == null)
       throw new IllegalArgumentException("Unknown type \"" + typeId + "\"");
     
-    return factory.newInstance(jsonObject);
+    return factory.newInstance(jsonObject, this);
   }
   
+  @Override
+  public <E extends IEntity> E parseOne(Reader reader, String defaultTypeId, Class<E> type)
+  {
+    return newInstance(parseOneJsonObject(reader), defaultTypeId, type);
+  }
+
+  @Override
+  public <E extends IEntity> E newInstance(ImmutableJsonObject jsonObject, String defaultTypeId, Class<E> type)
+  {
+    String typeId;
+    
+    if(defaultTypeId == null)
+    {
+      typeId = jsonObject.getRequiredString(CanonRuntime.JSON_TYPE);
+    }
+    else
+    {
+      typeId = jsonObject.getString(CanonRuntime.JSON_TYPE, null);
+      
+      if(typeId == null)
+      {
+        typeId = defaultTypeId;
+      }
+    }
+    
+    IEntityFactory<?,?,?> factory = factoryMap_.get(typeId);
+    
+    if(factory == null)
+    {
+      factory = factoryMap_.get(defaultTypeId);
+      
+      if(factory == null)
+        throw new IllegalArgumentException("Unknown type \"" + typeId + "\"");
+    }
+    
+    IEntity result = factory.newInstance(jsonObject, this);
+    
+    if(type.isInstance(result))
+    {
+      return type.cast(result);
+    }
+    else
+    {
+      throw new IllegalArgumentException("Expected instance of " + type + " but found a " + typeId);
+    }
+  }
+
   /**
    * Parse a list of JSON objects from the given Reader.
    * 

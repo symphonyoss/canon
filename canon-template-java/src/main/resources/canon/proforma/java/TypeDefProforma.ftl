@@ -18,15 +18,23 @@ public class ${modelJavaClassName} extends ${modelJavaClassName}TypeDef
     super(value);
   }
   
+  /**
+   * Return a new Builder.
+   *
+   * The generated version of this builder is stateless and so it is safe to return a 
+   * reference to a shared instance, if you add functionality to this builder which is
+   * not thread safe then you need to change this to return new Builder();
+   *
+   * @return A new Builder.
+   */
   public static Builder newBuilder()
   {
-    /* The generated version of this builder is stateless and so it is safe to return a 
-     * reference to a shared instance, if you add functionality to this builder which is
-     * not thread safe then you need to change this to return new Builder();
-     */
     return theBuilder;
   }
   
+  /**
+   * Builder for ${modelJavaClassName}.
+   */
   public static class Builder extends ${modelJavaClassName}TypeDef.Builder
   {
     private Builder()

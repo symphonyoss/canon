@@ -128,8 +128,7 @@ public abstract class ${modelJavaClassName}AsyncPathHandler<A> extends AsyncPath
           JsonValue<?, ?> jsonValue = ModelRegistry.parseOneJsonValue(new StringReader(request));
           return ${javaClassName}.newBuilder().build(jsonValue);
       <#else>
-          ImmutableJsonObject jsonObject = ModelRegistry.parseOneJsonObject(new StringReader(request));
-          return ${javaClassName}.FACTORY.newInstance(jsonObject);
+          return context.parsePayload(${javaClassName}.TYPE_ID, I${javaClassName}.class);
       </#if>
         }
       };
@@ -161,8 +160,7 @@ public abstract class ${modelJavaClassName}AsyncPathHandler<A> extends AsyncPath
           JsonValue<?, ?> jsonValue = ModelRegistry.parseOneJsonValue(new StringReader(request));
           return ${javaClassName}.newBuilder().build(jsonValue);
       <#else>
-          ImmutableJsonObject jsonObject = ModelRegistry.parseOneJsonObject(new StringReader(request));
-          return ${javaClassName}.FACTORY.newInstance(jsonObject);
+          return context.parsePayload(${javaClassName}.TYPE_ID, I${javaClassName}.class);
       </#if>
         }
       };

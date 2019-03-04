@@ -51,14 +51,14 @@ public abstract class EntityFactory<E extends IEntity, S extends IEntity, B exte
 implements IEntityFactory<E,S,B>
 {
   @Override
-  public List<E> newMutableList(JsonArray<?> jsonArray)
+  public List<E> newMutableList(JsonArray<?> jsonArray, IModelRegistry modelRegistry)
   {
     List<E> list = new LinkedList<>();
     
     for(IJsonDomNode node : jsonArray)
     {
       if(node instanceof JsonObject)
-        list.add(newInstance((ImmutableJsonObject) node));
+        list.add(newInstance((ImmutableJsonObject) node, modelRegistry));
       else
         throw new IllegalArgumentException("Expected an array of JSON objectcs, but encountered a " + node.getClass().getName());
     }
@@ -67,7 +67,7 @@ implements IEntityFactory<E,S,B>
   }
   
   @Override
-  public Set<E> newMutableSet(JsonArray<?> jsonArray)
+  public Set<E> newMutableSet(JsonArray<?> jsonArray, IModelRegistry modelRegistry)
   {
     Set<E> list = new HashSet<>();
     
@@ -75,7 +75,7 @@ implements IEntityFactory<E,S,B>
     {
       if(node instanceof JsonObject)
       {
-        list.add(newInstance((ImmutableJsonObject) node.immutify()));
+        list.add(newInstance((ImmutableJsonObject) node.immutify(), modelRegistry));
 // there isnt a lot of point in this I think....
 //        if(!list.add(newInstance((ImmutableJsonObject) node.immutify())))
 //          throw new IllegalArgumentException("Duplicate value " + node + " encountered in Set.");
@@ -90,19 +90,19 @@ implements IEntityFactory<E,S,B>
   }
   
   @Override
-  public ImmutableList<E> newImmutableList(JsonArray<?> jsonArray)
+  public ImmutableList<E> newImmutableList(JsonArray<?> jsonArray, IModelRegistry modelRegistry)
   {
-    return ImmutableList.copyOf(newMutableList(jsonArray));
+    return ImmutableList.copyOf(newMutableList(jsonArray, modelRegistry));
   }
   
   @Override
-  public ImmutableSet<E> newImmutableSet(JsonArray<?> jsonArray)
+  public ImmutableSet<E> newImmutableSet(JsonArray<?> jsonArray, IModelRegistry modelRegistry)
   {
-    return ImmutableSet.copyOf(newMutableSet(jsonArray));
+    return ImmutableSet.copyOf(newMutableSet(jsonArray, modelRegistry));
   }
 
-  public E newInstance(ImmutableByteArray bytes)
+  public E newInstance(ImmutableByteArray bytes, IModelRegistry modelRegistry)
   {
-    return newInstance(JacksonAdaptor.parseObject(bytes).immutify());
+    return newInstance(JacksonAdaptor.parseObject(bytes).immutify(), modelRegistry);
   }
 }

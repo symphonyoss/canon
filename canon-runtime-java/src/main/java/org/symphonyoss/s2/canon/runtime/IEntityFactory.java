@@ -56,12 +56,13 @@ public interface IEntityFactory<E extends IEntity, S extends IEntity, B extends 
    * Return a new entity instance created from the given JSON serialization.
    * 
    * @param jsonObject The JSON serialized form of the required entity.
+   * @param modelRegistry A model registry to use to deserialize any nested objects.
    * 
    * @return An instance of the entity represented by the given serialized form.
    * 
    * @throws IllegalArgumentException If the given JSON is not valid.
    */
-  E  newInstance(ImmutableJsonObject jsonObject);
+  E  newInstance(ImmutableJsonObject jsonObject, IModelRegistry modelRegistry);
   
   /**
    * Return a new entity instance created from the given other instance.
@@ -80,43 +81,47 @@ public interface IEntityFactory<E extends IEntity, S extends IEntity, B extends 
    * Return a list of new entity instances created from the given JSON array.
    * 
    * @param jsonArray An array of the JSON serialized form of the required entity.
+   * @param modelRegistry A model registry to use to deserialize any nested objects.
    * 
    * @return A list of instances of the entity represented by the given serialized form.
    * 
    * @throws IllegalArgumentException If the given JSON is not valid.
    */
-  List<E> newMutableList(JsonArray<?> jsonArray);
+  List<E> newMutableList(JsonArray<?> jsonArray, IModelRegistry modelRegistry);
 
   /**
    * Return a set of new entity instances created from the given JSON array.
    * 
    * @param jsonArray An array of the JSON serialized form of the required entity.
+   * @param modelRegistry A model registry to use to deserialize any nested objects.
    * 
    * @return A set of instances of the entity represented by the given serialized form.
    * 
    * @throws IllegalArgumentException If the given JSON is not valid.
    */
-  Set<E> newMutableSet(JsonArray<?> jsonArray);
+  Set<E> newMutableSet(JsonArray<?> jsonArray, IModelRegistry modelRegistry);
 
   /**
    * Return a list of new entity instances created from the given JSON array.
    * 
    * @param jsonArray An array of the JSON serialized form of the required entity.
+   * @param modelRegistry A model registry to use to deserialize any nested objects.
    * 
    * @return A list of instances of the entity represented by the given serialized form.
    * 
    * @throws IllegalArgumentException If the given JSON is not valid.
    */
-  ImmutableList<E> newImmutableList(JsonArray<?> jsonArray);
+  ImmutableList<E> newImmutableList(JsonArray<?> jsonArray, IModelRegistry modelRegistry);
 
   /**
    * Return a set of new entity instances created from the given JSON array.
    * 
    * @param jsonArray An array of the JSON serialized form of the required entity.
+   * @param modelRegistry A model registry to use to deserialize any nested objects.
    * 
    * @return A set of instances of the entity represented by the given serialized form.
    * 
    * @throws IllegalArgumentException If the given JSON is not valid.
    */
-  ImmutableSet<E> newImmutableSet(JsonArray<?> jsonArray);
+  ImmutableSet<E> newImmutableSet(JsonArray<?> jsonArray, IModelRegistry modelRegistry);
 }

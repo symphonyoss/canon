@@ -23,13 +23,14 @@
 
 package org.symphonyoss.s2.canon.runtime;
 
+import java.util.LinkedList;
+import java.util.List;
+
 import org.symphonyoss.s2.common.dom.DomSerializer;
 import org.symphonyoss.s2.common.dom.json.IImmutableJsonDomNode;
 import org.symphonyoss.s2.common.dom.json.IJsonDomNodeProvider;
 import org.symphonyoss.s2.common.dom.json.MutableJsonObject;
 import org.symphonyoss.s2.common.immutable.ImmutableByteArray;
-
-import com.google.common.collect.ImmutableSet;
 
 /**
  * A builder for some entity type.
@@ -44,7 +45,7 @@ public abstract class EntityBuilder<B extends EntityBuilder<B>> implements IEnti
   protected static final DomSerializer SERIALIZER = DomSerializer.newBuilder().withCanonicalMode(true).build();
  
   private final B self_;
-  private final ImmutableSet<String> unknownKeys_ = ImmutableSet.of();
+  //private final ImmutableSet<String> unknownKeys_ = ImmutableSet.of();
 
   protected EntityBuilder(Class<B> type)
   {
@@ -77,11 +78,11 @@ public abstract class EntityBuilder<B extends EntityBuilder<B>> implements IEnti
     return getJsonObject();
   }
   
-  @Override
-  public ImmutableSet<String> getCanonUnknownKeys()
-  {
-    return unknownKeys_;
-  }
+//  @Override
+//  public ImmutableSet<String> getCanonUnknownKeys()
+//  {
+//    return unknownKeys_;
+//  }
 
   @Override
   public ImmutableByteArray serialize()
@@ -90,4 +91,15 @@ public abstract class EntityBuilder<B extends EntityBuilder<B>> implements IEnti
   }
   
   public abstract IEntity build();
+  
+  public List<Object> getCanonAllFields()
+  {
+    List<Object> result = new LinkedList<>();
+    
+    populateAllFields(result);
+    
+    return result;
+  }
+
+  protected abstract void populateAllFields(List<Object> result);
 }

@@ -23,11 +23,6 @@
 
 package org.symphonyoss.s2.canon.runtime;
 
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
-
-import org.symphonyoss.s2.common.dom.json.ImmutableJsonObject;
-
 import com.google.common.collect.ImmutableSet;
 
 /**
@@ -36,32 +31,8 @@ import com.google.common.collect.ImmutableSet;
  * @author Bruce Skingle
  *
  */
-public interface IEntity extends IBaseEntity
-{
-  /**
-   * Return the JSON object from which this entity was created.
-   * 
-   * @return the JSON object from which this entity was created.
-   */
-  @Nonnull ImmutableJsonObject getJsonObject();
-
-  /**
-   * Return the type identifier (_type JSON attribute) for this entity.
-   * 
-   * @return The type identifier for this object.
-   */
-  @Nonnull String getCanonType();
-  
-  /**
-   * @return The major part of the canon schema version defining this object.
-   */
-  @Nullable Integer getCanonMajorVersion();
-
-  /**
-   * @return The minor part of the canon schema version defining this object.
-   */
-  @Nullable Integer getCanonMinorVersion();
-  
+public interface IEntity extends IBaseEntity, IEntityOrBuilder
+{ 
   /**
    * The set of keys present in the JSON from which this object was deserialized which are not defined by
    * the schema. In the case where an object extends some other object the super-class unknown keys will include

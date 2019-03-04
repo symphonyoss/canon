@@ -7,38 +7,43 @@
   private final ${fieldType?right_pad(25)}  _${field.camelName}_;
 </#list>
 
-<#------------------------------------------------------------------------------------------------------------------------------
-
- Constructor from fields
- 
-------------------------------------------------------------------------------------------------------------------------------->
-  public ${modelJavaClassName}Entity(${modelJavaClassName}.Abstract${modelJavaClassName}Builder<?> other)
+  /**
+   * Constructor from builder.
+   * 
+   * @param builder A mutable builder containing all values.
+   */
+  public ${modelJavaClassName}Entity(${modelJavaClassName}.Abstract${modelJavaClassName}Builder<?> builder)
   {
-    super(other);
+    super(builder);
     
 <#list model.fields as field>
     <@setJavaType field/>
-    _${field.camelName}_ = ${javaTypeCopyPrefix}other.get${field.camelCapitalizedName}()${javaTypeCopyPostfix};
-<#if field.required>
+    _${field.camelName}_ = ${javaTypeCopyPrefix}builder.get${field.camelCapitalizedName}()${javaTypeCopyPostfix};
 
+<#if requiresChecks>
+<@checkLimits "    " field  "_" + field.camelName + "_"/>
+ 
+<#else>
+  <#if field.required>
     if(_${field.camelName}_ == null)
       throw new IllegalArgumentException("${field.camelName} is required.");
       
-</#if>
-<#if requiresChecks>
-<@checkLimits "    " field  "_" + field.camelName + "_"/>
-  
+  </#if>
 </#if>
 </#list>
+
 
     unknownKeys_ = ImmutableSet.of();
   }
   
-<#------------------------------------------------------------------------------------------------------------------------------
-
- Constructor from Json
- 
-------------------------------------------------------------------------------------------------------------------------------->
+  /**
+   * Set the _type attribute of the given mutable JSON object to the type ID of this type if it is null and
+   * return an immutable copy.
+   *
+   * @param mutableJsonObject A mutable JSON Object.
+   *
+   * @return An immutable copy of the given object with the _type attribute set.
+   */
   public static ImmutableJsonObject setType(MutableJsonObject mutableJsonObject)
   {
     if(mutableJsonObject.get(CanonRuntime.JSON_TYPE) == null)
@@ -47,14 +52,26 @@
     return mutableJsonObject.immutify();
   }
   
-  public ${modelJavaClassName}Entity(MutableJsonObject mutableJsonObject)
+  /**
+   * Constructor from mutable JSON object.
+   * 
+   * @param mutableJsonObject A mutable JSON object containing the serialized form of the object.
+   * @param modelRegistry A model registry to use to deserialize any nested objects.
+   */
+  public ${modelJavaClassName}Entity(MutableJsonObject mutableJsonObject, IModelRegistry modelRegistry)
   {
-    this(setType(mutableJsonObject));
+    this(setType(mutableJsonObject), modelRegistry);
   }
    
-  public ${modelJavaClassName}Entity(ImmutableJsonObject jsonObject)
+  /**
+   * Constructor from serialised form.
+   * 
+   * @param jsonObject An immutable JSON object containing the serialized form of the object.
+   * @param modelRegistry A model registry to use to deserialize any nested objects.
+   */
+  public ${modelJavaClassName}Entity(ImmutableJsonObject jsonObject, IModelRegistry modelRegistry)
   {
-    super(jsonObject);
+    super(jsonObject, modelRegistry);
     
     if(jsonObject == null)
       throw new IllegalArgumentException("jsonObject is required");
@@ -78,6 +95,22 @@
 </#list>
 
     unknownKeys_ = ImmutableSet.copyOf(keySet);
+  }
+   
+  /**
+   * Copy constructor.
+   * 
+   * @param other Another instance from which all attributes are to be copied.
+   */
+  public ${modelJavaClassName}Entity(I${modelJavaClassName} other)
+  {
+    super(other);
+    
+<#list model.fields as field>
+    _${field.camelName}_ = other.get${field.camelCapitalizedName}();
+</#list>
+
+    unknownKeys_ = other.getCanonUnknownKeys();
   }
   
   @Override
@@ -144,6 +177,10 @@
  Factory
  
 -------------------------------------------------------------------------------------------------------------------------------> 
+  
+  /**
+   * Factory class for ${modelJavaClassName}.
+   */
   public static class Factory
 <#if model.superSchema??>
   extends ${model.superSchema.baseSchema.camelCapitalizedName}.Factory
@@ -160,6 +197,7 @@
      * 
      * @return The type identifier for entities created by this factory.
      */
+    @Override
     public String getCanonType()
     {
       return TYPE_ID;
@@ -199,18 +237,20 @@
      * Return a new entity instance created from the given JSON serialization.
      * 
      * @param jsonObject The JSON serialized form of the required entity.
+     * @param modelRegistry A model registry to use to deserialize any nested objects.
      * 
      * @return An instance of the entity represented by the given serialized form.
      * 
      * @throws IllegalArgumentException If the given JSON is not valid.
      */
-    public I${model.camelCapitalizedName} newInstance(ImmutableJsonObject jsonObject)
+    @Override
+    public I${model.camelCapitalizedName} newInstance(ImmutableJsonObject jsonObject, IModelRegistry modelRegistry)
     {
-      return new ${model.camelCapitalizedName}(jsonObject);
+      return new ${model.camelCapitalizedName}(jsonObject, modelRegistry);
     }
     
     /**
-     * Return a new entity instance created from the given other instance.
+     * Return a new entity instance created from the given builder instance.
      * This is used to construct an entity from its builder as the builder also
      * implements the interface of the entity.
      * 
@@ -345,12 +385,13 @@
     {
       super(Builder.class);
     }
-    
+
     private Builder(I${modelJavaClassName}Entity initial)
     {
       super(Builder.class, initial);
     }
-       
+
+    @Override
     public I${modelJavaClassName} build()
     {
       return new ${model.camelCapitalizedName}(this);
@@ -367,7 +408,13 @@
   <#else>
     <#assign AbstractBuilder="Abstract${modelJavaClassName}Builder"/>
   </#if>
-  protected static abstract class ${AbstractBuilder}<B extends ${modelJavaClassName}.Abstract${modelJavaClassName}Builder<B>>
+  
+  /**
+   * Abstract builder for ${modelJavaClassName}. If there are sub-classes of this type then their builders sub-class this builder.
+   *
+   * @param <B> The concrete type of the builder, used for fluent methods.
+   */
+   protected static abstract class ${AbstractBuilder}<B extends ${modelJavaClassName}.Abstract${modelJavaClassName}Builder<B>>
   <#if model.superSchema??>
     extends ${model.superSchema.baseSchema.camelCapitalizedName}.Abstract${model.superSchema.baseSchema.camelCapitalizedName}Builder<B>
   <#else>
@@ -397,10 +444,10 @@
     @Override
     public abstract I${modelJavaClassName} build();
     
-    public B withValues(ImmutableJsonObject jsonObject, boolean ignoreValidation)
+    public B withValues(ImmutableJsonObject jsonObject, boolean ignoreValidation, IModelRegistry modelRegistry)
     {
 <#if model.superSchema??>
-      super.withValues(jsonObject, ignoreValidation);
+      super.withValues(jsonObject, ignoreValidation, modelRegistry);
 </#if>    
 <#list model.fields as field>
       if(jsonObject.containsKey("${field.camelName}"))
@@ -410,6 +457,16 @@
       }
 </#list>
       return self();
+    }
+    
+    public void populateAllFields(List<Object> result)
+    {
+<#if model.superSchema??>
+      super.populateAllFields(result);
+</#if>    
+<#list model.fields as field>
+      result.add(_${field.camelName}_);
+</#list>
     }
   <#list model.fields as field>
     <@setJavaType field/>
@@ -482,6 +539,7 @@
      * 
      * @return The type id for this entity.
      */
+    @Override
     public String getCanonType()
     {
       return TYPE_ID;
@@ -502,6 +560,7 @@
      * 
      * @return The major type version for entities created by this factory.
      */
+    @Override
     public @Nullable Integer getCanonMajorVersion()
     {
       return TYPE_MAJOR_VERSION;
@@ -512,6 +571,7 @@
      * 
      * @return The minor type version for entities created by this factory.
      */
+    @Override
     public @Nullable Integer getCanonMinorVersion()
     {
       return TYPE_MINOR_VERSION;
