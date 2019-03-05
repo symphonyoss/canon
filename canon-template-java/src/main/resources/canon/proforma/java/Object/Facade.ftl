@@ -52,7 +52,7 @@ public class ${model.camelCapitalizedName} extends ${model.camelCapitalizedName}
    *
    * @param <B> The concrete type of the builder, used for fluent methods.
    */
-  public static class Abstract${modelJavaClassName}Builder<B extends Abstract${modelJavaClassName}Builder<B>> extends Abstract${modelJavaClassName}EntityBuilder<B>
+  public static abstract class Abstract${modelJavaClassName}Builder<B extends Abstract${modelJavaClassName}Builder<B>> extends Abstract${modelJavaClassName}EntityBuilder<B>
   {
     protected Abstract${modelJavaClassName}Builder(Class<B> type)
     {
