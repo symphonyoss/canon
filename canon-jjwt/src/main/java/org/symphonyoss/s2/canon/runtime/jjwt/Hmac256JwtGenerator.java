@@ -59,7 +59,9 @@ public class Hmac256JwtGenerator extends JwtGenerator<Hmac256JwtGenerator>
   @Override
   protected String sign(JwtBuilder builder)
   {
-    return builder.signWith(key_, signatureAlgorithm).compact();
+// This is for JJWT 0.10.5
+//    return builder.signWith(key_, signatureAlgorithm).compact();
+    return builder.signWith(signatureAlgorithm, key_).compact();
   }
 
   /**
