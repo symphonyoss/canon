@@ -1,7 +1,7 @@
 /*
  *
  *
- * Copyright 2018 Symphony Communication Services, LLC.
+ * Copyright 2018-19 Symphony Communication Services, LLC.
  *
  * Licensed to The Symphony Software Foundation (SSF) under one
  * or more contributor license agreements.  See the NOTICE file
@@ -40,12 +40,11 @@ import org.symphonyoss.s2.common.immutable.ImmutableByteArray;
  * @author Bruce Skingle
  * @param <B> Fluent type, determines the type of the "this" reference returned by with methods.
  */
-public abstract class EntityBuilder<B extends EntityBuilder<B>> implements IEntityBuilder, IJsonDomNodeProvider, IBaseEntity
+public abstract class EntityBuilder<B extends EntityBuilder<B,T>, T extends IEntity> implements IEntityBuilder, IJsonDomNodeProvider, IBaseEntity
 {
   protected static final DomSerializer SERIALIZER = DomSerializer.newBuilder().withCanonicalMode(true).build();
  
   private final B self_;
-  //private final ImmutableSet<String> unknownKeys_ = ImmutableSet.of();
 
   protected EntityBuilder(Class<B> type)
   {
@@ -77,12 +76,6 @@ public abstract class EntityBuilder<B extends EntityBuilder<B>> implements IEnti
   {
     return getJsonObject();
   }
-  
-//  @Override
-//  public ImmutableSet<String> getCanonUnknownKeys()
-//  {
-//    return unknownKeys_;
-//  }
 
   @Override
   public ImmutableByteArray serialize()
@@ -90,8 +83,28 @@ public abstract class EntityBuilder<B extends EntityBuilder<B>> implements IEnti
     return ImmutableByteArray.newInstance(SERIALIZER.serialize(getJsonObject()));
   }
   
-  public abstract IEntity build();
+  /**
+   * Build an instance of the immutable built type from the current values of the builder.
+   * 
+   * @return An instance of the immutable built type from the current values of the builder.
+   */
+  public final T build()
+  {
+    validate();
+    
+    return construct();
+  }
   
+  protected abstract T construct();
+  
+  protected void validate()
+  {
+  }
+  
+  /**
+   * 
+   * @return a list of all declared fields.
+   */
   public List<Object> getCanonAllFields()
   {
     List<Object> result = new LinkedList<>();

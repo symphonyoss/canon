@@ -337,6 +337,7 @@
       "FundamentalObject": {
         "type": "object",
         "facade": true,
+        "builderFacade": true,
         "required": [
           "absoluteHash"
         ],
