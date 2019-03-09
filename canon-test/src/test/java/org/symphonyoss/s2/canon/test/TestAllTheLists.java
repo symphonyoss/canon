@@ -119,7 +119,7 @@ public class TestAllTheLists extends AbstractModelObjectTest
 
   private IAllTheLists createTestObject1()
   {
-    return AllTheLists.BUILDER.newInstance()
+    return new AllTheLists.Builder()
           .withBooleanListField(ImmutableList.of(true, false))
           .withByteStringListField(ImmutableList.of(ImmutableByteArray.newInstance("Hello".getBytes()),
               ImmutableByteArray.newInstance("Byteworld".getBytes())))
@@ -130,11 +130,11 @@ public class TestAllTheLists extends AbstractModelObjectTest
           .withIntField(110L)
           .withStringListField(ImmutableList.of("Hello", "World"))
           .withObjectListField(ImmutableList.of(
-              SimpleObject.BUILDER.newInstance()
+              new SimpleObject.Builder()
                 .withName("Bruce")
                 .withValue(17L)
                 .build(),
-                SimpleObject.BUILDER.newInstance()
+                new SimpleObject.Builder()
                 .withName("Mike")
                 .withValue(29L)
                 .build()
