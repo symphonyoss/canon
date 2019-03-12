@@ -408,7 +408,7 @@
      * 
      * @param initial An instance of the built type from which values are to be initialised.
      */
-    private Builder(I${modelJavaClassName}Entity initial)
+    public Builder(I${modelJavaClassName}Entity initial)
     {
       super(Builder.class, initial);
     }
