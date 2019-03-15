@@ -102,6 +102,20 @@ public abstract class EntityBuilder<B extends EntityBuilder<B,T>, T extends IEnt
   }
   
   /**
+   * Convenience method to check that the given value is not null.
+   * 
+   * @param value Some value
+   * @param name  The name of the value.
+   * 
+   * @throws IllegalStateException if the given value is null.
+   */
+  protected void require(Object value, String name)
+  {
+    if(value == null)
+      throw new IllegalStateException(name + " is required");
+  }
+  
+  /**
    * 
    * @return a list of all declared fields.
    */

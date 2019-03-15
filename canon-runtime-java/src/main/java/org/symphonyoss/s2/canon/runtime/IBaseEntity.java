@@ -32,5 +32,10 @@ public interface IBaseEntity extends IJsonDomNodeProvider
   @Override
   IImmutableJsonDomNode  getJsonDomNode();
 
+  /**
+   * Serialize this object.
+   * 
+   * @return The serialized form of this object.
+   */
   ImmutableByteArray serialize();
 }
