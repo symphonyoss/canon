@@ -12,7 +12,7 @@
    * 
    * @param builder A mutable builder containing all values.
    */
-  public ${modelJavaClassName}Entity(${modelJavaClassName}.Abstract${modelJavaClassName}Builder<?> builder)
+  public ${modelJavaClassName}Entity(${modelJavaClassName}.Abstract${modelJavaClassName}Builder<?,?> builder)
   {
     super(builder);
     
@@ -358,14 +358,28 @@
  Builder
  
 ------------------------------------------------------------------------------------------------------------------------------->
+  /**
+   *  Builder factory
+   *
+   *  @deprecated use <code>new ${modelJavaClassName}.Builder()</code> or <code>new ${modelJavaClassName}.Builder(I${modelJavaClassName}Entity)</code> 
+   */
+  @Deprecated
   private static class BuilderFactory implements IBuilderFactory<I${modelJavaClassName}Entity, Builder>
   {
+    /**
+     *  @deprecated use <code>new ${modelJavaClassName}.Builder()</code> 
+     */
+    @Deprecated
     @Override
     public Builder newInstance()
     {
       return new Builder();
     }
 
+    /**
+     *  @deprecated use <code>new ${modelJavaClassName}.Builder(I${modelJavaClassName}Entity)</code> 
+     */
+    @Deprecated
     @Override
     public Builder newInstance(I${modelJavaClassName}Entity initial)
     {
@@ -379,20 +393,28 @@
    * Created by calling BUILDER.newInstance();
    *
    */
-  public static class Builder extends ${modelJavaClassName}.Abstract${modelJavaClassName}Builder<Builder>
+  public static class Builder extends ${modelJavaClassName}.Abstract${modelJavaClassName}Builder<Builder, I${modelJavaClassName}>
   {
-    private Builder()
+    /**
+     * Constructor.
+     */
+    public Builder()
     {
       super(Builder.class);
     }
 
-    private Builder(I${modelJavaClassName}Entity initial)
+    /**
+     * Constructor initialised from another object instance.
+     * 
+     * @param initial An instance of the built type from which values are to be initialised.
+     */
+    public Builder(I${modelJavaClassName}Entity initial)
     {
       super(Builder.class, initial);
     }
 
     @Override
-    public I${modelJavaClassName} build()
+    protected I${modelJavaClassName} construct()
     {
       return new ${model.camelCapitalizedName}(this);
     }
@@ -413,12 +435,13 @@
    * Abstract builder for ${modelJavaClassName}. If there are sub-classes of this type then their builders sub-class this builder.
    *
    * @param <B> The concrete type of the builder, used for fluent methods.
+   * @param <T> The concrete type of the built object.
    */
-   protected static abstract class ${AbstractBuilder}<B extends ${modelJavaClassName}.Abstract${modelJavaClassName}Builder<B>>
+   public static abstract class ${AbstractBuilder}<B extends ${modelJavaClassName}.Abstract${modelJavaClassName}Builder<B,T>, T extends I${modelJavaClassName}Entity>
   <#if model.superSchema??>
-    extends ${model.superSchema.baseSchema.camelCapitalizedName}.Abstract${model.superSchema.baseSchema.camelCapitalizedName}Builder<B>
+    extends ${model.superSchema.baseSchema.camelCapitalizedName}.Abstract${model.superSchema.baseSchema.camelCapitalizedName}Builder<B,T>
   <#else>
-    extends EntityBuilder<B>
+    extends EntityBuilder<B,T>
   </#if>
   {
   <#list model.fields as field>
@@ -440,9 +463,6 @@
       _${field.camelName}_${javaBuilderTypeCopyPrefix}initial.get${field.camelCapitalizedName}()${javaBuilderTypeCopyPostfix};
   </#list>
     }
-
-    @Override
-    public abstract I${modelJavaClassName} build();
     
     public B withValues(ImmutableJsonObject jsonObject, boolean ignoreValidation, IModelRegistry modelRegistry)
     {

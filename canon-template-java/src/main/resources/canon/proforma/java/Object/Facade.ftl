@@ -9,7 +9,7 @@ public class ${model.camelCapitalizedName} extends ${model.camelCapitalizedName}
    * 
    * @param builder A mutable builder containing all values.
    */
-  public ${model.camelCapitalizedName}(Abstract${modelJavaClassName}Builder<?> builder)
+  public ${model.camelCapitalizedName}(Abstract${modelJavaClassName}Builder<?,?> builder)
   {
     super(builder);
   }
@@ -51,8 +51,9 @@ public class ${model.camelCapitalizedName} extends ${model.camelCapitalizedName}
    * Abstract builder for ${modelJavaClassName}. If there are sub-classes of this type then their builders sub-class this builder.
    *
    * @param <B> The concrete type of the builder, used for fluent methods.
+   * @param <T> The concrete type of the built object.
    */
-  public static abstract class Abstract${modelJavaClassName}Builder<B extends Abstract${modelJavaClassName}Builder<B>> extends Abstract${modelJavaClassName}EntityBuilder<B>
+  public static abstract class Abstract${modelJavaClassName}Builder<B extends Abstract${modelJavaClassName}Builder<B,T>, T extends I${modelJavaClassName}Entity> extends Abstract${modelJavaClassName}EntityBuilder<B,T>
   {
     protected Abstract${modelJavaClassName}Builder(Class<B> type)
     {

@@ -79,7 +79,7 @@ public class TestOneOfEverything extends AbstractModelObjectTest
         "  \"aSetOfString\":[],\n" + 
         "  \"secs\":10\n" + 
         "}\n",
-        serializer.serialize(ObjectWithOneOfEverything.BUILDER.newInstance()
+        serializer.serialize(new ObjectWithOneOfEverything.Builder()
           .withABoolean(true)
           .withADouble(7.0)
           .withADoubleMinMax(DoubleMinMax.newBuilder().build(5.0))
@@ -225,7 +225,7 @@ public class TestOneOfEverything extends AbstractModelObjectTest
   
   private IASimpleObject createTestObject3()
   {
-    return ASimpleObject.BUILDER.newInstance()
+    return new ASimpleObject.Builder()
         .withName("Simple3")
         .withValue("Value Three\nhas\nthree lines.")
         .build();
@@ -233,7 +233,7 @@ public class TestOneOfEverything extends AbstractModelObjectTest
 
   private IASimpleObject createTestObject2()
   {
-    return ASimpleObject.BUILDER.newInstance()
+    return new ASimpleObject.Builder()
         .withName("Simple2")
         .withValue("Value Two")
         .build();
@@ -241,7 +241,7 @@ public class TestOneOfEverything extends AbstractModelObjectTest
 
   private IObjectWithOneOfEverything createTestObject1()
   {
-    return ObjectWithOneOfEverything.BUILDER.newInstance()
+    return new ObjectWithOneOfEverything.Builder()
         .withABoolean(false)
         .withADouble(27.0)
         .withADoubleMinMax(5.0)

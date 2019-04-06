@@ -78,7 +78,7 @@ public abstract class ${modelJavaClassName}PathHandler<T> extends PathHandler<T>
       <#if operation.payload.schema.isTypeDef>
     List<${fieldType}> canonPayload = context.parseListPayload(${javaClassName}.newBuilder());
       <#else>
-    <${fieldType}> canonPayload = context.parseListPayload(${javaClassName}.FACTORY);
+    List<${fieldType}> canonPayload = context.parseListPayload(I${javaClassName}.class);
       </#if>
     <#else>
       <#if operation.payload.schema.isTypeDef>

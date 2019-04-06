@@ -29,10 +29,10 @@ public class Example
 {
   public void create()
   {
-    ObjectWithOneOfEverything.BUILDER.newInstance()
+    new ObjectWithOneOfEverything.Builder()
       .toString();
     
-    ObjectWithOneOfEverything.BUILDER.newInstance()
+    new ObjectWithOneOfEverything.Builder()
       .withABoolean(true)
       .withAFloat(1.2f)
       .build();

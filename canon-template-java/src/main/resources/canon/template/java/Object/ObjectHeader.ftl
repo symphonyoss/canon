@@ -64,5 +64,11 @@ public abstract class ${modelJavaClassName}Entity extends Entity
   public static final Integer TYPE_MINOR_VERSION = ${model.model.canonMinorVersion};
   /** Factory instance */
   public static final Factory FACTORY = new Factory();
-  /** Builder instance */
+  
+  /**
+   *  Builder factory instance
+   *
+   *  @deprecated use <code>new ${modelJavaClassName}.Builder()</code> or <code>new ${modelJavaClassName}.Builder(I${modelJavaClassName}Entity)</code> 
+   */
+  @Deprecated
   public static final IBuilderFactory<I${modelJavaClassName}Entity, Builder> BUILDER = new BuilderFactory();
