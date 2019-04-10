@@ -24,6 +24,9 @@
 package org.symphonyoss.s2.canon.runtime.jjwt;
 
 import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Map.Entry;
 
 import org.apache.http.client.methods.RequestBuilder;
 import org.symphonyoss.s2.canon.runtime.http.client.IJwtAuthenticationProvider;
@@ -39,9 +42,10 @@ public abstract class JwtGenerator<T extends JwtGenerator<T>> extends Fluent<T> 
     super(type);
   }
 
-  private String subject_;
-  private Long ttl_;
-  private String issuer_;
+  private String  subject_;
+  private Long    ttl_;
+  private String  issuer_;
+  private Map<String, Object> claims_ = new HashMap<>();
   
   @Override
   public void authenticate(RequestBuilder builder)
@@ -64,6 +68,11 @@ public abstract class JwtGenerator<T extends JwtGenerator<T>> extends Fluent<T> 
     if(ttl_ != null)
       jwt.setExpiration(new Date(now.getTime() + ttl_));
     
+    for(Entry<String, Object> claim : claims_.entrySet())
+    {
+      jwt.claim(claim.getKey(), claim.getValue());
+    }
+    
     return sign(jwt);
   }
 
@@ -82,6 +91,13 @@ public abstract class JwtGenerator<T extends JwtGenerator<T>> extends Fluent<T> 
   public T withTTL(long ttl)
   {
     ttl_ = ttl;
+    return self();
+  }
+  
+  public T withClaim(String name, Object value)
+  {
+    claims_.put(name, value);
+    
     return self();
   }
   
