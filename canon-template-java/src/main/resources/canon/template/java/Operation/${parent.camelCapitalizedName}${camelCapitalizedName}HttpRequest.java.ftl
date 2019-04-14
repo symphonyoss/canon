@@ -217,8 +217,10 @@ public class ${model.parent.camelCapitalizedName}${model.camelCapitalizedName}Ht
    * 
    * @param httpClient  An HTTP client to use.
    *
+    <#if methodResponseDecl != "void">
    * @return A ${methodResponseDecl}.
    *
+    </#if>
    * @throws TransactionFault           If the request fails for technical reasons.
    * @throws BadRequestException        If the request fails due to bad inputs.
    * @throws PermissionDeniedException  If the request fails due to authentication or authorization problems.
