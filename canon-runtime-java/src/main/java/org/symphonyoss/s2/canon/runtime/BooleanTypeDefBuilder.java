@@ -26,12 +26,12 @@ package org.symphonyoss.s2.canon.runtime;
 import javax.annotation.Nonnull;
 
 import org.symphonyoss.s2.common.dom.json.JsonBoolean;
-import org.symphonyoss.s2.common.dom.json.JsonValue;
+import org.symphonyoss.s2.common.type.provider.IValueProvider;
 
 public abstract class BooleanTypeDefBuilder<M> extends TypeDefBuilder<M,Boolean>
 {
   @Override
-  public M build(@Nonnull JsonValue<?, ?> jsonValue)
+  public M build(@Nonnull IValueProvider jsonValue)
   {
     if(jsonValue instanceof JsonBoolean)
       return build(((JsonBoolean)jsonValue).asBoolean());

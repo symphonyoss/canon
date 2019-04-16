@@ -126,7 +126,7 @@ public abstract class ${modelJavaClassName}AsyncPathHandler<A> extends AsyncPath
         {
       <#if operation.payload.schema.isTypeDef>
           JsonValue<?, ?> jsonValue = ModelRegistry.parseOneJsonValue(new StringReader(request));
-          return ${javaClassName}.newBuilder().build(jsonValue);
+          return ${javaConstructTypePrefix}jsonValue${javaConstructTypePostfix};
       <#else>
           return context.parsePayload(${javaClassName}.TYPE_ID, I${javaClassName}.class);
       </#if>

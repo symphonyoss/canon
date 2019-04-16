@@ -4,14 +4,14 @@ import javax.annotation.concurrent.Immutable;
 
 import org.symphonyoss.s2.common.immutable.ImmutableByteArray;
 
-import org.symphonyoss.s2.common.dom.IBooleanProvider;
-import org.symphonyoss.s2.common.dom.IStringProvider;
-import org.symphonyoss.s2.common.dom.IIntegerProvider;
-import org.symphonyoss.s2.common.dom.ILongProvider;
-import org.symphonyoss.s2.common.dom.IFloatProvider;
-import org.symphonyoss.s2.common.dom.IDoubleProvider;
-import org.symphonyoss.s2.common.dom.IImmutableByteArrayProvider;
-import org.symphonyoss.s2.common.dom.json.IJsonDomNode;
+import org.symphonyoss.s2.common.type.provider.IBooleanProvider;
+import org.symphonyoss.s2.common.type.provider.IStringProvider;
+import org.symphonyoss.s2.common.type.provider.IIntegerProvider;
+import org.symphonyoss.s2.common.type.provider.ILongProvider;
+import org.symphonyoss.s2.common.type.provider.IFloatProvider;
+import org.symphonyoss.s2.common.type.provider.IDoubleProvider;
+import org.symphonyoss.s2.common.type.provider.IImmutableByteArrayProvider;
+import org.symphonyoss.s2.common.type.provider.IValueProvider;
 
 import org.symphonyoss.s2.canon.runtime.TypeDef;
 import org.symphonyoss.s2.canon.runtime.${modelJavaFieldClassName}TypeDefBuilder;
@@ -37,7 +37,7 @@ public class ${modelJavaClassName}TypeDef extends TypeDef implements I${modelJav
   }
 
   <#-- Constructor from Json   -->  
-  protected ${modelJavaClassName}TypeDef(@Nonnull IJsonDomNode node)
+  protected ${modelJavaClassName}TypeDef(@Nonnull IValueProvider node)
   {
     if(node == null)
       throw new NullPointerException("value is required.");

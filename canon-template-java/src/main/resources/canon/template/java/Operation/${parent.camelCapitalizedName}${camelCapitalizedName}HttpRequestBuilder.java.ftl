@@ -14,13 +14,11 @@ import org.symphonyoss.s2.canon.runtime.exception.BadRequestException;
 import org.symphonyoss.s2.canon.runtime.http.ParameterLocation;
 import org.symphonyoss.s2.canon.runtime.http.client.HttpParameter;
 
-<#list model.parameters as parameter>
-  <@setJavaType parameter.schema/>
-  <#if fieldFQType?has_content>
-import ${fieldFQType};
-  </#if>
-</#list>
+//AAA
+<@importFieldTypes model true/>
+//BBB
 <@importFacadePackages model/>
+//CC
 
 @Immutable
 public class ${javaModelClassName} extends ${model.parent.camelCapitalizedName}${model.camelCapitalizedName}HttpRequestOrBuilder

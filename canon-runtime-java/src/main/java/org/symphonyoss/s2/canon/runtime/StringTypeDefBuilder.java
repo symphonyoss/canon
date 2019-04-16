@@ -26,12 +26,12 @@ package org.symphonyoss.s2.canon.runtime;
 import javax.annotation.Nonnull;
 
 import org.symphonyoss.s2.common.dom.json.JsonString;
-import org.symphonyoss.s2.common.dom.json.JsonValue;
+import org.symphonyoss.s2.common.type.provider.IValueProvider;
 
 public abstract class StringTypeDefBuilder<M> extends TypeDefBuilder<M,String>
 {
   @Override
-  public M build(@Nonnull JsonValue<?, ?> jsonValue)
+  public M build(@Nonnull IValueProvider jsonValue)
   {
     if(jsonValue instanceof JsonString)
       return build(((JsonString)jsonValue).asString());

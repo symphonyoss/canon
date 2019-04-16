@@ -27,12 +27,12 @@ import org.symphonyoss.s2.common.dom.json.JsonDouble;
 import org.symphonyoss.s2.common.dom.json.JsonFloat;
 import org.symphonyoss.s2.common.dom.json.JsonInteger;
 import org.symphonyoss.s2.common.dom.json.JsonLong;
-import org.symphonyoss.s2.common.dom.json.JsonValue;
+import org.symphonyoss.s2.common.type.provider.IValueProvider;
 
 public abstract class DoubleTypeDefBuilder<M> extends TypeDefBuilder<M,Double>
 {
   @Override
-  public M build(JsonValue<?, ?> jsonValue)
+  public M build(IValueProvider jsonValue)
   {
     if(jsonValue instanceof JsonDouble)
       return build(((JsonDouble)jsonValue).asDouble());

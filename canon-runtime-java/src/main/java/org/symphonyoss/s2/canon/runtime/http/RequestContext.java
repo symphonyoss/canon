@@ -49,6 +49,7 @@ import org.symphonyoss.s2.canon.runtime.exception.BadRequestException;
 import org.symphonyoss.s2.common.dom.json.ImmutableJsonObject;
 import org.symphonyoss.s2.common.dom.json.JsonValue;
 import org.symphonyoss.s2.common.immutable.ImmutableByteArray;
+import org.symphonyoss.s2.common.type.provider.IValueProviderBuilder;
 import org.symphonyoss.s2.fugue.core.trace.ITraceContext;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -127,6 +128,11 @@ public class RequestContext
   public ImmutableByteArray getParameterAsImmutableByteArray(String name, ParameterLocation location, boolean required)
   {
     return asImmutableByteArray(name, getParameterAsString(name, location, required));
+  }
+
+  public @Nullable String asString(String parameterName, String value)
+  {
+    return value;
   }
 
   public @Nullable Boolean asBoolean(String parameterName, String value)
@@ -416,7 +422,7 @@ public class RequestContext
     return result;
   }
 
-  public <M,T> List<M> parseListPayload(TypeDefBuilder<M,T> builder)
+  public <M> List<M> parseListPayload(IValueProviderBuilder<M> builder)
   {
     List<M> result = new LinkedList<>();
     
