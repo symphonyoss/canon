@@ -27,12 +27,12 @@ import javax.annotation.Nonnull;
 
 import org.symphonyoss.s2.common.dom.json.JsonInteger;
 import org.symphonyoss.s2.common.dom.json.JsonLong;
-import org.symphonyoss.s2.common.dom.json.JsonValue;
+import org.symphonyoss.s2.common.type.provider.IValueProvider;
 
 public abstract class LongTypeDefBuilder<M> extends TypeDefBuilder<M,Long>
 {
   @Override
-  public M build(@Nonnull JsonValue<?, ?> jsonValue)
+  public M build(@Nonnull IValueProvider jsonValue)
   {
     if(jsonValue instanceof JsonLong)
       return build(((JsonLong)jsonValue).asLong());

@@ -70,19 +70,18 @@ public abstract class ${modelJavaClassName}PathHandler<T> extends PathHandler<T>
   private void do${operation.camelCapitalizedName}(T auth, RequestContext context, List<String> pathParams) throws IOException, CanonException
   {
   <#include "GetParams.ftl">
-
   <#if operation.payload??>
   
     <@setJavaType operation.payload.schema/>
     <#if operation.payload.isMultiple>
       <#if operation.payload.schema.isTypeDef>
-    List<${fieldType}> canonPayload = context.parseListPayload(${javaClassName}.newBuilder());
+    List<${fieldType}> canonPayload = context.parseListPayload((v) -> ${fieldElementFromBaseValuePrefix}v${fieldElementFromBaseValueSuffix}); //BRUCE2
       <#else>
     List<${fieldType}> canonPayload = context.parseListPayload(I${javaClassName}.class);
       </#if>
     <#else>
       <#if operation.payload.schema.isTypeDef>
-    ${fieldType} canonPayload = context.parsePayload(${javaClassName}.newBuilder());
+    ${fieldType} canonPayload = context.parsePayload((v) -> ${fieldElementFromBaseValuePrefix}v${fieldElementFromBaseValueSuffix}); //BRUCE2
       <#else>
     ${fieldType} canonPayload = context.parsePayload(${javaClassName}.TYPE_ID, I${javaClassName}.class);
       </#if>

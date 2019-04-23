@@ -23,9 +23,10 @@
 
 package org.symphonyoss.s2.canon.test.oneofeverything;
 
-import org.symphonyoss.s2.common.dom.IImmutableByteArrayProvider;
 import org.symphonyoss.s2.common.dom.json.IJsonDomNode;
 import org.symphonyoss.s2.common.immutable.ImmutableByteArray;
+import org.symphonyoss.s2.common.type.provider.IImmutableByteArrayProvider;
+import org.symphonyoss.s2.common.type.provider.IValueProvider;
 
 /**
  * Example of a class which can be used as a direct external type with canon.
@@ -78,7 +79,7 @@ public class DirectHash
     return instance.someObscureGetter();
   }
 
-  public static DirectHash build(IJsonDomNode node)
+  public static DirectHash build(IValueProvider node)
   {
     if(node instanceof IImmutableByteArrayProvider)
     {

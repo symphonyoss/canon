@@ -24,12 +24,12 @@
 package org.symphonyoss.s2.canon.runtime;
 
 import org.symphonyoss.s2.common.dom.json.JsonInteger;
-import org.symphonyoss.s2.common.dom.json.JsonValue;
+import org.symphonyoss.s2.common.type.provider.IValueProvider;
 
 public abstract class IntegerTypeDefBuilder<M> extends TypeDefBuilder<M,Integer>
 {
   @Override
-  public M build(JsonValue<?, ?> jsonValue)
+  public M build(IValueProvider jsonValue)
   {
     if(jsonValue instanceof JsonInteger)
       return build(((JsonInteger)jsonValue).asInteger());

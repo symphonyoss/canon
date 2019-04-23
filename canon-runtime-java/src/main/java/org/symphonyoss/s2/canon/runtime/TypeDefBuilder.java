@@ -23,7 +23,8 @@
 
 package org.symphonyoss.s2.canon.runtime;
 
-import org.symphonyoss.s2.common.dom.json.JsonValue;
+import org.symphonyoss.s2.common.type.provider.IValueProvider;
+import org.symphonyoss.s2.common.type.provider.IValueProviderBuilder;
 
 /**
  * Base class for TypeDef builders.
@@ -33,7 +34,7 @@ import org.symphonyoss.s2.common.dom.json.JsonValue;
  * @param <M> The model (TypeDef) type.
  * @param <T> The value type.
  */
-public abstract class TypeDefBuilder<M,T>
+public abstract class TypeDefBuilder<M,T> implements IValueProviderBuilder<M>
 {
   /**
    * Build an instance of the typedef class from the given value.
@@ -59,7 +60,8 @@ public abstract class TypeDefBuilder<M,T>
    * This may be the case if the schema defines limits on the magnitude of the value, or if a facade
    * has been written for the type.
    */
-  public abstract M build(JsonValue<?,?> jsonValue);
+  @Override
+  public abstract M build(IValueProvider jsonValue);
   
   /**
    * Return the value of the given typedef.

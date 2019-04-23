@@ -27,14 +27,14 @@ import javax.annotation.Nonnull;
 
 import org.apache.commons.codec.binary.Base64;
 import org.symphonyoss.s2.common.dom.json.JsonString;
-import org.symphonyoss.s2.common.dom.json.JsonValue;
+import org.symphonyoss.s2.common.type.provider.IValueProvider;
 
 import com.google.protobuf.ByteString;
 
 public abstract class ByteStringTypeDefBuilder<M> extends TypeDefBuilder<M,ByteString>
 {
   @Override
-  public M build(@Nonnull JsonValue<?, ?> jsonValue)
+  public M build(@Nonnull IValueProvider jsonValue)
   {
     if(jsonValue instanceof JsonString)
     {

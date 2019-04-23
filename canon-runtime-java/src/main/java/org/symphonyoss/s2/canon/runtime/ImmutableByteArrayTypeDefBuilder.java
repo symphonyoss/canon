@@ -25,13 +25,13 @@ package org.symphonyoss.s2.canon.runtime;
 
 import org.apache.commons.codec.binary.Base64;
 import org.symphonyoss.s2.common.dom.json.JsonString;
-import org.symphonyoss.s2.common.dom.json.JsonValue;
 import org.symphonyoss.s2.common.immutable.ImmutableByteArray;
+import org.symphonyoss.s2.common.type.provider.IValueProvider;
 
 public abstract class ImmutableByteArrayTypeDefBuilder<M> extends TypeDefBuilder<M,ImmutableByteArray>
 {
   @Override
-  public M build(JsonValue<?, ?> jsonValue)
+  public M build(IValueProvider jsonValue)
   {
     if(jsonValue instanceof JsonString)
     {
