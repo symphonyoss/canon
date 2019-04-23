@@ -14,11 +14,8 @@ import org.symphonyoss.s2.canon.runtime.exception.BadRequestException;
 import org.symphonyoss.s2.canon.runtime.http.ParameterLocation;
 import org.symphonyoss.s2.canon.runtime.http.client.HttpParameter;
 
-//AAA
 <@importFieldTypes model true/>
-//BBB
 <@importFacadePackages model/>
-//CC
 
 @Immutable
 public class ${javaModelClassName} extends ${model.parent.camelCapitalizedName}${model.camelCapitalizedName}HttpRequestOrBuilder
