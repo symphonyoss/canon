@@ -446,7 +446,7 @@
   {
   <#list model.fields as field>
     <@setJavaType field/>
-    private ${fieldType?right_pad(25)}  _${field.camelName}_${javaBuilderTypeNew};
+    protected ${fieldType?right_pad(25)}  _${field.camelName}_${javaBuilderTypeNew};
   </#list>
   
     protected ${AbstractBuilder}(Class<B> type)

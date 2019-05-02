@@ -23,12 +23,6 @@
 
 package org.symphonyoss.s2.canon.runtime.jjwt;
 
-import javax.crypto.SecretKey;
-import javax.crypto.spec.SecretKeySpec;
-
-import org.apache.commons.codec.binary.Base64;
-
-import io.jsonwebtoken.JwtBuilder;
 import io.jsonwebtoken.SignatureAlgorithm;
 
 /**
@@ -37,39 +31,15 @@ import io.jsonwebtoken.SignatureAlgorithm;
  * @author Bruce Skingle
  *
  */
-public class Hmac256JwtGenerator extends JwtGenerator<Hmac256JwtGenerator>
+public class Hs256JwtGenerator extends AbstractHsJwtGenerator<Hs256JwtGenerator>
 {
-  /** The signature algorithm used. */
-  public static final SignatureAlgorithm signatureAlgorithm = SignatureAlgorithm.HS256;
-  
-  private SecretKey key_;
-  
   /**
    * Constructor.
    * 
    * @param secretKeyBase64 The shared secret key encoded as Base64.
    */
-  public Hmac256JwtGenerator(String secretKeyBase64)
+  public Hs256JwtGenerator(String secretKeyBase64)
   {
-    super(Hmac256JwtGenerator.class);
-    
-    key_ = new SecretKeySpec(Base64.decodeBase64(secretKeyBase64), signatureAlgorithm.getJcaName());
-  }
-
-  @Override
-  protected String sign(JwtBuilder builder)
-  {
-// This is for JJWT 0.10.5
-//    return builder.signWith(key_, signatureAlgorithm).compact();
-    return builder.signWith(signatureAlgorithm, key_).compact();
-  }
-
-  /**
-   * 
-   * @return The shared secret key.
-   */
-  public SecretKey getKey()
-  {
-    return key_;
+    super(Hs256JwtGenerator.class, SignatureAlgorithm.HS256, secretKeyBase64);
   }
 }

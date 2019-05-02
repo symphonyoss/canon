@@ -391,6 +391,27 @@ public class RequestContext
       return null;
     }
   }
+
+  public <M> M parsePayload(IValueProviderBuilder<M> builder)
+  {
+    try
+    {
+      JsonValue<?, ?> jsonObject = ModelRegistry.parseOneJsonValue(getRequest().getReader());
+      return builder.build(jsonObject);
+    }
+    catch (IllegalArgumentException | IOException e)
+    {
+      log_.error("Failed to parse payload", e);
+      error("Unable to parse payload");
+      
+      String message = e.getMessage();
+      
+      if(message != null)
+        error(message);
+      
+      return null;
+    }
+  }
   
   public <E extends IEntity> List<E> parseListPayload(Class<E> type)
   {
