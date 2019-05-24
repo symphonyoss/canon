@@ -33,6 +33,7 @@ import javax.servlet.http.HttpServletResponse;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.symphonyoss.s2.canon.runtime.exception.CanonException;
+import org.symphonyoss.s2.canon.runtime.exception.ServerErrorException;
 import org.symphonyoss.s2.canon.runtime.http.IRequestAuthenticator;
 import org.symphonyoss.s2.canon.runtime.http.RequestContext;
 
@@ -71,12 +72,26 @@ public abstract class PathHandler<T> implements IEntityHandler
     {
        handle(authenticator_==null ? null : authenticator_.authenticate(context), context, variables);
     }
-    catch (CanonException e)
+    catch (ServerErrorException e)
     {
       log_.error("Failed to service REST request", e);
       
       context.error(e);
       context.sendErrorResponse(e.getHttpStatusCode());
+    }
+    catch (CanonException e)
+    {
+      log_.info("Failed to service REST request" + e);
+      
+      context.error(e);
+      context.sendErrorResponse(e.getHttpStatusCode());
+    }
+    catch (RuntimeException e)
+    {
+      log_.info("Failed to service REST request", e);
+      
+      context.error(e);
+      context.sendErrorResponse(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
     }
 
     return true;
