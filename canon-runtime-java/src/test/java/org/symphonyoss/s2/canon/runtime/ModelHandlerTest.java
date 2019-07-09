@@ -28,7 +28,7 @@ import static org.junit.Assert.fail;
 import java.util.List;
 
 import org.junit.Test;
-import org.symphonyoss.s2.canon.runtime.http.RequestContext;
+import org.symphonyoss.s2.canon.runtime.http.IRequestContext;
 
 public class ModelHandlerTest
 {
@@ -91,7 +91,7 @@ public class ModelHandlerTest
       }
 
       @Override
-      protected void handle(Void authenticator, RequestContext context, List<String> variables)
+      protected void handle(Void authenticator, IRequestContext context, List<String> variables)
       {
         // TODO Auto-generated method stub
         

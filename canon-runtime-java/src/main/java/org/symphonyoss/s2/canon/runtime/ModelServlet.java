@@ -1,7 +1,7 @@
 /*
  *
  *
- * Copyright 2017 Symphony Communication Services, LLC.
+ * Copyright 2017-2019 Symphony Communication Services, LLC.
  *
  * Licensed to The Symphony Software Foundation (SSF) under one
  * or more contributor license agreements.  See the NOTICE file
@@ -36,7 +36,8 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.symphonyoss.s2.canon.runtime.http.HttpMethod;
-import org.symphonyoss.s2.canon.runtime.http.RequestContext;
+import org.symphonyoss.s2.canon.runtime.http.IRequestContext;
+import org.symphonyoss.s2.canon.runtime.http.ServletRequestContext;
 import org.symphonyoss.s2.fugue.core.trace.ITraceContext;
 import org.symphonyoss.s2.fugue.core.trace.ITraceContextTransaction;
 import org.symphonyoss.s2.fugue.core.trace.ITraceContextTransactionFactory;
@@ -90,7 +91,7 @@ public abstract class ModelServlet extends HttpServlet implements IModelServlet
     {
       ITraceContext trace = traceTransaction.open();
       
-      RequestContext context = new RequestContext(method, req, resp, trace, modelRegistry_);
+      IRequestContext context = new ServletRequestContext(method, trace, modelRegistry_, req, resp);
       
       for(List<IEntityHandler> list : handlerMap_.values())
       {
@@ -104,7 +105,7 @@ public abstract class ModelServlet extends HttpServlet implements IModelServlet
         }
       }
       
-      context.error("No handler found for " + context.getRequest().getPathInfo());
+      context.error("No handler found for " + context.getPathInfo());
       context.sendErrorResponse(HttpServletResponse.SC_NOT_FOUND);
       traceTransaction.aborted();
     }

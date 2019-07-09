@@ -25,14 +25,14 @@ package org.symphonyoss.s2.canon.runtime.jjwt;
 
 import org.symphonyoss.s2.canon.runtime.exception.NotAuthenticatedException;
 import org.symphonyoss.s2.canon.runtime.http.ParameterLocation;
-import org.symphonyoss.s2.canon.runtime.http.RequestContext;
+import org.symphonyoss.s2.canon.runtime.http.IRequestContext;
 
 public class JwtBase
 {
   public static final String AUTH_HEADER_KEY = "Authorization";
   public static final String AUTH_HEADER_VALUE_PREFIX = "Bearer "; // with trailing space to separate token
 
-  protected String getToken(RequestContext context)
+  protected String getToken(IRequestContext context)
   {
     String authHeader = context.getParameterAsString(AUTH_HEADER_KEY, ParameterLocation.Header, true);
     

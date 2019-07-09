@@ -57,6 +57,10 @@
       <groupId>org.symphonyoss.s2.fugue</groupId>
       <artifactId>fugue-pubsub</artifactId>
     </dependency>
+    <dependency>
+      <groupId>org.symphonyoss.s2.fugue</groupId>
+      <artifactId>aws-fugue</artifactId>
+    </dependency>
     
     <dependency>
       <groupId>com.google.protobuf</groupId>

@@ -32,7 +32,7 @@ import org.symphonyoss.s2.canon.runtime.exception.PermissionDeniedException;
 import org.symphonyoss.s2.canon.runtime.exception.ServerErrorException;
 import org.symphonyoss.s2.canon.runtime.http.IRequestAuthenticator;
 import org.symphonyoss.s2.canon.runtime.http.ParameterLocation;
-import org.symphonyoss.s2.canon.runtime.http.RequestContext;
+import org.symphonyoss.s2.canon.runtime.http.IRequestContext;
 import org.symphonyoss.s2.fugue.pipeline.IConsumer;
 
 <@importFieldTypes model true/>
@@ -63,7 +63,7 @@ public abstract class ${modelJavaClassName}AsyncPathHandler<A> extends AsyncPath
   }
 
   @Override
-  public void handle(A auth, RequestContext context, List<String> pathParams) throws IOException, CanonException
+  public void handle(A auth, IRequestContext context, List<String> pathParams) throws IOException, CanonException
   {
     switch(context.getMethod())
     {
@@ -88,16 +88,16 @@ public abstract class ${modelJavaClassName}AsyncPathHandler<A> extends AsyncPath
   
   <@setJavaMethod operation/>
   
-  private void do${operation.camelCapitalizedName}(A auth, RequestContext context, List<String> pathParams) throws IOException, CanonException
+  private void do${operation.camelCapitalizedName}(A auth, IRequestContext context, List<String> pathParams) throws IOException, CanonException
   {
   <#include "GetParams.ftl">
 
   
     if(context.preConditionsAreMet())
     {
-      ServletInputStream in = context.getRequest().getInputStream();
-      ServletOutputStream out = context.getResponse().getOutputStream();
-      AsyncContext async=context.getRequest().startAsync();
+      ServletInputStream in = context.getInputStream();
+      ServletOutputStream out = context.getOutputStream();
+      AsyncContext async=context.startAsync();
 
       <#list operation.parameters as parameter>
         <@setJavaType parameter.schema/>

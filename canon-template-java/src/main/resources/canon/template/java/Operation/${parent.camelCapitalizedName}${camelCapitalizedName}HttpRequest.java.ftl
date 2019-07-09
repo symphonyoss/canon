@@ -31,7 +31,7 @@ import org.symphonyoss.s2.canon.runtime.exception.PermissionDeniedException;
 import org.symphonyoss.s2.canon.runtime.exception.ServerErrorException;
 import org.symphonyoss.s2.common.fault.TransactionFault;
 import org.symphonyoss.s2.canon.runtime.http.ParameterLocation;
-import org.symphonyoss.s2.canon.runtime.http.RequestContext;
+import org.symphonyoss.s2.canon.runtime.http.IRequestContext;
 import org.symphonyoss.s2.canon.runtime.http.client.HttpParameter;
 import org.symphonyoss.s2.canon.runtime.http.client.IAuthenticationProvider;
 
@@ -112,7 +112,7 @@ public class ${model.parent.camelCapitalizedName}${model.camelCapitalizedName}Ht
     if(canonPayload_ != null)
     {
       StringEntity entity = new StringEntity(canonPayload_.toString(), StandardCharsets.UTF_8);
-        entity.setContentType(RequestContext.JSON_CONTENT_TYPE);
+        entity.setContentType(IRequestContext.JSON_CONTENT_TYPE);
       
       builder.setEntity(entity);
     }
@@ -168,7 +168,7 @@ public class ${model.parent.camelCapitalizedName}${model.camelCapitalizedName}Ht
     
     StringEntity entity = new StringEntity(URLEncodedUtils.format(bodyParameters, StandardCharsets.UTF_8), StandardCharsets.UTF_8);
       
-    entity.setContentType(RequestContext.FORM_CONTENT_TYPE);
+    entity.setContentType(IRequestContext.FORM_CONTENT_TYPE);
     
     builder.setEntity(entity);
 

@@ -37,16 +37,16 @@ import org.symphonyoss.s2.canon.runtime.exception.ServerErrorException;
 import org.symphonyoss.s2.canon.runtime.http.IRequestAuthenticator;
 import org.symphonyoss.s2.canon.runtime.http.IRequestContext;
 
-public abstract class PathHandler<T> implements IEntityHandler
+public abstract class AbstractPathHandler<T, C extends IRequestContext>
 {
-  private static final Logger log_ = LoggerFactory.getLogger(PathHandler.class);
+  private static final Logger log_ = LoggerFactory.getLogger(AbstractPathHandler.class);
 
   private final IRequestAuthenticator<T> authenticator_;
   private final int                      variableCnt_;
   private final String[]                 parts_;
   private final int                      partsLength_;
   
-  public PathHandler(@Nullable IRequestAuthenticator<T> authenticator, int variableCnt, String[] parts)
+  public AbstractPathHandler(@Nullable IRequestAuthenticator<T> authenticator, int variableCnt, String[] parts)
   {
     authenticator_ = authenticator;
     parts_ = parts;
@@ -60,8 +60,7 @@ public abstract class PathHandler<T> implements IEntityHandler
     partsLength_ = cnt;
   }
 
-  @Override
-  public boolean handle(IRequestContext context) throws IOException
+  public boolean handle(C context) throws IOException
   {
     List<String> variables = getVariablesIfCanHandle(context.getPathInfo());
 
@@ -182,13 +181,12 @@ public abstract class PathHandler<T> implements IEntityHandler
     return variables;
   }
 
-  @Override
   public int getPartsLength()
   {
     return partsLength_;
   }
 
-  protected abstract void handle(T canonAuth, IRequestContext context, List<String> variables) throws IOException, CanonException;
+  protected abstract void handle(T canonAuth, C context, List<String> variables) throws IOException, CanonException;
   
   /**
    * Called by generated servlets for unsupported methods.

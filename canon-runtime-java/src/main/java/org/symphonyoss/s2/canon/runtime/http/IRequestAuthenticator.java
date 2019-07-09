@@ -28,6 +28,6 @@ import org.symphonyoss.s2.canon.runtime.exception.CanonException;
 public interface IRequestAuthenticator<T>
 {
 
-  T authenticate(RequestContext context) throws CanonException;
+  T authenticate(IRequestContext context) throws CanonException;
 
 }

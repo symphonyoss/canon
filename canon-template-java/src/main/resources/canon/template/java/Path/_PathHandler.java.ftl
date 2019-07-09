@@ -18,7 +18,7 @@ import org.symphonyoss.s2.canon.runtime.exception.PermissionDeniedException;
 import org.symphonyoss.s2.canon.runtime.exception.ServerErrorException;
 import org.symphonyoss.s2.canon.runtime.http.IRequestAuthenticator;
 import org.symphonyoss.s2.canon.runtime.http.ParameterLocation;
-import org.symphonyoss.s2.canon.runtime.http.RequestContext;
+import org.symphonyoss.s2.canon.runtime.http.IRequestContext;
 
 <@importFieldTypes model true/>
 <@importFacadePackages model/>
@@ -45,7 +45,7 @@ public abstract class ${modelJavaClassName}PathHandler<T> extends PathHandler<T>
   }
 
   @Override
-  public void handle(T auth, RequestContext context, List<String> pathParams) throws IOException, CanonException
+  public void handle(T auth, IRequestContext context, List<String> pathParams) throws IOException, CanonException
   {
     switch(context.getMethod())
     {
@@ -67,7 +67,7 @@ public abstract class ${modelJavaClassName}PathHandler<T> extends PathHandler<T>
   }
 <#list model.operations as operation>
 
-  private void do${operation.camelCapitalizedName}(T auth, RequestContext context, List<String> pathParams) throws IOException, CanonException
+  private void do${operation.camelCapitalizedName}(T auth, IRequestContext context, List<String> pathParams) throws IOException, CanonException
   {
   <#include "GetParams.ftl">
   <#if operation.payload??>
