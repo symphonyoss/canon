@@ -114,11 +114,11 @@ public class CanonException extends RuntimeException
    */
   public CanonException(int httpStatusCode, @Nullable String message, CloseableHttpResponse response)
   {
-    super(message == null ? response.getStatusLine().toString() : message + " " + response.getStatusLine());
-    httpStatusCode_ = httpStatusCode;
-    
-    responseHeaders_ = response.getAllHeaders();
-    
+    this(httpStatusCode, message, getBody(response), response);
+  }
+
+  private static String getBody(CloseableHttpResponse response)
+  {
     try(InputStream in = response.getEntity().getContent())
     {
       byte[] buf = new byte[1024];
@@ -130,12 +130,31 @@ public class CanonException extends RuntimeException
         bout.write(buf, 0, nbytes);
       }
       
-      responseBody_ = bout.toString();
+      return bout.toString();
     }
     catch (IOException e)
     {
-      responseBody_ = e.toString();
+      return "Unable to read response body: " + e.toString();
     }
+  }
+
+  /**
+   * Constructor with HTTP status code, message and HTTP response.
+   * 
+   * The body of the response is saved and can be retrieved with @see getResponseBody
+   * 
+   * @param httpStatusCode The HTTP status code relating to the cause of this exception.
+   * @param message A message describing the detail of the exception.
+   * @param responseBody The body of the HTTP response.
+   * @param response An HTTP response which is saved as the cause of the exception.
+   */
+  public CanonException(int httpStatusCode, String message, String responseBody, CloseableHttpResponse response)
+  {
+    super(message == null ? response.getStatusLine().toString() + " " + responseBody :
+      message + " " + response.getStatusLine() + " " + responseBody);
+    responseBody_ = responseBody;
+    httpStatusCode_ = httpStatusCode;
+    responseHeaders_ = response.getAllHeaders();
   }
 
   /**

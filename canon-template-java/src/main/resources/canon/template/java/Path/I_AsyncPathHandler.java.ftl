@@ -4,6 +4,7 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
 import org.symphonyoss.s2.canon.runtime.exception.CanonException;
+import org.symphonyoss.s2.canon.runtime.IEntityHandler;
 import org.symphonyoss.s2.fugue.core.trace.ITraceContext;
 import org.symphonyoss.s2.fugue.pipeline.IConsumer;
 
@@ -11,7 +12,7 @@ import org.symphonyoss.s2.fugue.pipeline.IConsumer;
 <@importFacadePackages model/>
 
 <#include "Path.ftl">
-public interface I${modelJavaClassName}AsyncPathHandler<T> extends I${model.model.camelCapitalizedName}EntityHandler
+public interface I${modelJavaClassName}AsyncPathHandler<T> extends IEntityHandler
 {
 <#list model.operations as operation>
   <@printMethodJavadoc operation true/>

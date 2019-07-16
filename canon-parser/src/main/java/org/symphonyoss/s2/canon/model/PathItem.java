@@ -64,24 +64,32 @@ public class PathItem extends ParameterContainer
   }   
 
 
-  public static PathItem create(Paths paths, ParserContext parserContext)
+  public static PathItem create(Paths paths, String basePath, ParserContext parserContext)
   {
-    Set<String>  pathParams = new HashSet<>();
-    StringBuffer lineBuf = new StringBuffer();
-    StringBuffer paramBuf = new StringBuffer();
-    StringBuffer bindBuf = new StringBuffer();
-    StringBuffer nameBuf = new StringBuffer();
-    StringBuffer partBuf = new StringBuffer();
-    StringBuffer formatBuf = new StringBuffer();
-    boolean      inParam=false;
-    boolean      inWord=false;
-    boolean      inBindPath=true;
-    List<String> partList = new ArrayList<>();
+    Set<String>   pathParams = new HashSet<>();
+    StringBuilder lineBuf = new StringBuilder();
+    StringBuilder paramBuf = new StringBuilder();
+    StringBuilder bindBuf = new StringBuilder();
+    StringBuilder nameBuf = new StringBuilder();
+    StringBuilder partBuf = new StringBuilder();
+    StringBuilder formatBuf = new StringBuilder();
+    boolean       inParam=false;
+    boolean       inWord=false;
+    boolean       inBindPath=true;
+    List<String>  partList = new ArrayList<>();
+    
+//    for(String part : paths.getModel().getBasePath().split("/"))
+//    {
+//      if(part.length() > 0)
+//        partList.add(part);
+//    }
     
     char[] chars = parserContext.getName().toCharArray();
     
-    if(chars[0] != '/')
+    if(parserContext.getName().charAt(0) != '/')
       parserContext.raise(new ParserError("Path must begin with a /"));
+    
+    partBuf.append(basePath);
     
     lineBuf.append('/');
     partBuf.append('/');
@@ -96,7 +104,7 @@ public class PathItem extends ParameterContainer
         case '{':
           inBindPath=false;
           partList.add(partBuf.toString());
-          partBuf = new StringBuffer();
+          partBuf = new StringBuilder();
           if(inParam)
           {
             parserContext.raise(new ParserError("Unexpected { in path after \"%s\"", lineBuf));
@@ -108,7 +116,7 @@ public class PathItem extends ParameterContainer
               parserContext.raise(new ParserError("Unexpected { in path after \"%s\"", lineBuf));
             }
             inParam = true;
-            paramBuf = new StringBuffer();
+            paramBuf = new StringBuilder();
             formatBuf.append("%s");
           }
           break;

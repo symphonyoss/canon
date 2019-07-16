@@ -14,7 +14,7 @@ import org.symphonyoss.s2.fugue.core.trace.ITraceContext;
 <@importFacadePackages model/>
 
 <#include "Path.ftl">
-public interface I${modelJavaClassName}PathHandler<T> extends I${model.model.camelCapitalizedName}EntityHandler
+public interface I${modelJavaClassName}PathHandler<T> extends IEntityHandler
 {
 <#list model.operations as operation>
   <@printMethodJavadoc operation false/>

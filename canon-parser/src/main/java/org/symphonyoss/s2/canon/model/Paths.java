@@ -39,7 +39,7 @@ public class Paths extends ModelElement
     {
       log_.debug("Found path \"" + path.getName() + "\" at " + path.getPath());
       
-      PathItem pathSchema = PathItem.create(this, path);
+      PathItem pathSchema = PathItem.create(this, getModel().getBasePath(), path);
       
       add(pathSchema.getName(), pathSchema);
     }
