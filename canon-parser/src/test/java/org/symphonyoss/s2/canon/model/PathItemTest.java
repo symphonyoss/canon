@@ -55,7 +55,7 @@ public class PathItemTest extends AbstractParserTest
   {
     ParserContext context = createParserContext(String.format("{\"%s\": {}}", path));
     
-    PathItem.create(null, context.get(path));
+    PathItem.create(null, "/test/v1", context.get(path));
     
     if(context.getRootParserContext().getErrors().size() != errorCnt)
     {

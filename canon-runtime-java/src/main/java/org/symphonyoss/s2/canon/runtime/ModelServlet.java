@@ -41,7 +41,7 @@ import org.symphonyoss.s2.fugue.core.trace.ITraceContext;
 import org.symphonyoss.s2.fugue.core.trace.ITraceContextTransaction;
 import org.symphonyoss.s2.fugue.core.trace.ITraceContextTransactionFactory;
 
-public abstract class ModelServlet extends HttpServlet implements IModelServlet
+public class ModelServlet extends HttpServlet implements IModelServlet
 {
   private static final long                            serialVersionUID = 1L;
 
@@ -70,8 +70,19 @@ public abstract class ModelServlet extends HttpServlet implements IModelServlet
     traceFactory_ = traceFactory;
     modelRegistry_ = modelRegistry;
   }
+
+  @Override
+  public String getUrlPath()
+  {
+    return "/*";
+  }
   
   public void register(IEntityHandler handler)
+  {
+    withHandler(handler);
+  }
+  
+  public ModelServlet withHandler(IEntityHandler handler)
   {
     List<IEntityHandler> list = handlerMap_.get(handler.getPartsLength());
     
@@ -82,6 +93,8 @@ public abstract class ModelServlet extends HttpServlet implements IModelServlet
     }
     
     list.add(handler);
+    
+    return this;
   }
   
   private void handle(HttpMethod method, HttpServletRequest req, HttpServletResponse resp) throws IOException
