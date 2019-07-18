@@ -32,7 +32,7 @@ import org.symphonyoss.s2.canon.runtime.exception.PermissionDeniedException;
 import org.symphonyoss.s2.canon.runtime.exception.ServerErrorException;
 import org.symphonyoss.s2.canon.runtime.http.IRequestAuthenticator;
 import org.symphonyoss.s2.canon.runtime.http.ParameterLocation;
-import org.symphonyoss.s2.canon.runtime.http.IRequestContext;
+import org.symphonyoss.s2.canon.runtime.http.IAsyncRequestContext;
 import org.symphonyoss.s2.fugue.pipeline.IConsumer;
 
 <@importFieldTypes model true/>
@@ -63,7 +63,7 @@ public abstract class ${modelJavaClassName}AsyncPathHandler<A> extends AsyncPath
   }
 
   @Override
-  public void handle(A auth, IRequestContext context, List<String> pathParams) throws IOException, CanonException
+  public void handle(A auth, IAsyncRequestContext context, List<String> pathParams) throws IOException, CanonException
   {
     switch(context.getMethod())
     {
@@ -88,7 +88,7 @@ public abstract class ${modelJavaClassName}AsyncPathHandler<A> extends AsyncPath
   
   <@setJavaMethod operation/>
   
-  private void do${operation.camelCapitalizedName}(A auth, IRequestContext context, List<String> pathParams) throws IOException, CanonException
+  private void do${operation.camelCapitalizedName}(A auth, IAsyncRequestContext context, List<String> pathParams) throws IOException, CanonException
   {
   <#include "GetParams.ftl">
 

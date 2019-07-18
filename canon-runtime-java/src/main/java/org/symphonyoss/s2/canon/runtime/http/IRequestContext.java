@@ -28,10 +28,6 @@ import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.List;
 
-import javax.servlet.AsyncContext;
-import javax.servlet.ServletInputStream;
-import javax.servlet.ServletOutputStream;
-
 import org.symphonyoss.s2.canon.runtime.IBaseEntity;
 import org.symphonyoss.s2.canon.runtime.IEntity;
 import org.symphonyoss.s2.canon.runtime.TypeDefBuilder;
@@ -108,12 +104,4 @@ public interface IRequestContext
   Integer asInteger(String parameterName, String value);
 
   ImmutableByteArray asImmutableByteArray(String parameterName, String value);
-
-  // These methods are to support async I/O which is only supported for Servlet implementations, runtime exceptions may be thrown from
-  // other implementations including the lambda one.
-  ServletInputStream getInputStream() throws IOException;
-
-  ServletOutputStream getOutputStream() throws IOException;
-
-  AsyncContext startAsync();
 }

@@ -37,7 +37,7 @@ import org.symphonyoss.s2.canon.runtime.exception.ServerErrorException;
 import org.symphonyoss.s2.canon.runtime.http.IRequestAuthenticator;
 import org.symphonyoss.s2.canon.runtime.http.IRequestContext;
 
-public abstract class AbstractPathHandler<T, C extends IRequestContext>
+public abstract class AbstractPathHandler<T, C extends IRequestContext> implements IAbstractEntityHandler
 {
   private static final Logger log_ = LoggerFactory.getLogger(AbstractPathHandler.class);
 

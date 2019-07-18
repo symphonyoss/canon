@@ -1,7 +1,7 @@
 /*
  *
  *
- * Copyright 2018 Symphony Communication Services, LLC.
+ * Copyright 2019 Symphony Communication Services, LLC.
  *
  * Licensed to The Symphony Software Foundation (SSF) under one
  * or more contributor license agreements.  See the NOTICE file
@@ -23,13 +23,10 @@
 
 package org.symphonyoss.s2.canon.runtime;
 
-import org.symphonyoss.s2.canon.runtime.http.IRequestAuthenticator;
-import org.symphonyoss.s2.canon.runtime.http.IRequestContext;
+import org.symphonyoss.s2.fugue.core.trace.ITraceContextTransactionFactory;
 
-public abstract class PathHandler<T> extends AbstractPathHandler<T, IRequestContext>
+@FunctionalInterface
+public interface IHandlerContainerFactory
 {
-  public PathHandler(IRequestAuthenticator<T> authenticator, int variableCnt, String[] parts)
-  {
-    super(authenticator, variableCnt, parts);
-  }
-}   
+  IHandlerContainer createHandlerContainer(ITraceContextTransactionFactory traceFactory, IModelRegistry modelRegistry);
+}
