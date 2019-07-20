@@ -31,17 +31,13 @@ import java.util.List;
 import java.util.Map;
 
 import javax.annotation.Nullable;
-import javax.servlet.http.Cookie;
-import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.apache.commons.codec.binary.Base64;
-import org.apache.http.Header;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.symphonyoss.s2.canon.runtime.IBaseEntity;
 import org.symphonyoss.s2.canon.runtime.IEntity;
-import org.symphonyoss.s2.canon.runtime.IEntityFactory;
 import org.symphonyoss.s2.canon.runtime.IModelRegistry;
 import org.symphonyoss.s2.canon.runtime.ModelRegistry;
 import org.symphonyoss.s2.canon.runtime.TypeDefBuilder;
@@ -54,87 +50,76 @@ import org.symphonyoss.s2.fugue.core.trace.ITraceContext;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ArrayNode;
-import com.google.protobuf.ByteString;
 
-public class RequestContext
+public abstract class AbstractRequestContext implements IRequestContext
 {
-  public static final String        JSON_CONTENT_TYPE = "application/json; charset=utf-8";
-
-  public static final String        FORM_CONTENT_TYPE = "application/x-www-form-urlencoded; charset=UTF-8";
-
-  private static Logger             log_              = LoggerFactory.getLogger(RequestContext.class);
+  private static Logger             log_              = LoggerFactory.getLogger(AbstractRequestContext.class);
 
   private final HttpMethod          method_;
-  private final HttpServletRequest  request_;
-  private final HttpServletResponse response_;
   private final ITraceContext       trace_;
   private final IModelRegistry      modelRegistry_;
 
-  private Map<String, Cookie>       cookieMap_;
   private Map<String, String>       pathMap_;
   private List<String>              errors_           = new LinkedList<>();
 
 
 
-  public RequestContext(HttpMethod method, HttpServletRequest request, HttpServletResponse response, ITraceContext trace, IModelRegistry modelRegistry)
+  public AbstractRequestContext(HttpMethod method, ITraceContext trace, IModelRegistry modelRegistry)
   {
     method_ = method;
-    request_ = request;
-    response_ = response;
     trace_ = trace;
     modelRegistry_ = modelRegistry;
   }
 
+  @Override
   public HttpMethod getMethod()
   {
     return method_;
   }
 
-  public HttpServletRequest getRequest()
-  {
-    return request_;
-  }
-
-  public HttpServletResponse getResponse()
-  {
-    return response_;
-  }
-
+  @Override
   public ITraceContext getTrace()
   {
     return trace_;
   }
 
+  @Override
   public @Nullable Boolean  getParameterAsBoolean(String name, ParameterLocation location, boolean required)
   {
     return asBoolean(name, getParameterAsString(name, location, required));
   }
 
+  @Override
   public @Nullable Long  getParameterAsLong(String name, ParameterLocation location, boolean required)
   {
     return asLong(name, getParameterAsString(name, location, required));
   }
 
+  @Override
   public Integer  getParameterAsInteger(String name, ParameterLocation location, boolean required)
   {
     return asInteger(name, getParameterAsString(name, location, required));
   }
 
-  public ByteString getParameterAsByteString(String name, ParameterLocation location, boolean required)
-  {
-    return asByteString(name, getParameterAsString(name, location, required));
-  }
+//  @Override
+//  public ByteString getParameterAsByteString(String name, ParameterLocation location, boolean required)
+//  {
+//    return asByteString(name, getParameterAsString(name, location, required));
+//  }
   
+  @Override
   public ImmutableByteArray getParameterAsImmutableByteArray(String name, ParameterLocation location, boolean required)
   {
     return asImmutableByteArray(name, getParameterAsString(name, location, required));
   }
 
+  @Override
   public @Nullable String asString(String parameterName, String value)
   {
     return value;
   }
 
+  @Override
   public @Nullable Boolean asBoolean(String parameterName, String value)
   {
     if(value == null)
@@ -151,6 +136,7 @@ public class RequestContext
     }
   }
 
+  @Override
   public @Nullable Long asLong(String parameterName, String value)
   {
     if(value == null)
@@ -167,6 +153,7 @@ public class RequestContext
     }
   }
   
+  @Override
   public @Nullable Integer asInteger(String parameterName, String value)
   {
     if(value == null)
@@ -183,20 +170,21 @@ public class RequestContext
     }
   }
 
-  public @Nullable ByteString asByteString(String parameterName, String value)
-  {
-    if(value == null)
-      return null;
-    
-    if(!Base64.isBase64(value))
-    {
-      error("Parameter %s requires a Base64 value but we found \"%s\"", parameterName, value);
-      return null;
-    }
-    
-    return ByteString.copyFrom(Base64.decodeBase64(value));
-  }
+//  private @Nullable ByteString asByteString(String parameterName, String value)
+//  {
+//    if(value == null)
+//      return null;
+//    
+//    if(!Base64.isBase64(value))
+//    {
+//      error("Parameter %s requires a Base64 value but we found \"%s\"", parameterName, value);
+//      return null;
+//    }
+//    
+//    return ByteString.copyFrom(Base64.decodeBase64(value));
+//  }
 
+  @Override
   public @Nullable ImmutableByteArray asImmutableByteArray(String parameterName, String value)
   {
     if(value == null)
@@ -210,7 +198,12 @@ public class RequestContext
     
     return ImmutableByteArray.newInstance(Base64.decodeBase64(value));
   }
+  
+  protected abstract String getCookie(String name);
+  protected abstract String getHeader(String name);
+  protected abstract String getParameter(String name);
 
+  @Override
   public String  getParameterAsString(String name, ParameterLocation location, boolean required)
   {
     String  value = null;
@@ -218,18 +211,11 @@ public class RequestContext
     switch(location)
     {
       case Cookie:
-        if(cookieMap_ == null)
-        {
-          cookieMap_ = new HashMap<>();
-          
-          for(Cookie cookie : request_.getCookies())
-            cookieMap_.put(cookie.getName(), cookie);
-        }
-        value = cookieMap_.get(name).getValue();
+        value = getCookie(name);
         break;
         
       case Header:
-        value = request_.getHeader(name);
+        value = getHeader(name);
         break;
         
       case Path:
@@ -237,7 +223,7 @@ public class RequestContext
         {
           pathMap_ = new HashMap<>();
           
-          String pathInfo = request_.getPathInfo();
+          String pathInfo = getPathInfo();
           
           if(pathInfo != null)
           {
@@ -254,7 +240,7 @@ public class RequestContext
         break;
       
       case Query:
-        value = request_.getParameter(name);
+        value = getParameter(name);
         break;
     }
     
@@ -266,6 +252,7 @@ public class RequestContext
     return value;
   }
 
+  @Override
   public boolean preConditionsAreMet()
   {
     if(errors_.isEmpty())
@@ -277,22 +264,25 @@ public class RequestContext
     return false;
   }
 
+  @Override
   public void sendOKResponse()
   {
-    response_.setStatus(HttpServletResponse.SC_OK);
+    setStatus(HttpServletResponse.SC_OK);
   }
 
+  @Override
   public void sendOKResponse(IBaseEntity response) throws IOException
   {
-    response_.setStatus(HttpServletResponse.SC_OK);
+    setStatus(HttpServletResponse.SC_OK);
     
-    response_.getWriter().println(response.serialize());
+    getWriter().println(response.serialize());
   }
 
+  @Override
   public void sendOKResponse(List<? extends IBaseEntity> response) throws IOException
   {
-    response_.setStatus(HttpServletResponse.SC_OK);
-    PrintWriter out = response_.getWriter();
+    setStatus(HttpServletResponse.SC_OK);
+    PrintWriter out = getWriter();
     boolean first = true;
     
     out.print("[");
@@ -311,6 +301,7 @@ public class RequestContext
     out.println("]");
   }
 
+  @Override
   public void sendErrorResponse(int statusCode)
   {
     ObjectMapper mapper = new ObjectMapper();
@@ -324,9 +315,9 @@ public class RequestContext
     
     try
     {
-      response_.setContentType(JSON_CONTENT_TYPE);
-      response_.setStatus(statusCode);
-      response_.getWriter().println(arrayNode.toString());
+      setContentType(JSON_CONTENT_TYPE);
+      setStatus(statusCode);
+      getWriter().println(arrayNode.toString());
       
     }
     catch (IOException e)
@@ -335,11 +326,19 @@ public class RequestContext
     }
   }
   
+  @Override
+  public void error(String message)
+  {
+    errors_.add(message);
+  }
+  
+  @Override
   public void error(String format, Object ...args)
   {
     errors_.add(String.format(format, args));
   }
   
+  @Override
   public void error(Throwable t)
   {
     String message = t.getMessage();
@@ -350,11 +349,12 @@ public class RequestContext
     errors_.add(String.format(message));
   }
   
+  @Override
   public <E extends IEntity> E parsePayload(String typeId, Class<E> type)
   {
     try
     {
-      return modelRegistry_.parseOne(getRequest().getReader(), typeId, type);
+      return modelRegistry_.parseOne(getReader(), typeId, type);
     }
     catch (RuntimeException | IOException e)
     {
@@ -370,11 +370,12 @@ public class RequestContext
     }
   }
 
+  @Override
   public <M,T> M parsePayload(TypeDefBuilder<M,T> builder)
   {
     try
     {
-      JsonValue<?, ?> jsonObject = ModelRegistry.parseOneJsonValue(getRequest().getReader());
+      JsonValue<?, ?> jsonObject = ModelRegistry.parseOneJsonValue(getReader());
       
       return builder.build(jsonObject);
     }
@@ -392,11 +393,12 @@ public class RequestContext
     }
   }
 
+  @Override
   public <M> M parsePayload(IValueProviderBuilder<M> builder)
   {
     try
     {
-      JsonValue<?, ?> jsonObject = ModelRegistry.parseOneJsonValue(getRequest().getReader());
+      JsonValue<?, ?> jsonObject = ModelRegistry.parseOneJsonValue(getReader());
       return builder.build(jsonObject);
     }
     catch (IllegalArgumentException | IOException e)
@@ -413,13 +415,14 @@ public class RequestContext
     }
   }
   
+  @Override
   public <E extends IEntity> List<E> parseListPayload(Class<E> type)
   {
     List<E> result = new LinkedList<>();
     
     try
     {
-      for(ImmutableJsonObject jsonObject : ModelRegistry.parseListOfJsonObjects(getRequest().getReader()))
+      for(ImmutableJsonObject jsonObject : ModelRegistry.parseListOfJsonObjects(getReader()))
       {
         IEntity entity = modelRegistry_.newInstance(jsonObject);
         
@@ -443,13 +446,14 @@ public class RequestContext
     return result;
   }
 
+  @Override
   public <M> List<M> parseListPayload(IValueProviderBuilder<M> builder)
   {
     List<M> result = new LinkedList<>();
     
     try
     {
-      for(JsonValue<?, ?> jsonObject : ModelRegistry.parseListOfJsonValues(getRequest().getReader()))
+      for(JsonValue<?, ?> jsonObject : ModelRegistry.parseListOfJsonValues(getReader()))
       {
         result.add(builder.build(jsonObject));
       }

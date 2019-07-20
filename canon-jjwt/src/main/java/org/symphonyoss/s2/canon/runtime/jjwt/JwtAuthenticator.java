@@ -30,7 +30,7 @@ import org.symphonyoss.s2.canon.runtime.exception.NotAuthenticatedException;
 import org.symphonyoss.s2.canon.runtime.exception.PermissionDeniedException;
 import org.symphonyoss.s2.canon.runtime.http.IRequestAuthenticator;
 import org.symphonyoss.s2.canon.runtime.http.ParameterLocation;
-import org.symphonyoss.s2.canon.runtime.http.RequestContext;
+import org.symphonyoss.s2.canon.runtime.http.IRequestContext;
 
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.ExpiredJwtException;
@@ -51,7 +51,7 @@ public abstract class JwtAuthenticator<T> extends JwtBase implements IRequestAut
   }
   
   @Override
-  public T authenticate(RequestContext context) throws NotAuthenticatedException, PermissionDeniedException
+  public T authenticate(IRequestContext context) throws NotAuthenticatedException, PermissionDeniedException
   {
     return authenticate(getToken(context));
   }

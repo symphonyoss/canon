@@ -1,7 +1,7 @@
 /*
  *
  *
- * Copyright 2017 Symphony Communication Services, LLC.
+ * Copyright 2017-2019 Symphony Communication Services, LLC.
  *
  * Licensed to The Symphony Software Foundation (SSF) under one
  * or more contributor license agreements.  See the NOTICE file
@@ -36,7 +36,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.symphonyoss.s2.canon.runtime.http.HttpMethod;
-import org.symphonyoss.s2.canon.runtime.http.RequestContext;
+import org.symphonyoss.s2.canon.runtime.http.ServletRequestContext;
 import org.symphonyoss.s2.fugue.core.trace.ITraceContext;
 import org.symphonyoss.s2.fugue.core.trace.ITraceContextTransaction;
 import org.symphonyoss.s2.fugue.core.trace.ITraceContextTransactionFactory;
@@ -47,7 +47,7 @@ public class ModelServlet extends HttpServlet implements IModelServlet
 
   private final ITraceContextTransactionFactory        traceFactory_;
   private final IModelRegistry                         modelRegistry_;
-  private final TreeMap<Integer, List<IEntityHandler>> handlerMap_   = new TreeMap<>(new Comparator<Integer>()
+  private final TreeMap<Integer, List<IAbstractEntityHandler>> handlerMap_   = new TreeMap<>(new Comparator<Integer>()
       {
         /*
          * We want the map in descending order.
@@ -77,14 +77,21 @@ public class ModelServlet extends HttpServlet implements IModelServlet
     return "/*";
   }
   
-  public void register(IEntityHandler handler)
-  {
-    withHandler(handler);
-  }
-  
+  @Override
   public ModelServlet withHandler(IEntityHandler handler)
   {
-    List<IEntityHandler> list = handlerMap_.get(handler.getPartsLength());
+    return addHandler(handler);
+  }
+  
+  @Override
+  public ModelServlet withHandler(IAsyncEntityHandler handler)
+  {
+    return addHandler(handler);
+  }
+  
+  private ModelServlet addHandler(IAbstractEntityHandler handler)
+  {
+    List<IAbstractEntityHandler> list = handlerMap_.get(handler.getPartsLength());
     
     if(list == null)
     {
@@ -103,13 +110,13 @@ public class ModelServlet extends HttpServlet implements IModelServlet
     {
       ITraceContext trace = traceTransaction.open();
       
-      RequestContext context = new RequestContext(method, req, resp, trace, modelRegistry_);
+      ServletRequestContext context = new ServletRequestContext(method, trace, modelRegistry_, req, resp);
       
-      for(List<IEntityHandler> list : handlerMap_.values())
+      for(List<IAbstractEntityHandler> list : handlerMap_.values())
       {
-        for(IEntityHandler handler : list)
+        for(IAbstractEntityHandler handler : list)
         {
-          if(handler.handle(context))
+          if(handle(handler, context))
           {
             traceTransaction.finished();
             return;
@@ -117,10 +124,18 @@ public class ModelServlet extends HttpServlet implements IModelServlet
         }
       }
       
-      context.error("No handler found for " + context.getRequest().getPathInfo());
+      context.error("No handler found for " + context.getPathInfo());
       context.sendErrorResponse(HttpServletResponse.SC_NOT_FOUND);
       traceTransaction.aborted();
     }
+  }
+
+  private boolean handle(IAbstractEntityHandler handler, ServletRequestContext context) throws IOException
+  {
+    if(handler instanceof IEntityHandler)
+      return ((IEntityHandler)handler).handle(context);
+    
+    return ((IAsyncEntityHandler)handler).handle(context);
   }
 
   @Override

@@ -25,13 +25,15 @@ package org.symphonyoss.s2.canon.runtime;
 
 import java.io.IOException;
 
-import org.symphonyoss.s2.canon.runtime.http.RequestContext;
+import org.symphonyoss.s2.canon.runtime.http.IRequestContext;
 
-public interface IEntityHandler
+/**
+ * Interface for synchronous entity handlers.
+ * 
+ * @author Bruce Skingle
+ *
+ */
+public interface IEntityHandler extends IAbstractEntityHandler
 {
-  String  getPath();
-
-  int getPartsLength();
-
-  boolean handle(RequestContext context) throws IOException;
+  boolean handle(IRequestContext context) throws IOException;
 }

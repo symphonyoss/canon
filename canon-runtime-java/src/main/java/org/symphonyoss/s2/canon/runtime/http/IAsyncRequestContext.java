@@ -1,7 +1,7 @@
 /*
  *
  *
- * Copyright 2018 Symphony Communication Services, LLC.
+ * Copyright 2019 Symphony Communication Services, LLC.
  *
  * Licensed to The Symphony Software Foundation (SSF) under one
  * or more contributor license agreements.  See the NOTICE file
@@ -21,15 +21,21 @@
  * under the License.
  */
 
-package org.symphonyoss.s2.canon.runtime;
+package org.symphonyoss.s2.canon.runtime.http;
 
-import org.symphonyoss.s2.canon.runtime.http.IRequestAuthenticator;
-import org.symphonyoss.s2.canon.runtime.http.IRequestContext;
+import java.io.IOException;
 
-public abstract class PathHandler<T> extends AbstractPathHandler<T, IRequestContext>
+import javax.servlet.AsyncContext;
+import javax.servlet.ServletInputStream;
+import javax.servlet.ServletOutputStream;
+
+public interface IAsyncRequestContext extends IRequestContext
 {
-  public PathHandler(IRequestAuthenticator<T> authenticator, int variableCnt, String[] parts)
-  {
-    super(authenticator, variableCnt, parts);
-  }
-}   
+  // These methods are to support async I/O which is only supported for Servlet implementations, runtime exceptions may be thrown from
+  // other implementations including the lambda one.
+  ServletInputStream getInputStream() throws IOException;
+
+  ServletOutputStream getOutputStream() throws IOException;
+
+  AsyncContext startAsync();
+}

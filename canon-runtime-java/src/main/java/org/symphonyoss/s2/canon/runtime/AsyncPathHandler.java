@@ -29,10 +29,11 @@ import javax.annotation.Nullable;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.symphonyoss.s2.canon.runtime.http.IAsyncRequestContext;
 import org.symphonyoss.s2.canon.runtime.http.IRequestAuthenticator;
 
 public abstract class AsyncPathHandler<T>
-extends PathHandler<T>
+extends AbstractPathHandler<T, IAsyncRequestContext>
 {
   private static final Logger log_ = LoggerFactory.getLogger(AsyncPathHandler.class);
   

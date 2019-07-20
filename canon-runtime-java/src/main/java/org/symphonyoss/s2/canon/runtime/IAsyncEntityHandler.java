@@ -23,13 +23,17 @@
 
 package org.symphonyoss.s2.canon.runtime;
 
-import org.symphonyoss.s2.canon.runtime.http.IRequestAuthenticator;
-import org.symphonyoss.s2.canon.runtime.http.IRequestContext;
+import java.io.IOException;
 
-public abstract class PathHandler<T> extends AbstractPathHandler<T, IRequestContext>
+import org.symphonyoss.s2.canon.runtime.http.IAsyncRequestContext;
+
+/**
+ * Interface for synchronous entity handlers.
+ * 
+ * @author Bruce Skingle
+ *
+ */
+public interface IAsyncEntityHandler extends IAbstractEntityHandler
 {
-  public PathHandler(IRequestAuthenticator<T> authenticator, int variableCnt, String[] parts)
-  {
-    super(authenticator, variableCnt, parts);
-  }
-}   
+  boolean handle(IAsyncRequestContext context) throws IOException;
+}
