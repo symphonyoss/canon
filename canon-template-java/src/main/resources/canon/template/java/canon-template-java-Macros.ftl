@@ -1074,7 +1074,7 @@ ${indent}    ${var}.add(${model.camelCapitalizedName}.newBuilder().build(${value
       <#assign methodThrows="throws PermissionDeniedException, ServerErrorException">
     <#else>
       <#assign methodResponseDecl="@Nullable ${methodResponseType}">
-      <#assign methodThrows="throws PermissionDeniedException, NoSuchRecordException, ServerErrorException">
+      <#assign methodThrows="throws PermissionDeniedException, NotFoundException, ServerErrorException">
     </#if>
     <#if operation.payload??>
       <#assign methodStyle="PayloadResponse">

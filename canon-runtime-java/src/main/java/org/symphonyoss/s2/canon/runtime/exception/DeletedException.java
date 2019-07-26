@@ -29,27 +29,28 @@ import org.apache.http.client.methods.CloseableHttpResponse;
 
 /**
  * An Exception which may be thrown by Canon implementing methods to indicate
- * that a requested object does not exist.
+ * that a requested object has been deleted.
+ * 
+ * Note that this is a sub-class of NotFoundException so callers who do not care about
+ * the difference between not found and deleted can easily treat both outcomes the same.
  * 
  * @author Bruce Skingle
  *
- * @deprecated use NotFoundException
  */
-@Deprecated
-public class NoSuchRecordException extends CanonException
+public class DeletedException extends CanonException
 {
   private static final long serialVersionUID = 1L;
   
-  private static final int HTTP_STATUS_CODE = HttpServletResponse.SC_NOT_FOUND;
+  private static final int HTTP_STATUS_CODE = HttpServletResponse.SC_GONE;
 
   /**
    * Default constructor.
    * 
    * HTTP status 404 is implied.
    */
-  public NoSuchRecordException()
+  public DeletedException()
   {
-    super(HTTP_STATUS_CODE, "Record Not Found");
+    super(HTTP_STATUS_CODE);
   }
 
   /**
@@ -57,7 +58,7 @@ public class NoSuchRecordException extends CanonException
    * 
    * @param message A message describing the detail of the fault.
    */
-  public NoSuchRecordException(String message)
+  public DeletedException(String message)
   {
     super(HTTP_STATUS_CODE, message);
   }
@@ -68,7 +69,7 @@ public class NoSuchRecordException extends CanonException
    * @param message A message describing the detail of the fault.
    * @param cause The underlying cause of the fault.
    */
-  public NoSuchRecordException(String message, Throwable cause)
+  public DeletedException(String message, Throwable cause)
   {
     super(HTTP_STATUS_CODE, message, cause);
   }
@@ -78,7 +79,7 @@ public class NoSuchRecordException extends CanonException
    * 
    * @param cause The underlying cause of the fault.
    */
-  public NoSuchRecordException(Throwable cause)
+  public DeletedException(Throwable cause)
   {
     super(HTTP_STATUS_CODE, cause);
   }
@@ -94,7 +95,7 @@ public class NoSuchRecordException extends CanonException
    * @param writableStackTrace whether or not the stack trace should
    *                           be writable
    */
-  public NoSuchRecordException(String message, Throwable cause, boolean enableSuppression,
+  public DeletedException(String message, Throwable cause, boolean enableSuppression,
       boolean writableStackTrace)
   {
     super(HTTP_STATUS_CODE, message, cause, enableSuppression, writableStackTrace);
@@ -107,7 +108,7 @@ public class NoSuchRecordException extends CanonException
    * 
    * @param response An HTTP response which is saved as the cause of the exception.
    */
-  public NoSuchRecordException(CloseableHttpResponse response)
+  public DeletedException(CloseableHttpResponse response)
   {
     super(HTTP_STATUS_CODE, null, response);
   }
