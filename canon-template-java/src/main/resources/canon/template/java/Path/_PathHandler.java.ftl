@@ -135,10 +135,12 @@ public abstract class ${modelJavaClassName}PathHandler<T> extends PathHandler<T>
   </#if>
       }
   <#if operation.response?? && operation.response.isRequired>
-      catch(BadRequestException | PermissionDeniedException | ServerErrorException e)
-  <#else>
-      catch(BadRequestException | PermissionDeniedException | ServerErrorException | NotFoundException e)
+      catch(NotFoundException e)
+      {
+        throw new ServerErrorException("Response is required but non returned.", e);
+      }
   </#if>
+      catch(CanonException e)
       {
         throw e;
       }

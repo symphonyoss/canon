@@ -46,7 +46,7 @@ public class DeletedException extends CanonException
   /**
    * Default constructor.
    * 
-   * HTTP status 404 is implied.
+   * HTTP status 410 is implied.
    */
   public DeletedException()
   {
