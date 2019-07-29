@@ -13,7 +13,7 @@ import org.symphonyoss.s2.canon.runtime.PathHandler;
 import org.symphonyoss.s2.canon.runtime.ModelRegistry;
 import org.symphonyoss.s2.canon.runtime.exception.BadRequestException;
 import org.symphonyoss.s2.canon.runtime.exception.CanonException;
-import org.symphonyoss.s2.canon.runtime.exception.NoSuchRecordException;
+import org.symphonyoss.s2.canon.runtime.exception.NotFoundException;
 import org.symphonyoss.s2.canon.runtime.exception.PermissionDeniedException;
 import org.symphonyoss.s2.canon.runtime.exception.ServerErrorException;
 import org.symphonyoss.s2.canon.runtime.http.IRequestAuthenticator;
@@ -123,7 +123,7 @@ public abstract class ${modelJavaClassName}PathHandler<T> extends PathHandler<T>
     <#if operation.response.isRequired>
           throw new ServerErrorException("Required return value is null");        
     <#else>
-          throw new NoSuchRecordException();      
+          throw new NotFoundException();      
     </#if>
         }
         else
@@ -135,10 +135,12 @@ public abstract class ${modelJavaClassName}PathHandler<T> extends PathHandler<T>
   </#if>
       }
   <#if operation.response?? && operation.response.isRequired>
-      catch(BadRequestException | PermissionDeniedException | ServerErrorException e)
-  <#else>
-      catch(BadRequestException | PermissionDeniedException | ServerErrorException | NoSuchRecordException e)
+      catch(NotFoundException e)
+      {
+        throw new ServerErrorException("Response is required but non returned.", e);
+      }
   </#if>
+      catch(CanonException e)
       {
         throw e;
       }

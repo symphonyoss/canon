@@ -29,8 +29,7 @@ import org.apache.http.client.methods.CloseableHttpResponse;
 
 /**
  * An Exception which may be thrown by Canon implementing methods to indicate
- * that the request is understood but the caller lacks the necessary entitlements
- * to perform that action.
+ * that a requested object does not exist.
  * 
  * @author Bruce Skingle
  *
@@ -109,5 +108,38 @@ public class NotFoundException extends CanonException
   public NotFoundException(CloseableHttpResponse response)
   {
     super(HTTP_STATUS_CODE, null, response);
+  }
+  
+  // constructors for sub-classes
+  
+  protected NotFoundException(int httpStatusCode)
+  {
+    super(httpStatusCode);
+  }
+
+  protected NotFoundException(int httpStatusCode, String message)
+  {
+    super(httpStatusCode, message);
+  }
+
+  protected NotFoundException(int httpStatusCode, String message, Throwable cause)
+  {
+    super(httpStatusCode, message, cause);
+  }
+
+  protected NotFoundException(int httpStatusCode, Throwable cause)
+  {
+    super(httpStatusCode, cause);
+  }
+
+  protected NotFoundException(int httpStatusCode, String message, Throwable cause, boolean enableSuppression,
+      boolean writableStackTrace)
+  {
+    super(httpStatusCode, message, cause, enableSuppression, writableStackTrace);
+  }
+
+  protected NotFoundException(int httpStatusCode, CloseableHttpResponse response)
+  {
+    super(httpStatusCode, null, response);
   }
 }
