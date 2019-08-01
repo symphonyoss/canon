@@ -1,4 +1,20 @@
 <@setJavaType model.baseSchema/>
+/**
+<#if isFacade??>
+ * Facade for Array ${model}
+<#else>
+ * Array ${model}
+</#if>
+<#if model.summary??>
+ *
+ * ${model.summary}
+</#if>
+<#if model.description??>
+ *
+ * ${model.description}
+</#if>
+ * Generated from ${model} at ${model.context.path}
+ */
 @Immutable
 public class ${model.camelCapitalizedName} extends ${model.camelCapitalizedName}EntityArray
 {

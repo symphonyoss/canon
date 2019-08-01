@@ -3,7 +3,7 @@
 import org.symphonyoss.s2.canon.runtime.IEntity;
 
 /**
- * Base interface for allegro model entities.
+ * Base interface for ${model.camelCapitalizedName} model entities.
  */
 public interface I${model.camelCapitalizedName}ModelEntity extends IEntity
 {
