@@ -31,8 +31,9 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
 import org.symphonyoss.s2.common.dom.json.ImmutableJsonObject;
+import org.symphonyoss.s2.common.dom.json.jackson.JacksonAdaptor;
 
-import com.google.common.collect.ImmutableList;
+import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.google.common.collect.ImmutableSet;
 
 /**
@@ -52,10 +53,32 @@ public class Entity extends BaseEntity implements IEntity
   /**
    * Constructor from serialized form.
    * 
+   * This constructor is called by generated code, the modelRegistry is ignored.
+   * 
    * @param jsonObject A parse tree of the serialized form.
    * @param modelRegistry A model registry to use to deserialize any nested objects.
    */
   public Entity(ImmutableJsonObject jsonObject, IModelRegistry modelRegistry)
+  {
+    this(jsonObject);
+  }
+
+  /**
+   * Constructor from serialized form.
+   * 
+   * @param jsonObject A Jackson parse tree of the serialized form.
+   */
+  public Entity(ObjectNode jsonObject)
+  {
+    this(JacksonAdaptor.adaptObject(jsonObject).immutify());
+  }
+  
+  /**
+   * Constructor from serialized form.
+   * 
+   * @param jsonObject A parse tree of the serialized form.
+   */
+  public Entity(ImmutableJsonObject jsonObject)
   {
     super(jsonObject);
     

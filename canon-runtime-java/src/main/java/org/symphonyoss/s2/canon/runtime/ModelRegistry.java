@@ -82,14 +82,17 @@ public class ModelRegistry implements IModelRegistry
   {
     String typeId;
     
+    typeId = jsonObject.getString(CanonRuntime.JSON_TYPE, null);
+    
     if(expectedTypeId == null)
     {
-      typeId = jsonObject.getRequiredString(CanonRuntime.JSON_TYPE);
+      if(typeId == null)
+      {
+        return new Entity(jsonObject);
+      }
     }
     else
     {
-      typeId = jsonObject.getString(CanonRuntime.JSON_TYPE, null);
-      
       if(typeId == null)
       {
         typeId = expectedTypeId;
@@ -103,7 +106,7 @@ public class ModelRegistry implements IModelRegistry
     IEntityFactory<?,?,?> factory = factoryMap_.get(typeId);
     
     if(factory == null)
-      throw new IllegalArgumentException("Unknown type \"" + typeId + "\"");
+      return new Entity(jsonObject);
     
     return factory.newInstance(jsonObject, this);
   }
