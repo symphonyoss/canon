@@ -91,6 +91,8 @@ public interface IRequestContext
 
   void setStatus(int sc);
 
+  void setHeader(String header, String value);
+
   String getPathInfo();
 
   void sendError(int scMethodNotAllowed, String string) throws IOException;

@@ -115,6 +115,10 @@ public class ServletRequestContext extends AbstractRequestContext implements IAs
     response_.setStatus(sc);
   }
 
+  public void setHeader(String header, String value) {
+    response_.setHeader(header, value);
+  }
+
   @Override
   public void sendError(int sc, String msg) throws IOException
   {
