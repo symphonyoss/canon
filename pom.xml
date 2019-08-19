@@ -34,7 +34,7 @@
 	<artifactId>canon</artifactId>
 	<version>0.2.9-SNAPSHOT</version>
 	<description>JSON API Generation Tooling</description>
-	<url>https://github.com/bruceskingle/canon</url>
+	<url>https://github.com/symphonyoss/canon</url>
 	<packaging>pom</packaging>
 	
 	<modules>
