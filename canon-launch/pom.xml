@@ -26,7 +26,7 @@
   <parent>
     <groupId>org.symphonyoss.s2.canon</groupId>
     <artifactId>canon</artifactId>
-    <version>0.2.9-SNAPSHOT</version>
+    <version>0.2.9</version>
   </parent>
   <artifactId>canon-launch</artifactId>
   
