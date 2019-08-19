@@ -90,6 +90,8 @@ public interface IRequestContext
   void setContentType(String type);
 
   void setStatus(int sc);
+  
+  void setHeader(String header, String value);
 
   String getPathInfo();
 
