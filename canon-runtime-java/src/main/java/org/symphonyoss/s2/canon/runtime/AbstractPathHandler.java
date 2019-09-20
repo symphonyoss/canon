@@ -80,7 +80,7 @@ public abstract class AbstractPathHandler<T, C extends IRequestContext> implemen
     }
     catch (CanonException e)
     {
-      log_.info("Failed to service REST request" + e);
+      log_.info("Failed to service REST request", e);
       
       context.error(e);
       context.sendErrorResponse(e.getHttpStatusCode());

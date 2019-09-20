@@ -1,7 +1,7 @@
 /*
  *
  *
- * Copyright 2018 Symphony Communication Services, LLC.
+ * Copyright 2018-19 Symphony Communication Services, LLC.
  *
  * Licensed to The Symphony Software Foundation (SSF) under one
  * or more contributor license agreements.  See the NOTICE file
@@ -24,6 +24,7 @@
 package org.symphonyoss.s2.canon.runtime;
 
 import java.io.ByteArrayOutputStream;
+import java.io.Closeable;
 import java.nio.charset.StandardCharsets;
 
 /**
@@ -39,7 +40,7 @@ import java.nio.charset.StandardCharsets;
  * @author Bruce Skingle
  *
  */
-public abstract class JsonArrayParser
+public abstract class JsonArrayParser implements Closeable
 {
   private ByteArrayOutputStream     inputBufferStream_ = new ByteArrayOutputStream();
   private boolean                   inQuotedString_;
@@ -48,6 +49,12 @@ public abstract class JsonArrayParser
   private int                       arrayDepth_;
   private int                       objectDepth_;
   
+  /**
+   * Process the given bytes.
+   * 
+   * @param inputBuffer_  Byte buffer
+   * @param nbytes        Number of valid bytes in the buffer
+   */
   public void process(byte[] inputBuffer_, int nbytes)
   {   
     int offset=0;
@@ -58,18 +65,25 @@ public abstract class JsonArrayParser
     {
       if(inQuotedString_)
       {
-        switch(inputBuffer_[i])
+        if(inEscape_)
         {
-          case '\\':
-            inEscape_ = !inEscape_;
-            break;
-            
-          case '"':
-            if(inEscape_)
-              inEscape_ = false;
-            else
-              inQuotedString_ = false;
-            break;
+          inEscape_ = false;
+        }
+        else
+        {
+          switch(inputBuffer_[i])
+          {
+            case '\\':
+              inEscape_ = true;
+              break;
+              
+            case '"':
+              if(inEscape_)
+                inEscape_ = false;
+              else
+                inQuotedString_ = false;
+              break;
+          }
         }
       }
       else
@@ -121,7 +135,6 @@ public abstract class JsonArrayParser
           
           String input = new String(inputBufferStream_.toByteArray(), StandardCharsets.UTF_8);
           
-          //System.err.println("Got input " + input);
           handle(input);
           
           inputBufferStream_.reset();
@@ -144,17 +157,15 @@ public abstract class JsonArrayParser
     }
   }
   
-
   protected abstract void handle(String input);
 
-
+  @Override
   public void close()
   {
     if(inputBufferStream_.size()>0)
     {
       String input = new String(inputBufferStream_.toByteArray(), StandardCharsets.UTF_8);
       
-      //System.err.println("Got input " + input);
       handle(input);
     }
   }
