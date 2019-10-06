@@ -32,7 +32,7 @@ import org.symphonyoss.s2.fugue.pipeline.IConsumer;
  * If listener implementations block then there may be
  * performance issues so they should not do so, but they
  * need not be thread safe.
- * @author bruce.skingle
+ * @author Bruce Skingle
  *
  * @param <V> The listener payload
  */
