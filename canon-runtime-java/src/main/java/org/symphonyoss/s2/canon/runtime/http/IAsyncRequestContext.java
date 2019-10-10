@@ -35,6 +35,7 @@ public interface IAsyncRequestContext extends IRequestContext
   // other implementations including the lambda one.
   ServletInputStream getInputStream() throws IOException;
 
+  @Override
   ServletOutputStream getOutputStream() throws IOException;
 
   AsyncContext startAsync();
