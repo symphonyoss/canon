@@ -26,7 +26,7 @@ import org.symphonyoss.s2.fugue.pipeline.IConsumer;
  * 
  * Listeners are obliged to return quickly and should not block.
  * 
- * @author bruce.skingle
+ * @author Bruce Skingle
  *
  * @param <K> The key type
  * @param <V> The value type

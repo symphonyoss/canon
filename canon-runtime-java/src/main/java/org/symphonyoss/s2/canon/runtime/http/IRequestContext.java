@@ -25,6 +25,7 @@ package org.symphonyoss.s2.canon.runtime.http;
 
 import java.io.BufferedReader;
 import java.io.IOException;
+import java.io.OutputStream;
 import java.io.PrintWriter;
 import java.util.List;
 
@@ -85,7 +86,29 @@ public interface IRequestContext
 
   BufferedReader getReader() throws IOException;
 
+  /**
+   * Get a Writer or the response.
+   * 
+   * Either a Writer or an OutputStream can be obtained, but not both.
+   * 
+   * @return A Writer or the response.
+   * 
+   * @throws IOException If getOutputStream() has previously been called.
+   * 
+   */
   PrintWriter getWriter() throws IOException;
+
+  /**
+   * Get an OutputStream or the response.
+   * 
+   * Either a Writer or an OutputStream can be obtained, but not both.
+   * 
+   * @return A Writer or the response.
+   * 
+   * @throws IOException If getWriter() has previously been called.
+   * 
+   */
+  OutputStream getOutputStream() throws IOException;
 
   void setContentType(String type);
 

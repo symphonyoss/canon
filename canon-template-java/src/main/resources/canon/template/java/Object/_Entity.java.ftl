@@ -503,7 +503,6 @@
       return self();
     }
     <#if field.isArraySchema && ! field.isComponent>
-    <@printField/>
   
     public B with${field.camelCapitalizedName}(${fieldElementType} value)
     {

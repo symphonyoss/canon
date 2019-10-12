@@ -33,6 +33,7 @@ import javax.servlet.http.HttpServletResponse;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.symphonyoss.s2.canon.runtime.exception.CanonException;
+import org.symphonyoss.s2.canon.runtime.exception.NotFoundException;
 import org.symphonyoss.s2.canon.runtime.exception.ServerErrorException;
 import org.symphonyoss.s2.canon.runtime.http.IRequestAuthenticator;
 import org.symphonyoss.s2.canon.runtime.http.IRequestContext;
@@ -75,6 +76,11 @@ public abstract class AbstractPathHandler<T, C extends IRequestContext> implemen
     {
       log_.error("Failed to service REST request", e);
       
+      context.error(e);
+      context.sendErrorResponse(e.getHttpStatusCode());
+    }
+    catch (NotFoundException e)
+    {
       context.error(e);
       context.sendErrorResponse(e.getHttpStatusCode());
     }
