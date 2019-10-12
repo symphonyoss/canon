@@ -32,40 +32,46 @@ import org.symphonyoss.s2.canon.parser.error.UnexpectedTypeError;
 
 public class AbstractPayload extends ModelElement
 {
-  private static Logger log_ = LoggerFactory.getLogger(AbstractPayload.class);
-  
+  private static Logger     log_ = LoggerFactory.getLogger(AbstractPayload.class);
+
   private ReferenceOrSchema schema_;
-  private boolean required_;
-  private boolean multiple_;
+  private boolean           required_;
+  private boolean           multiple_;
+  private String            content_;
 
   public AbstractPayload(Operation parent, ParserContext parserContext, String elementType)
   {
     super(parent, parserContext, elementType);
     
-    required_ = parserContext.getBooleanNode("required", true);
-    multiple_ = parserContext.getBooleanNode("multiple", false);
+    content_ = parserContext.getTextNode(Canon.CONTENT, null);
     
-    ParserContext schemaContext = parserContext.get(Canon.SCHEMA);
-    
-    if(schemaContext == null)
+    if(content_ == null)
     {
-      parserContext.raise(new ParserError("%s is required", Canon.SCHEMA));
-    }
-    else
-    {
-      log_.debug("Found " + elementType + " schema \"" + schemaContext.getName() + "\" at " + schemaContext.getPath());
+      required_ = parserContext.getBooleanNode("required", true);
+      multiple_ = parserContext.getBooleanNode("multiple", false);
+   
+      ParserContext schemaContext = parserContext.get(Canon.SCHEMA);
       
-      AbstractSchema objectSchema = Field.createSchema(this, schemaContext, getName());
-      
-      if(objectSchema instanceof ReferenceOrSchema)
+      if(schemaContext == null)
       {
-        schema_ = (ReferenceOrSchema) objectSchema;
-        add(schema_);
+        parserContext.raise(new ParserError("%s is required", Canon.SCHEMA));
       }
       else
       {
-        schema_ = null;
-        schemaContext.raise(new UnexpectedTypeError(ReferenceOrSchema.class, objectSchema));
+        log_.debug("Found " + elementType + " schema \"" + schemaContext.getName() + "\" at " + schemaContext.getPath());
+        
+        AbstractSchema objectSchema = Field.createSchema(this, schemaContext, getName());
+        
+        if(objectSchema instanceof ReferenceOrSchema)
+        {
+          schema_ = (ReferenceOrSchema) objectSchema;
+          add(schema_);
+        }
+        else
+        {
+          schema_ = null;
+          schemaContext.raise(new UnexpectedTypeError(ReferenceOrSchema.class, objectSchema));
+        }
       }
     }
   }
@@ -97,4 +103,13 @@ public class AbstractPayload extends ModelElement
     return multiple_;
   }
 
+  public String getContent()
+  {
+    return content_;
+  }
+
+  public void setContent(String content)
+  {
+    content_ = content;
+  }
 }

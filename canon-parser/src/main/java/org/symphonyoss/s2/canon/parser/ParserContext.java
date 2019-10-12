@@ -178,6 +178,11 @@ public class ParserContext extends BaseParserContext implements Iterable<ParserC
 
   public String getTextNode(String fieldName)
   {
+    return getText(fieldName, "");
+  }
+
+  public String getTextNode(String fieldName, String defaultValue)
+  {
     JsonNode node = jsonNode_.get(fieldName);
     
     if(node != null)
@@ -189,7 +194,7 @@ public class ParserContext extends BaseParserContext implements Iterable<ParserC
       return node.asText();
     }
     
-    return "";
+    return defaultValue;
   }
 
   public Boolean getBooleanNode(String fieldName)

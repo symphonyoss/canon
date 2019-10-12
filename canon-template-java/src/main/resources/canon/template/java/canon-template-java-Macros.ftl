@@ -1062,8 +1062,12 @@ ${indent}    ${var}.add(${model.camelCapitalizedName}.newBuilder().build(${value
  #----------------------------------------------------------------------------------------------------->
 <#macro setJavaMethod operation>
   <#if operation.response??>
-    <@setJavaType operation.response.schema/>
-    <#assign methodResponseElementType="${fieldType}">
+    <#if operation.response.schema??>
+      <@setJavaType operation.response.schema/>
+      <#assign methodResponseElementType="${fieldType}">
+    <#else>
+      <#assign methodResponseElementType="ContentContainer">
+    </#if>
     <#if operation.response.isMultiple>
       <#assign methodResponseType="List<${fieldType}>">
     <#else>
@@ -1129,7 +1133,6 @@ ${indent}    ${var}.add(${model.camelCapitalizedName}.newBuilder().build(${value
    * @param canonPayload The request payload
   </#if>
   <#if isAsync && operation.response??>
-  <@setJavaType operation.response.schema/>
    * @param canonConsumer A consumer into which responses may be passed.
   </#if>
    * @param canonAuth An authentication token.

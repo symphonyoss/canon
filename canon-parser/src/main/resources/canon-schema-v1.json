@@ -415,7 +415,7 @@
 					"$ref": "#/definitions/body"
 				},
 				"response": {
-					"$ref": "#/definitions/body"
+					"$ref": "#/definitions/bodyOrContent"
 				},
 				"deprecated": {
 					"type": "boolean"
@@ -678,6 +678,25 @@
 				}
 			}
 		},
+		"content": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "content": {
+          "type": "string"
+        }
+      }
+		},
+    "bodyOrContent": {
+      "oneOf": [
+        {
+          "$ref": "#/definitions/body"
+        },
+        {
+          "$ref": "#/definitions/content"
+        }
+      ]
+    },
 		"body": {
 			"type": "object",
 			"description": "Describes a request or response body.",

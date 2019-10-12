@@ -81,6 +81,7 @@ public class Canon
   public static final String SCHEMAS               = "schemas";
   public static final String PARAMETERS            = "parameters";
   public static final String SCHEMA                = "schema";
+  public static final String CONTENT               = "content";
   public static final String X_BASE_PATH           = "basePath";
 
   private boolean            verbose_              = false;
