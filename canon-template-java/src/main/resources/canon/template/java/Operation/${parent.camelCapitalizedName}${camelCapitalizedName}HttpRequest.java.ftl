@@ -41,9 +41,7 @@ import org.symphonyoss.s2.canon.runtime.http.client.IAuthenticationProvider;
 import ${fieldFQType};
   </#if>
 </#list>
-<#if model.payload?? || model.response??>
 <@importFacadePackages model/>
-</#if>
 
 @Immutable
 public class ${model.parent.camelCapitalizedName}${model.camelCapitalizedName}HttpRequest extends ${model.parent.camelCapitalizedName}${model.camelCapitalizedName}HttpRequestOrBuilder
