@@ -253,6 +253,10 @@ public class ${model.parent.camelCapitalizedName}${model.camelCapitalizedName}Ht
             canonResult_ = (${methodResponseElementType}) result;
             </#if>
           }
+          else
+          {
+            throw new ServerErrorException("Expected result of type ${methodResponseElementType} but received " + result.getCanonType() + " check your model registry.");
+          }
         }
       };
       
