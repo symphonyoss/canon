@@ -55,7 +55,7 @@ public class ModelRegistry implements IModelRegistry
   private Map<String, IEntityFactory<?,?,?>>  factoryMap_ = new HashMap<>();
 
   /**
-   * Create a registry with the given models.
+   * Register the given models.
    * 
    * @param factories Entity factories to be registered.
    * 

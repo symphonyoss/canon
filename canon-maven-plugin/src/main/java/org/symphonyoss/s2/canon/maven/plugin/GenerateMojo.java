@@ -33,6 +33,8 @@ import java.lang.reflect.Modifier;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
+import java.util.Enumeration;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
@@ -56,8 +58,8 @@ import org.apache.maven.plugins.annotations.LifecyclePhase;
 import org.apache.maven.plugins.annotations.Mojo;
 import org.apache.maven.plugins.annotations.Parameter;
 import org.apache.maven.project.MavenProject;
-import org.symphonyoss.s2.canon.parser.GenerationContext;
 import org.symphonyoss.s2.canon.parser.CanonException;
+import org.symphonyoss.s2.canon.parser.GenerationContext;
 import org.symphonyoss.s2.canon.parser.ModelSetParserContext;
 
 
@@ -78,6 +80,9 @@ public class GenerateMojo extends AbstractMojo
   
   @Parameter( property = "proformaCopyDir" )
   private File proformaCopyDir;
+  
+  @Parameter( property = "uriMapping" )
+  private Properties uriMapping;
   
   @Parameter( property = "fileDataModel" )
   private Properties pomDataModel;
@@ -143,6 +148,20 @@ public class GenerateMojo extends AbstractMojo
       log.info( "templatePrefix       = " + ta.getPrefix());
     }
     
+    Map<String, String> uriMap = new HashMap<>();
+    
+    Enumeration<?> en = uriMapping.propertyNames();
+    while(en.hasMoreElements())
+    {
+      Object name = en.nextElement();
+      Object value = uriMapping.get(name);
+      
+      log.info( "Map URI             = " + name);
+      log.info( "To                  = " + value);
+      
+      uriMap.put(name.toString(), value.toString());
+    }
+    
     log.info( "pomDataModel-------------------------------------------------------------------------------");
 
     if(pomDataModel != null)
@@ -174,9 +193,11 @@ public class GenerateMojo extends AbstractMojo
       ModelSetParserContext modelSetContext = new ModelSetParserContext(new MavenLogFactoryAdaptor(log));
       
       for(File src : srcList)
+      {
         modelSetContext.addGenerationSource(src);
+      }
       
-      modelSetContext.process();
+      modelSetContext.process(uriMap);
       
       GenerationContext generationContext = new GenerationContext(
           targetDir, proformaTargetDir, proformaCopyDir);

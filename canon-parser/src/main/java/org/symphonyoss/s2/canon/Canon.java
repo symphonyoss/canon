@@ -25,7 +25,9 @@ package org.symphonyoss.s2.canon;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.symphonyoss.s2.canon.model.ModelElement;
 import org.symphonyoss.s2.canon.parser.CanonException;
@@ -37,62 +39,63 @@ import org.symphonyoss.s2.common.writer.IndentedWriter;
 public class Canon
 {
   /* General Constants */
-  public static final String TEMPLATE              = "template";
-  public static final String PROFORMA              = "proforma";
+  public static final String  TEMPLATE              = "template";
+  public static final String  PROFORMA              = "proforma";
 
   /* JSON Constants */
-  public static final String X_MODEL               = "model";
-  public static final String X_ID                  = "id";
-  public static final String VERSION               = "version";
-  public static final String X_ATTRIBUTES          = "x-canon-attributes";
-  public static final String X_CARDINALITY         = "x-canon-cardinality";
-  public static final String X_CARDINALITY_LIST    = "LIST";
-  public static final String X_CARDINALITY_SET     = "SET";
-  public static final String EXTENDS               = "extends";
-  public static final String FACADE                = "facade";
-  public static final String BUILDER_FACADE        = "builderFacade";
-  public static final String PROPERTY_NAME         = "propertyName";
-  public static final String MAPPING               = "mapping";
-  public static final String ENUM                  = "enum";
+  public static final String  X_MODEL               = "model";
+  public static final String  X_ID                  = "id";
+  public static final String  VERSION               = "version";
+  public static final String  X_ATTRIBUTES          = "x-canon-attributes";
+  public static final String  X_CARDINALITY         = "x-canon-cardinality";
+  public static final String  X_CARDINALITY_LIST    = "LIST";
+  public static final String  X_CARDINALITY_SET     = "SET";
+  public static final String  EXTENDS               = "extends";
+  public static final String  FACADE                = "facade";
+  public static final String  BUILDER_FACADE        = "builderFacade";
+  public static final String  PROPERTY_NAME         = "propertyName";
+  public static final String  MAPPING               = "mapping";
+  public static final String  ENUM                  = "enum";
 
-  public static final String JAVA_EXTERNAL_PACKAGE = "javaExternalPackage";
-  public static final String JAVA_EXTERNAL_TYPE    = "javaExternalType";
-  public static final String IS_DIRECT_EXTERNAL    = "isDirectExternal";
+  public static final String  JAVA_EXTERNAL_PACKAGE = "javaExternalPackage";
+  public static final String  JAVA_EXTERNAL_TYPE    = "javaExternalType";
+  public static final String  IS_DIRECT_EXTERNAL    = "isDirectExternal";
 
   /* Root property names in the template data model */
 
-  public static final String MODEL                 = "model";
+  public static final String  MODEL                 = "model";
 
-  public static final String JAVA_GEN_PACKAGE      = "javaGenPackage";
-  public static final String JAVA_FACADE_PACKAGE   = "javaFacadePackage";
+  public static final String  JAVA_GEN_PACKAGE      = "javaGenPackage";
+  public static final String  JAVA_FACADE_PACKAGE   = "javaFacadePackage";
 
-  public static final String YEAR                  = "year";
-  public static final String YEAR_MONTH            = "yearMonth";
-  public static final String DATE                  = "date";
-  public static final String INPUT_SOURCE          = "inputSource";
+  public static final String  YEAR                  = "year";
+  public static final String  YEAR_MONTH            = "yearMonth";
+  public static final String  DATE                  = "date";
+  public static final String  INPUT_SOURCE          = "inputSource";
 
-  public static final String IS_FACADE             = "isFacade";
-  public static final String TEMPLATE_NAME         = "templateName";
-  public static final String TEMPLATE_DEBUG        = "templateDebug";
-  public static final String PATHS                 = "paths";
-  public static final String METHODS               = "methods";
-  public static final String DOLLAR_REF            = "$ref";
-  public static final String PARAMETER_SETS        = "parameterSets";
-  public static final String SCHEMAS               = "schemas";
-  public static final String PARAMETERS            = "parameters";
-  public static final String SCHEMA                = "schema";
-  public static final String X_BASE_PATH           = "basePath";
+  public static final String  IS_FACADE             = "isFacade";
+  public static final String  TEMPLATE_NAME         = "templateName";
+  public static final String  TEMPLATE_DEBUG        = "templateDebug";
+  public static final String  PATHS                 = "paths";
+  public static final String  METHODS               = "methods";
+  public static final String  DOLLAR_REF            = "$ref";
+  public static final String  PARAMETER_SETS        = "parameterSets";
+  public static final String  SCHEMAS               = "schemas";
+  public static final String  PARAMETERS            = "parameters";
+  public static final String  SCHEMA                = "schema";
+  public static final String  X_BASE_PATH           = "basePath";
 
-  private boolean            verbose_              = false;
-  private boolean            dryRun_               = false;
-  private String             sourceDir_            = "src/main/canon";
-  private String             generationTarget_     = "target/generated-sources";
-  private String             proformaTarget_       = "target/proforma-sources";
-  private String             outputDir_            = ".";
-  private String             proformaCopy_         = null;
-  private List<String>       fileNames_            = new ArrayList<>();
-  private List<String>       errors_               = new ArrayList<>();
-  private List<File>         templateDirs_         = new ArrayList<>();
+  private boolean             verbose_              = false;
+  private boolean             dryRun_               = false;
+  private String              sourceDir_            = "src/main/canon";
+  private String              generationTarget_     = "target/generated-sources";
+  private String              proformaTarget_       = "target/proforma-sources";
+  private String              outputDir_            = ".";
+  private String              proformaCopy_         = null;
+  private List<String>        fileNames_            = new ArrayList<>();
+  private List<String>        errors_               = new ArrayList<>();
+  private List<File>          templateDirs_         = new ArrayList<>();
+  private Map<String, String> uriMap_               = new HashMap<>();
 
   /**
    * Launcher.
@@ -148,6 +151,14 @@ public class Canon
             else
               error("--outputDir requires a directory name to follow.");
             break;
+            
+          case "mapUri":
+            i++;
+            if (i < argv.length)
+              mapUri(argv[i]);
+            else
+              error("--mapUri requires a name=value mapping to follow.");
+            break;
 
           default:
             error("Unrecognized flag \"%s\".", argv[i]);
@@ -187,6 +198,14 @@ public class Canon
               outputDir_ = argv[i];
             else
               error("-o requires a directory name to follow.");
+            break;
+            
+          case "m":
+            i++;
+            if (i < argv.length)
+              mapUri(argv[i]);
+            else
+              error("-, requires a name=value mapping to follow.");
             break;
 
           default:
@@ -292,6 +311,18 @@ public class Canon
     }
   }
 
+  private void mapUri(String mapping)
+  {
+    int i = mapping.indexOf('=');
+    
+    if(i<1)
+      error("Mappings must be of the form src=target");
+    else
+    {
+      uriMap_.put(mapping.substring(0, i), mapping.substring(i+1));
+    }
+  }
+
   private void execute(List<File> files) throws CanonException
   {
     if (verbose_)
@@ -319,7 +350,7 @@ public class Canon
       for (File f : files)
         modelSetContext.addGenerationSource(f);
 
-      modelSetContext.process();
+      modelSetContext.process(uriMap_ );
 
       IndentedWriter out = new IndentedWriter(System.out);
 
