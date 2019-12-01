@@ -887,22 +887,22 @@ ${indent}}
   <@setJavaType field/>
   <#if field.isComponent>
     <#if field.enum??>
-${indent}${var}.addIfNotNull("${field.camelName}", _${field.camelName}_.toString());
+${indent}${var}.addIfNotNull("${field.camelName}", get${field.camelCapitalizedName}().toString());
     <#else>
       <#if field.isArraySchema>
-${indent}${var}.addIfNotNull("${field.camelName}", _${field.camelName}_.getJson${fieldCardinality}());
+${indent}${var}.addIfNotNull("${field.camelName}", get${field.camelCapitalizedName}().getJson${fieldCardinality}());
       <#else>
         <#if isExternal>
           <#if isDirectExternal>
-${indent}${var}.addIfNotNull("${field.camelName}", ${fieldType}.to${javaFieldClassName}(_${field.camelName}_${javaGetValuePostfix});
+${indent}${var}.addIfNotNull("${field.camelName}", ${fieldType}.to${javaFieldClassName}(get${field.camelCapitalizedName}()${javaGetValuePostfix});
           <#else>
-${indent}${var}.addIfNotNull("${field.camelName}", ${javaGetValuePrefix}_${field.camelName}_${javaGetValuePostfix});
+${indent}${var}.addIfNotNull("${field.camelName}", ${javaGetValuePrefix}get${field.camelCapitalizedName}()${javaGetValuePostfix});
           </#if>
         <#else>
           <#if field.isObjectSchema>
-${indent}${var}.addIfNotNull("${field.camelName}", _${field.camelName}_.getJsonObject());
+${indent}${var}.addIfNotNull("${field.camelName}", get${field.camelCapitalizedName}().getJsonObject());
           <#else>
-${indent}${var}.addIfNotNull("${field.camelName}", _${field.camelName}_.getValue());
+${indent}${var}.addIfNotNull("${field.camelName}", get${field.camelCapitalizedName}().getValue());
           </#if>
         </#if>
       </#if>
@@ -910,19 +910,19 @@ ${indent}${var}.addIfNotNull("${field.camelName}", _${field.camelName}_.getValue
   <#else>
     <#if field.isArraySchema>
       <#if field.baseSchema.items.baseSchema.isObjectSchema>
-${indent}${var}.addCollectionOfDomNode("${field.camelName}", ${javaGetValuePrefix}_${field.camelName}_${javaGetValuePostfix});
+${indent}${var}.addCollectionOfDomNode("${field.camelName}", ${javaGetValuePrefix}get${field.camelCapitalizedName}()${javaGetValuePostfix});
 
       <#else>
 ${indent}MutableJson${javaCardinality}  value${javaCardinality} = new MutableJson${javaCardinality}();
 
-${indent}for(${fieldElementType} value : _${field.camelName}_)
+${indent}for(${fieldElementType} value : get${field.camelCapitalizedName}())
 ${indent}{
 ${indent}  value${javaCardinality}.add(${fieldBaseValueFromElementPrefix}value${fieldBaseValueFromElementSuffix});
 ${indent}}
 ${indent}${var}.add("${field.camelName}", value${javaCardinality});
       </#if>
     <#else>
-${indent}${var}.addIfNotNull("${field.camelName}", _${field.camelName}_);
+${indent}${var}.addIfNotNull("${field.camelName}", get${field.camelCapitalizedName}());
     </#if>
   </#if>
 </#macro>
