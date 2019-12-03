@@ -28,20 +28,32 @@ import org.symphonyoss.s2.canon.runtime.http.IRequestContext;
 @SuppressWarnings("unused")
 public abstract class ${modelJavaClassName}PathHandler<T> extends PathHandler<T> implements I${modelJavaClassName}PathHandler<T>
 {
+  private final String path_;
+  
   public ${modelJavaClassName}PathHandler(@Nullable IRequestAuthenticator<T> authenticator)
   {
+    this(authenticator, "");
+  }
+  
+  public ${modelJavaClassName}PathHandler(@Nullable IRequestAuthenticator<T> authenticator, String basePath)
+  {
     super(authenticator, ${model.pathParamCnt}, new String[] {
+<#assign prefix="basePath + ">
 <#list model.partList as part>
-        "${part}"<#sep>,
+        ${prefix}"${part}"<#sep>,
+<#assign prefix="">
 </#list>
+
       }
     );
+    
+    path_ = basePath + "${model.absolutePath}";
   }
 
   @Override
   public String getPath()
   {
-    return "${model.absolutePath}";
+    return path_;
   }
 
   @Override

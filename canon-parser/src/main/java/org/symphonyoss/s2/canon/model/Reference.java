@@ -94,9 +94,17 @@ public class Reference<T extends ModelElement> extends ModelElement
       {
         Model model = getContext().getRootParserContext().getModel(baseUri_);
         
-        referent = fragment_.startsWith("/") ?
-            model.getByPath(fragment_.split("/"), 1) :
-              model.getByPath(fragment_.split("/"), 0); 
+        if(model == null)
+        {
+          getContext().raise(new ParserError("Referenced %s \"%s\" not found.", type_.getName(), uri_));
+          return;
+        }
+        else
+        {
+          referent = fragment_.startsWith("/") ?
+              model.getByPath(fragment_.split("/"), 1) :
+                model.getByPath(fragment_.split("/"), 0); 
+        }
       }
       else
       {

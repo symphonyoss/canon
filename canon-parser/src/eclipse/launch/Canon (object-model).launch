@@ -9,7 +9,7 @@
 <booleanAttribute key="org.eclipse.jdt.launching.ATTR_USE_START_ON_FIRST_THREAD" value="true"/>
 <stringAttribute key="org.eclipse.jdt.launching.CLASSPATH_PROVIDER" value="org.eclipse.m2e.launchconfig.classpathProvider"/>
 <stringAttribute key="org.eclipse.jdt.launching.MAIN_TYPE" value="org.symphonyoss.s2.canon.Canon"/>
-<stringAttribute key="org.eclipse.jdt.launching.PROGRAM_ARGUMENTS" value="-v -t ${project_loc:canon-template-java}/src/main/resources/canon -s ${project_loc:calendar}/src/main/canon -o ${project_loc:calendar} -m &quot;https://models.oss.symphony.com/object.json=../../../../../oss-models/object-model/src/main/canon/object.json&quot; -m &quot;https://models.oss.symphony.com/core.json=../../../../../oss-models/core-model/src/main/canon/core.json&quot; -m &quot;https://models.oss.symphony.com/crypto.json=../../../../../oss-models/crypto-model/src/main/canon/crypto.json&quot;"/>
+<stringAttribute key="org.eclipse.jdt.launching.PROGRAM_ARGUMENTS" value="-v -t ${project_loc:canon-template-java}/src/main/resources/canon -s ${project_loc:fundamental-model}/src/main/canon -o ${project_loc:fundamental-model} -m &quot;https://models.oss.symphony.com/core.json=../../../../core-model/src/main/canon/core.json&quot; -m &quot;https://models.oss.symphony.com/crypto.json=../../../../crypto-model/src/main/canon/crypto.json&quot;"/>
 <stringAttribute key="org.eclipse.jdt.launching.PROJECT_ATTR" value="canon-launch"/>
 <stringAttribute key="org.eclipse.jdt.launching.SOURCE_PATH_PROVIDER" value="org.eclipse.m2e.launchconfig.sourcepathProvider"/>
 </launchConfiguration>
