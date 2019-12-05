@@ -32,8 +32,6 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
-import javax.annotation.Nullable;
-
 import org.symphonyoss.s2.common.dom.json.IJsonDomNode;
 import org.symphonyoss.s2.common.dom.json.IJsonObject;
 import org.symphonyoss.s2.common.dom.json.ImmutableJsonObject;
@@ -74,33 +72,13 @@ public class ModelRegistry implements IModelRegistry
   @Override
   public IEntity newInstance(ImmutableJsonObject jsonObject)
   {
-    return newInstance(jsonObject, null);
-  }
-
-  @Override
-  public IEntity newInstance(ImmutableJsonObject jsonObject, @Nullable String expectedTypeId)
-  {
     String typeId;
     
     typeId = jsonObject.getString(CanonRuntime.JSON_TYPE, null);
     
-    if(expectedTypeId == null)
+    if(typeId == null)
     {
-      if(typeId == null)
-      {
-        return new Entity(jsonObject);
-      }
-    }
-    else
-    {
-      if(typeId == null)
-      {
-        typeId = expectedTypeId;
-      }
-      else if(!expectedTypeId.equals(typeId))
-      {
-        throw new IllegalArgumentException("Expected instance of " + expectedTypeId + " but found a " + typeId);
-      }
+      return new Entity(jsonObject);
     }
     
     IEntityFactory<?,?,?> factory = factoryMap_.get(typeId);
@@ -112,13 +90,13 @@ public class ModelRegistry implements IModelRegistry
   }
   
   @Override
-  public <E extends IEntity> E parseOne(Reader reader, String defaultTypeId, Class<E> type)
+  public <E extends IBaseEntity> E parseOne(Reader reader, String defaultTypeId, Class<E> type)
   {
     return newInstance(parseOneJsonObject(reader), defaultTypeId, type);
   }
 
   @Override
-  public <E extends IEntity> E newInstance(ImmutableJsonObject jsonObject, String defaultTypeId, Class<E> type)
+  public <E extends IBaseEntity> E newInstance(ImmutableJsonObject jsonObject, String defaultTypeId, Class<E> type)
   {
     String typeId;
     
@@ -140,10 +118,7 @@ public class ModelRegistry implements IModelRegistry
     
     if(factory == null)
     {
-      factory = factoryMap_.get(defaultTypeId);
-      
-      if(factory == null)
-        throw new IllegalArgumentException("Unknown type \"" + typeId + "\"");
+      throw new IllegalArgumentException("Unknown type \"" + typeId + "\"");
     }
     
     IEntity result = factory.newInstance(jsonObject, this);
@@ -324,13 +299,7 @@ public class ModelRegistry implements IModelRegistry
   @Override
   public IEntity parseOne(Reader reader)
   {
-    return parseOne(reader, null);
-  }
-  
-  @Override
-  public IEntity parseOne(Reader reader, @Nullable String typeId)
-  {
-    return newInstance(parseOneJsonObject(reader), typeId);
+    return newInstance(parseOneJsonObject(reader));
   }
 
   @Override

@@ -243,20 +243,13 @@ public class ${model.parent.camelCapitalizedName}${model.camelCapitalizedName}Ht
         @Override
         protected void handle(String input)
         {
-          IEntity result = getCanonClient().getRegistry().parseOne(new StringReader(input), RESPONSE_TYPE_ID);
+          ${methodResponseElementType} result = getCanonClient().getRegistry().parseOne(new StringReader(input), RESPONSE_TYPE_ID, ${methodResponseElementType}.class);
           
-          if(result instanceof ${methodResponseElementType})
-          {
-            <#if model.response.isMultiple>
-            canonResult_.add((${methodResponseElementType}) result);
-            <#else>
-            canonResult_ = (${methodResponseElementType}) result;
-            </#if>
-          }
-          else
-          {
-            throw new ServerErrorException("Expected result of type ${methodResponseElementType} but received " + result.getCanonType() + " check your model registry.");
-          }
+          <#if model.response.isMultiple>
+          canonResult_.add(result);
+          <#else>
+          canonResult_ = result;
+          </#if>
         }
       };
       

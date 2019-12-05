@@ -185,6 +185,7 @@
   {
     protected Factory()
     {
+      super(I${modelJavaClassName}.class, I${modelJavaClassName}Entity.class);
     }
     
     /**
