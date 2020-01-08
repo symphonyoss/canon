@@ -126,11 +126,7 @@ public abstract class ${modelJavaClassName}PathHandler<T> extends PathHandler<T>
           );
   <#if operation.response??>
     <@setJavaType operation.response.schema/>
-      <#if operation.response.isMultiple>
-        if(response == null || response.isEmpty())
-      <#else>
         if(response == null)
-      </#if>
         {
     <#if operation.response.isRequired>
           throw new ServerErrorException("Required return value is null");        
