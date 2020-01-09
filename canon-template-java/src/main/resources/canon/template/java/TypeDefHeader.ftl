@@ -14,7 +14,10 @@
  * Facade for
 </#if>
 <#if model.description??>
- * ${model.description}
+<#list model.description as description>
+ * ${description}
+</#list>
+ *
 </#if>
 <#if formatDesc??>
  * ${formatDesc}

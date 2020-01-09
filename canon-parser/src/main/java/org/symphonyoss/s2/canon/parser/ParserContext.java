@@ -24,6 +24,8 @@
 package org.symphonyoss.s2.canon.parser;
 
 import java.util.Iterator;
+import java.util.LinkedList;
+import java.util.List;
 import java.util.Map.Entry;
 
 import org.symphonyoss.s2.canon.parser.error.UnexpectedTypeError;
@@ -288,6 +290,37 @@ public class ParserContext extends BaseParserContext implements Iterable<ParserC
   public String toString()
   {
     return "ParserContext(" + jsonNode_ + ")";
+  }
+
+  public String[] getTextArray(String name)
+  {
+    JsonNode jsonNode = getJsonNode().get(name);
+    
+    if(jsonNode == null)
+      return null;
+    
+    if(jsonNode.isArray())
+    {
+      List<String> s = new LinkedList<>();
+      
+      for(JsonNode n : jsonNode)
+      {
+        String str = n.asText();
+        
+        if(str != null)
+        {
+          s.add(str);
+        }
+      }
+      
+      return s.isEmpty() ? null : s.toArray(new String[s.size()]);
+    }
+    String str = jsonNode.asText();
+    
+    if(str == null)
+      return null;
+    
+    return new String[] {str};
   }
 
   public String getText(String name)

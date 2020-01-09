@@ -70,7 +70,7 @@ public class ModelElement
   private Map<String, String>               attributes_             = new HashMap<>();
   
   private final String summary_;
-  private final String description_;
+  private final String[] description_;
   private String format_ = "";
 
   public ModelElement(ModelElement parent, ParserContext parserContext, String type)
@@ -84,7 +84,8 @@ public class ModelElement
     parserContext_ = parserContext;
     elementType_ = type;
     summary_ = parserContext.getText("summary");
-    description_ = parserContext.getText("description");
+    
+    description_ = parserContext.getTextArray("description");
     format_ = parserContext.getText("format", "");
     
     name_ = name;
@@ -271,7 +272,7 @@ public class ModelElement
     return summary_;
   }
 
-  public String getDescription()
+  public String[] getDescription()
   {
     return description_;
   }

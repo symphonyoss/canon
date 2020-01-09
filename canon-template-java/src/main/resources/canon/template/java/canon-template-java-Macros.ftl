@@ -481,7 +481,7 @@
       <#break>
     
     <#default>
-      <#assign description=model.description!"">
+      <#assign description=model.description![]>
       <#assign summary=model.summary!"No summary given.">
   </#switch>
 </#macro>
@@ -1123,7 +1123,11 @@ ${indent}    ${var}.add(${model.camelCapitalizedName}.newBuilder().build(${value
   /**
    * ${operation.name} ${operation.pathItem.path}
    * ${summary}
-   * ${description}
+  <#if description??>
+     <#list description as descriptionLine>
+   * ${descriptionLine}
+    </#list>
+  </#if>
   <#if operation.payload??>
   <@setJavaType operation.payload.schema/>
    * @param canonPayload The request payload

@@ -11,7 +11,9 @@
 </#if>
 <#if model.description??>
  *
- * ${model.description}
+<#list model.description as description>
+ * ${description}
+</#list>
 </#if>
  * Generated from ${model} at ${model.context.path}
  */
