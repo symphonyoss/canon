@@ -1,0 +1,66 @@
+{
+	"canon": "0.0.1",
+	"info": {
+		"title": "Canon Schema Features",
+		"#": "This schema demonstrates Canon schema features which differ from OpenAPI3 (like this comment)",
+		"#AnotherComment": [
+		  "Comments can be multi line",
+		  "like this."
+		],
+		"license": {
+			"name": "Apache2"
+		}
+	},
+	"id": "org.symphonyoss.s2.canon.test.schema",
+  "version": "1.0",
+	"model": {
+		"javaGenPackage": "org.symphonyoss.s2.canon.test.schema",
+		"javaFacadePackage": "org.symphonyoss.s2.canon.test.schema.facade"
+	},
+	"components": {
+    "schemas": {
+      "ApplicationPayload": {
+        "type": "object",
+        "#facades": "Are enabled like this:",
+        "facade": true,
+        "builderFacade": true,
+        "properties": {
+          "distributionList": {
+            "type": "array",
+            "x-canon-cardinality": "SET",
+            "items": {
+              "$ref": "#/components/schemas/PodAndUserId"
+            }
+          }
+        }
+      },
+		  "#This object has been commented out: AbstractApplicationObjectPayload": {
+        "type": "object",
+        "facade": true,
+        "extends": "#/components/schemas/ApplicationPayload",
+        "builderFacade": true,
+        "description": "Base type for header or encrypted payloads in the object store.",
+        "properties": {
+        }
+      },
+      "AbstractApplicationObjectPayload": {
+        "#Comment": "This is a comment.",
+        "type": "object",
+        "#inheritance": "Is done like this:",
+        "extends": "#/components/schemas/ApplicationPayload",
+        "builderFacade": true,
+        "description": [
+          "Multi-line descriptions can be written like this",
+          "OpenAPI does not support this."
+          ],
+        "properties": {
+        }
+      },
+      "PodAndUserId": {
+        "type": "integer",
+        "format": "int64",
+        "facade": true
+      }
+    }
+	}
+}
