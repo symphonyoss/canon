@@ -1,0 +1,12 @@
+remote_theme: pmarsceill/just-the-docs
+color_scheme: nil
+url: "https://symphonyoss.github.io/canon"
+
+# Aux links for the upper right navigation
+aux_links:
+ "Examples":
+  - "//github.com/symphonyoss/canon-example"
+ "Source Code":
+  - "//github.com/symphonyoss/canon"
+
+search_enabled: true
