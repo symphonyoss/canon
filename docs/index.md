@@ -184,6 +184,16 @@ array of Stings as a means of improving readability in the schema itself and the
 This is illustrated in the second instance of the **AbstractApplicationObjectPayload** object in the example above, which 
 generates this JavaDoc class comment:
 
+```java
+/**
+ * Object ObjectSchema(AbstractApplicationObjectPayload)
+ *
+ * Multi-line descriptions can be written like this
+ * OpenAPI does not support this.
+ * Generated from ObjectSchema(AbstractApplicationObjectPayload) at #/components/schemas/AbstractApplicationObjectPayload
+ */
+```
+
 ### Inheritance
 OpenAPI supports the **AllOf** construct to support composition, which is sometimes used as a 
 substitute for inheritance. Unfortunately the intended semantics of inheritance cannot be reliably 
