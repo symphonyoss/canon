@@ -78,6 +78,56 @@ which are illustrated by this schema:
     "javaGenPackage": "org.symphonyoss.s2.canon.test.schema",
     "javaFacadePackage": "org.symphonyoss.s2.canon.test.schema.facade"
   },
+  "methods": {
+    "/objects/{objectHash}": {
+      "parameters": {
+        "objectHash": {
+          "in": "path",
+          "required": true,
+          "description": "The id of the object.",
+          "schema": {
+            "$ref": "https://models.oss.symphony.com/core.json#/components/schemas/Hash"
+          }
+        }
+      },
+      "get": {
+        "summary": "Read an object",
+        "operationId": "getObject",
+        "tags": [
+          "objects"
+        ],
+        "parameters": {
+          "currentVersion": {
+            "in": "query",
+            "required": false,
+            "description": "If true then the hash is a baseHash and we return the current version, otherwise the hash is an absoluteHash and we return that absolute version.",
+            "schema": {
+              "type": "boolean"
+            }
+          }
+        },
+        "response": {
+          "required": false,
+          "schema": {
+            "$ref": "#/components/schemas/AbstractApplicationObjectPayload"
+          }
+        }
+      },
+      "put": {
+        "summary": "Create an object",
+        "operationId": "createObjects",
+        "tags": [
+          "objects"
+        ],
+        "payload": {
+          "required": true,
+          "schema": {
+            "$ref": "#/components/schemas/AbstractApplicationObjectPayload"
+          }
+        }
+      }
+    }
+  },
   "components": {
     "schemas": {
       "ApplicationPayload": {
@@ -109,7 +159,6 @@ which are illustrated by this schema:
         "type": "object",
         "#inheritance": "Is done like this:",
         "extends": "#/components/schemas/ApplicationPayload",
-        "facade": true,
         "builderFacade": true,
         "description": [
           "Multi-line descriptions can be written like this",
@@ -193,6 +242,19 @@ generates this JavaDoc class comment:
  * Generated from ObjectSchema(AbstractApplicationObjectPayload) at #/components/schemas/AbstractApplicationObjectPayload
  */
 ```
+
+### Method Responses
+OpenAPI allows for a method to return multiple different media types and for the response value
+to be defined separately for each type. Canon methods are intended to be a form of JSON RPC
+and the response type is implicitly application/json. The response schema for a Canon method
+is much simpler than the OpenAPI equivalent, it requires only a schema and may optionally
+provide a boolean **required** attribute.
+
+If **required** is present and has the value **true** then the method must always return a value,
+if the implementation returns null then a **500 SERVER ERROR** response will be set, the endpoint
+will never return **404 NOT FOUND**. Otherwise, if the implementation method returns **null**
+a **404 NOT FOUND** response will be sent.
+
 
 ### Inheritance
 OpenAPI supports the **AllOf** construct to support composition, which is sometimes used as a 

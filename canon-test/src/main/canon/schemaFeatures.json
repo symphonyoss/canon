@@ -17,6 +17,56 @@
 		"javaGenPackage": "org.symphonyoss.s2.canon.test.schema",
 		"javaFacadePackage": "org.symphonyoss.s2.canon.test.schema.facade"
 	},
+  "methods": {
+    "/objects/{objectHash}": {
+      "parameters": {
+        "objectHash": {
+          "in": "path",
+          "required": true,
+          "description": "The id of the object.",
+          "schema": {
+            "$ref": "https://models.oss.symphony.com/core.json#/components/schemas/Hash"
+          }
+        }
+      },
+      "get": {
+        "summary": "Read an object",
+        "operationId": "getObject",
+        "tags": [
+          "objects"
+        ],
+        "parameters": {
+          "currentVersion": {
+            "in": "query",
+            "required": false,
+            "description": "If true then the hash is a baseHash and we return the current version, otherwise the hash is an absoluteHash and we return that absolute version.",
+            "schema": {
+              "type": "boolean"
+            }
+          }
+        },
+        "response": {
+          "required": false,
+          "schema": {
+            "$ref": "#/components/schemas/AbstractApplicationObjectPayload"
+          }
+        }
+      },
+      "put": {
+        "summary": "Create an object",
+        "operationId": "createObjects",
+        "tags": [
+          "objects"
+        ],
+        "payload": {
+          "required": true,
+          "schema": {
+            "$ref": "#/components/schemas/AbstractApplicationObjectPayload"
+          }
+        }
+      }
+    }
+  },
 	"components": {
     "schemas": {
       "ApplicationPayload": {
