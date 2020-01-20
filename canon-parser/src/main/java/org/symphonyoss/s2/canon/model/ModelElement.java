@@ -192,7 +192,7 @@ public class ModelElement
     {
       char c = name.charAt(i++);
    
-      if(c=='_' && i<name.length())
+      if((c=='_' || c=='-') && i<name.length())
       {
         s.append(Character.toUpperCase(name.charAt(i++)));
       }
