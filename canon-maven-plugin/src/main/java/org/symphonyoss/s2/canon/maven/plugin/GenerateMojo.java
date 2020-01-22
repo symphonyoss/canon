@@ -155,11 +155,13 @@ public class GenerateMojo extends AbstractMojo
     {
       Object name = en.nextElement();
       Object value = uriMapping.get(name);
+      File   path = new File(value.toString());
       
       log.info( "Map URI             = " + name);
       log.info( "To                  = " + value);
+      log.info( "Path                = " + path.getAbsolutePath());
       
-      uriMap.put(name.toString(), value.toString());
+      uriMap.put(name.toString(), path.getAbsolutePath());
     }
     
     log.info( "pomDataModel-------------------------------------------------------------------------------");
