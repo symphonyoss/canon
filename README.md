@@ -8,11 +8,11 @@ Canon is intended to work together with Fugue, see https://symphonyoss.github.io
 
 ## Version 0.2.16 - 2020-01-23
 ### URI Mapping
-A ***uriMapping*** section in the canon maven plugin build configuration allows you to tell the maven plugin to look in your
+A **uriMapping** section in the canon maven plugin build configuration allows you to tell the maven plugin to look in your
 local working copy for dependent models referenced in a model being compiled, rather than reading the dependent model
 from the URL specified in the main model.
 
-Each property in the ***uriMapping** section contains a **name** which is a URI which might be encountered in the model being 
+Each property in the **uriMapping** section contains a **name** which is a URI which might be encountered in the model being 
 compiled and a **value** with which that URI should be replaced.
 
 With effect from this release the replacement path is relative to the working directory of the build, not the location of the
