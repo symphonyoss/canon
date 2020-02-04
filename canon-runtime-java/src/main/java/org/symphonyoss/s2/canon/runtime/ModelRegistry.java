@@ -118,7 +118,15 @@ public class ModelRegistry implements IModelRegistry
     
     if(factory == null)
     {
-      throw new IllegalArgumentException("Unknown type \"" + typeId + "\"");
+      if(defaultTypeId != null)
+      {
+        factory = factoryMap_.get(defaultTypeId);
+      }
+      
+      if(factory == null)
+      {
+        throw new IllegalArgumentException("Unknown type \"" + typeId + "\"");
+      }
     }
     
     IEntity result = factory.newInstance(jsonObject, this);
