@@ -51,6 +51,17 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 public class ModelRegistry implements IModelRegistry
 {
   private Map<String, IEntityFactory<?,?,?>>  factoryMap_ = new HashMap<>();
+  
+  /**
+   * Default constructor.
+   */
+  public ModelRegistry()
+  {}
+  
+  protected ModelRegistry(ModelRegistry other)
+  {
+    factoryMap_ = other.factoryMap_;
+  }
 
   /**
    * Register the given models.
