@@ -1,7 +1,7 @@
-<#assign subTemplateName="${.current_template_name!''}"><#include "canon-template-java-SubPrologue.ftl">
+<#assign subTemplateName="${.current_template_name!''}"><#include "/template/java/canon-template-java-SubPrologue.ftl">
 import javax.annotation.concurrent.Immutable;
 
-<#include "TypeDefHeader.ftl">
+<#include "/template/java/TypeDefHeader.ftl">
 <@setJavaType model/>
 @Immutable
 public enum ${modelJavaClassName}
@@ -12,4 +12,4 @@ public enum ${modelJavaClassName}
   {
     return toString();
   }
-<#assign subTemplateName="${.current_template_name!''}"><#include "canon-template-java-SubEpilogue.ftl">
+<#assign subTemplateName="${.current_template_name!''}"><#include "/template/java/canon-template-java-SubEpilogue.ftl">

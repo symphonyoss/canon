@@ -13,7 +13,7 @@ import org.symphonyoss.s2.fugue.core.trace.ITraceContext;
 <@importFieldTypes model true/>
 <@importFacadePackages model/>
 
-<#include "Path.ftl">
+<#include "/template/java/Path/Path.ftl">
 public interface I${modelJavaClassName}PathHandler<T> extends IEntityHandler
 {
 <#list model.operations as operation>

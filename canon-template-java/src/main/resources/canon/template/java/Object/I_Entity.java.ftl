@@ -10,7 +10,7 @@ import com.google.common.collect.ImmutableSet;
 <@importFieldTypes model true/>
 <@importFacadePackages model/>
 
-<#include "Object.ftl">
+<#include "/template/java/Object/Object.ftl">
 public interface I${model.camelCapitalizedName}Entity
 <#if model.superSchema??>
   extends I${model.superSchema.baseSchema.camelCapitalizedName}Entity, I${model.model.camelCapitalizedName}ModelEntity

@@ -12,6 +12,6 @@ import org.symphonyoss.s2.common.dom.json.ImmutableJsonSet;
 import ${javaGenPackage}.*;
 
 <#include "/template/java/Array/Array.ftl">
-<#include "Facade.ftl">
+<#include "/proforma/java/Array/Facade.ftl">
 <#include "/proforma/java/canon-proforma-java-Epilogue.ftl">
 </#if>

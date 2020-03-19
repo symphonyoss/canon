@@ -23,7 +23,7 @@ import org.symphonyoss.s2.canon.runtime.http.IRequestContext;
 <@importFieldTypes model true/>
 <@importFacadePackages model/>
 
-<#include "Path.ftl">
+<#include "/template/java/Path/Path.ftl">
 @Immutable
 @SuppressWarnings("unused")
 public abstract class ${modelJavaClassName}PathHandler<T> extends PathHandler<T> implements I${modelJavaClassName}PathHandler<T>
@@ -81,7 +81,7 @@ public abstract class ${modelJavaClassName}PathHandler<T> extends PathHandler<T>
 
   private void do${operation.camelCapitalizedName}(T auth, IRequestContext context, List<String> pathParams) throws IOException, CanonException
   {
-  <#include "GetParams.ftl">
+  <#include "/template/java/Path/GetParams.ftl">
   <#if operation.payload??>
   
     <@setJavaType operation.payload.schema/>

@@ -44,7 +44,7 @@ import com.google.common.collect.ImmutableSet;
 <@importFieldTypes model true/>
 <@importFacadePackages model/>
 
-<#include "Object.ftl">
+<#include "/template/java/Object/Object.ftl">
 @Immutable
 @SuppressWarnings("unused")
 <#if model.superSchema??>

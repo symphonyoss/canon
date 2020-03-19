@@ -38,7 +38,7 @@ import org.symphonyoss.s2.fugue.pipeline.IConsumer;
 <@importFieldTypes model true/>
 <@importFacadePackages model/>
 
-<#include "Path.ftl">
+<#include "/template/java/Path/Path.ftl">
 @Immutable
 @SuppressWarnings("unused")
 public abstract class ${modelJavaClassName}AsyncPathHandler<A> extends AsyncPathHandler<A> implements I${modelJavaClassName}AsyncPathHandler<A>
@@ -90,7 +90,7 @@ public abstract class ${modelJavaClassName}AsyncPathHandler<A> extends AsyncPath
   
   private void do${operation.camelCapitalizedName}(A auth, IAsyncRequestContext context, List<String> pathParams) throws IOException, CanonException
   {
-  <#include "GetParams.ftl">
+  <#include "/template/java/Path/GetParams.ftl">
 
   
     if(context.preConditionsAreMet())

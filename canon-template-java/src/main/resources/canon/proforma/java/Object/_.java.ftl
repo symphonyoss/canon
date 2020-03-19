@@ -18,6 +18,6 @@ import ${javaGenPackage}.${model.camelCapitalizedName}Entity;
 import ${javaGenPackage}.I${model.camelCapitalizedName}Entity;
 import ${javaGenPackage}.${model.model.camelCapitalizedName}Model;
 
-<#include "Facade.ftl">
+<#include "/proforma/java/Object/Facade.ftl">
 <#include "/proforma/java/canon-proforma-java-Epilogue.ftl">
 </#if>

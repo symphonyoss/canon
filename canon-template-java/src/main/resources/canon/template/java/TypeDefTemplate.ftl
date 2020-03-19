@@ -1,4 +1,4 @@
-<#assign subTemplateName="${.current_template_name!''}"><#include "canon-template-java-SubPrologue.ftl">
+<#assign subTemplateName="${.current_template_name!''}"><#include "/template/java/canon-template-java-SubPrologue.ftl">
 import javax.annotation.Nonnull;
 import javax.annotation.concurrent.Immutable;
 
@@ -19,7 +19,7 @@ import org.symphonyoss.s2.canon.runtime.${modelJavaFieldClassName}TypeDefBuilder
 import ${javaFacadePackage}.${modelJavaClassName};
 </#if>
 
-<#include "TypeDefHeader.ftl">
+<#include "/template/java/TypeDefHeader.ftl">
 <@setJavaType model/>
 @Immutable
 // TypeDefTemplate
@@ -100,4 +100,4 @@ public class ${modelJavaClassName}TypeDef extends TypeDef implements I${modelJav
   public static abstract class Builder extends ${modelJavaFieldClassName}TypeDefBuilder<${modelJavaClassName}>
   {
   }
-<#assign subTemplateName="${.current_template_name!''}"><#include "canon-template-java-SubEpilogue.ftl">
+<#assign subTemplateName="${.current_template_name!''}"><#include "/template/java/canon-template-java-SubEpilogue.ftl">

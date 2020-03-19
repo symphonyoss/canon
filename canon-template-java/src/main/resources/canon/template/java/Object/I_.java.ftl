@@ -6,7 +6,7 @@ import javax.annotation.concurrent.Immutable;
 
 <@importFacadePackages model/>
 
-<#include "Object.ftl">
+<#include "/template/java/Object/Object.ftl">
 @Immutable
 public interface I${model.camelCapitalizedName}
 <#if model.superSchema??>

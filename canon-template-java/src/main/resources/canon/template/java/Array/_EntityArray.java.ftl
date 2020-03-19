@@ -24,7 +24,7 @@ import org.symphonyoss.s2.common.dom.json.MutableJsonSet;
 
 import org.symphonyoss.s2.canon.runtime.Entity${modelJavaCardinality};
 
-<#include "Array.ftl">
+<#include "/template/java/Array/Array.ftl">
 <@setJavaType model.baseSchema/>
 @Immutable
 public class ${modelJavaClassName}EntityArray extends Entity${modelJavaCardinality}<${modelJavaElementClassName}>

@@ -11,7 +11,7 @@ import org.symphonyoss.s2.fugue.pipeline.IConsumer;
 <@importFieldTypes model true/>
 <@importFacadePackages model/>
 
-<#include "Path.ftl">
+<#include "/template/java/Path/Path.ftl">
 public interface I${modelJavaClassName}AsyncPathHandler<T> extends IAsyncEntityHandler
 {
 <#list model.operations as operation>
