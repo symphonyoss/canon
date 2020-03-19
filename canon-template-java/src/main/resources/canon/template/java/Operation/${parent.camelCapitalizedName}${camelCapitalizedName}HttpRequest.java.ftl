@@ -1,4 +1,4 @@
-<#include "../canon-template-java-Prologue.ftl">
+<#include "/template/java/canon-template-java-Prologue.ftl">
 <@setPrologueJavaType model/>
 <@setJavaMethod model/>
 import java.io.IOException;
@@ -312,4 +312,4 @@ public class ${model.parent.camelCapitalizedName}${model.camelCapitalizedName}Ht
   </#if>
   }
 }
-<#include "../canon-template-java-Epilogue.ftl">
+<#include "/template/java/canon-template-java-Epilogue.ftl">

@@ -1,4 +1,4 @@
-<#include "../canon-template-java-Prologue.ftl">
+<#include "/template/java/canon-template-java-Prologue.ftl">
 <#assign model=model.type>
 <@setPrologueJavaType model/>
 import javax.annotation.Nullable;
@@ -44,7 +44,7 @@ import com.google.common.collect.ImmutableSet;
 <@importFieldTypes model true/>
 <@importFacadePackages model/>
 
-<#include "Object.ftl">
+<#include "/template/java/Object/Object.ftl">
 @Immutable
 @SuppressWarnings("unused")
 <#if model.superSchema??>

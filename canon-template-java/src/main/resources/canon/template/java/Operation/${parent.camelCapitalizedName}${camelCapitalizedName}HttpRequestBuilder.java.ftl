@@ -1,4 +1,4 @@
-<#include "../canon-template-java-Prologue.ftl">
+<#include "/template/java/canon-template-java-Prologue.ftl">
 <@setPrologueJavaType model/>
 <#assign javaModelClassName=model.parent.camelCapitalizedName+model.camelCapitalizedName+"HttpRequestBuilder">
 <@setJavaMethod model/>
@@ -104,4 +104,4 @@ public class ${javaModelClassName} extends ${model.parent.camelCapitalizedName}$
     return new ${model.parent.camelCapitalizedName}${model.camelCapitalizedName}HttpRequest(this);
   }
 }
-<#include "../canon-template-java-Epilogue.ftl">
+<#include "/template/java/canon-template-java-Epilogue.ftl">

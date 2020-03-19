@@ -25,4 +25,4 @@
 
 package ${javaFacadePackage};
 
-<#include "../../template/java/canon-template-java-Macros.ftl">
+<#include "/template/java/canon-template-java-Macros.ftl">

@@ -1,5 +1,5 @@
 <#if ! model.isAbstract?? || ! model.isAbstract?c>
-<#include "../canon-template-java-Prologue.ftl">
+<#include "/template/java/canon-template-java-Prologue.ftl">
 <#assign model=model.type>
 <@setPrologueJavaType model/>
 
@@ -10,7 +10,7 @@ import com.google.common.collect.ImmutableSet;
 <@importFieldTypes model true/>
 <@importFacadePackages model/>
 
-<#include "Object.ftl">
+<#include "/template/java/Object/Object.ftl">
 public interface I${model.camelCapitalizedName}Entity
 <#if model.superSchema??>
   extends I${model.superSchema.baseSchema.camelCapitalizedName}Entity, I${model.model.camelCapitalizedName}ModelEntity
@@ -24,5 +24,5 @@ public interface I${model.camelCapitalizedName}Entity
   ${fieldType} get${field.camelCapitalizedName}();
 </#list>
 }
-<#include "../canon-template-java-Epilogue.ftl">
+<#include "/template/java/canon-template-java-Epilogue.ftl">
 </#if>

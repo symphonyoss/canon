@@ -1,5 +1,5 @@
 <#if ! model.isAbstract?? || ! model.isAbstract?c>
-<#include "ObjectHeader.ftl">
+<#include "/template/java/Object/ObjectHeader.ftl">
 
   private final ${"ImmutableSet<String>"?right_pad(25)}   unknownKeys_;
 <#list model.fields as field>
@@ -169,7 +169,7 @@
     
 </#list>
 
-<#include "ObjectBody.ftl">
+<#include "/template/java/Object/ObjectBody.ftl">
   
 
 <#------------------------------------------------------------------------------------------------------------------------------
@@ -594,5 +594,5 @@
   }
 }
 
-<#include "../canon-template-java-Epilogue.ftl">
+<#include "/template/java/canon-template-java-Epilogue.ftl">
 </#if>

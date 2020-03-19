@@ -1,4 +1,4 @@
-<#include "../canon-template-java-Prologue.ftl">
+<#include "/template/java/canon-template-java-Prologue.ftl">
 
 import org.symphonyoss.s2.canon.runtime.IEntityFactory;
 
@@ -19,4 +19,4 @@ public class ${model.camelCapitalizedName}Model
   {
   }
 }
-<#include "../canon-template-java-Epilogue.ftl">
+<#include "/template/java/canon-template-java-Epilogue.ftl">

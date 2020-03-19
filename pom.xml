@@ -32,7 +32,7 @@
 	
 	<groupId>org.symphonyoss.s2.canon</groupId>
 	<artifactId>canon</artifactId>
-	<version>0.2.20-SNAPSHOT</version>
+	<version>0.2.21-SNAPSHOT</version>
 	<description>JSON API Generation Tooling</description>
 	<url>https://github.com/symphonyoss/canon</url>
 	<packaging>pom</packaging>
@@ -80,7 +80,7 @@
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<maven.compiler.source>1.8</maven.compiler.source>
 		<maven.compiler.target>1.8</maven.compiler.target>
-		<s2.common.version>0.2.7</s2.common.version>
+		<s2.common.version>0.2.8</s2.common.version>
 		<fugue.version>0.2.45</fugue.version>
 	</properties>
 
@@ -174,7 +174,7 @@
 	    <dependency>
 	      <groupId>org.freemarker</groupId>
 	      <artifactId>freemarker</artifactId>
-	      <version>2.3.25-incubating</version>
+	      <version>2.3.30</version>
 	    </dependency>
 	    
 	    <dependency>

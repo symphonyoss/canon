@@ -1,4 +1,4 @@
-<#assign subTemplateName="${.current_template_name!''}"><#include "canon-proforma-java-SubPrologue.ftl">
+<#assign subTemplateName="${.current_template_name!''}"><#include "/proforma/java/canon-proforma-java-SubPrologue.ftl">
 import javax.annotation.Nonnull;
 import javax.annotation.concurrent.Immutable;
 
@@ -6,7 +6,7 @@ import org.symphonyoss.s2.common.immutable.ImmutableByteArray;
 
 import ${javaGenPackage}.${modelJavaClassName}TypeDef;
 
-<#include "../../template/java/TypeDefHeader.ftl">
+<#include "/template/java/TypeDefHeader.ftl">
 @Immutable
 @SuppressWarnings("unused")
 public class ${modelJavaClassName} extends ${modelJavaClassName}TypeDef
@@ -56,4 +56,4 @@ public class ${modelJavaClassName} extends ${modelJavaClassName}TypeDef
       return instance.getValue();
     }
   }
-<#assign subTemplateName="${.current_template_name!''}"><#include "canon-proforma-java-SubEpilogue.ftl">
+<#assign subTemplateName="${.current_template_name!''}"><#include "/proforma/java/canon-proforma-java-SubEpilogue.ftl">

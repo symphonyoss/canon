@@ -1,4 +1,4 @@
-<#assign subTemplateName="${.current_template_name!''}"><#include "canon-proforma-java-SubPrologue.ftl">
+<#assign subTemplateName="${.current_template_name!''}"><#include "/proforma/java/canon-proforma-java-SubPrologue.ftl">
 import org.symphonyoss.s2.common.immutable.ImmutableByteArray;
 
 import org.symphonyoss.s2.common.type.provider.IBooleanProvider;
@@ -39,4 +39,4 @@ public class ${model.camelCapitalizedName}Builder
     return instance.getValue();
   }
 </#if>
-<#assign subTemplateName="${.current_template_name!''}"><#include "canon-proforma-java-SubEpilogue.ftl">
+<#assign subTemplateName="${.current_template_name!''}"><#include "/proforma/java/canon-proforma-java-SubEpilogue.ftl">

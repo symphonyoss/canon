@@ -1,4 +1,4 @@
-<#assign subTemplateName="${.current_template_name!''}"><#include "../canon-template-java-SubPrologue.ftl">
+<#assign subTemplateName="${.current_template_name!''}"><#include "/template/java/canon-template-java-SubPrologue.ftl">
 /**
 <#if isFacade??>
  * Facade for ${model}
@@ -19,4 +19,4 @@
  * Path					${model.path}
  * Bind Path			${model.bindPath}
  */
-<#assign subTemplateName="${.current_template_name!''}"><#include "../canon-template-java-SubEpilogue.ftl">
+<#assign subTemplateName="${.current_template_name!''}"><#include "/template/java/canon-template-java-SubEpilogue.ftl">

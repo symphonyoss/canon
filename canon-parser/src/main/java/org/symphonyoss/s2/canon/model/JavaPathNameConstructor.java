@@ -25,6 +25,7 @@ package org.symphonyoss.s2.canon.model;
 
 import java.io.File;
 import java.util.Map;
+import java.util.regex.Matcher;
 
 import org.symphonyoss.s2.canon.parser.GenerationException;
 
@@ -49,6 +50,7 @@ public class JavaPathNameConstructor extends PathNameConstructor
     if(object == null)
       return null;
     
-    return object.toString().replaceAll("\\.", File.separator);
+    return object.toString().replaceAll("\\.", Matcher.quoteReplacement(File.separator));
+//    return object.toString().replaceAll("\\.", File.separator);
   }
 }

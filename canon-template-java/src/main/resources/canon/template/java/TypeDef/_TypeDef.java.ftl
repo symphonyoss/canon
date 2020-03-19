@@ -1,8 +1,8 @@
 <#if ! model.attributes['javaExternalType']?? && ! model.enum??>
-<#include "../canon-template-java-Prologue.ftl">
+<#include "/template/java/canon-template-java-Prologue.ftl">
 <@setPrologueJavaType model/>
-<#include "../TypeDefTemplate.ftl">
+<#include "/template/java/TypeDefTemplate.ftl">
 }
 
-<#include "../canon-template-java-Epilogue.ftl">
+<#include "/template/java/canon-template-java-Epilogue.ftl">
 </#if>

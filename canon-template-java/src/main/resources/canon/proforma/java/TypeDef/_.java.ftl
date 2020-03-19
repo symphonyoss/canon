@@ -1,8 +1,8 @@
 <#if ! model.attributes['javaExternalType']?? && ! model.enum?? && model.baseSchema.isGenerateFacade?? && model.baseSchema.isGenerateFacade>
-<#include "../canon-proforma-java-Prologue.ftl">
+<#include "/proforma/java/canon-proforma-java-Prologue.ftl">
 <@setPrologueJavaType model/>
-<#include "../TypeDefProforma.ftl">
+<#include "/proforma/java/TypeDefProforma.ftl">
 }
 
-<#include "../canon-proforma-java-Epilogue.ftl">
+<#include "/proforma/java/canon-proforma-java-Epilogue.ftl">
 </#if>

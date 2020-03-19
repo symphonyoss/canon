@@ -1,4 +1,4 @@
-<#include "../canon-template-java-Prologue.ftl">
+<#include "/template/java/canon-template-java-Prologue.ftl">
 <@setPrologueJavaType model/>
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -11,7 +11,7 @@ import org.symphonyoss.s2.fugue.pipeline.IConsumer;
 <@importFieldTypes model true/>
 <@importFacadePackages model/>
 
-<#include "Path.ftl">
+<#include "/template/java/Path/Path.ftl">
 public interface I${modelJavaClassName}AsyncPathHandler<T> extends IAsyncEntityHandler
 {
 <#list model.operations as operation>
@@ -40,4 +40,4 @@ public interface I${modelJavaClassName}AsyncPathHandler<T> extends IAsyncEntityH
     
 </#list>
 }
-<#include "../canon-template-java-Epilogue.ftl">
+<#include "/template/java/canon-template-java-Epilogue.ftl">

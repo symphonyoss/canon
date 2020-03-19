@@ -1,4 +1,4 @@
-<#include "../canon-template-java-Prologue.ftl">
+<#include "/template/java/canon-template-java-Prologue.ftl">
 <#assign model=model.type>
 <@setPrologueJavaType model/>
 import javax.annotation.concurrent.Immutable;
@@ -24,7 +24,7 @@ import org.symphonyoss.s2.common.dom.json.MutableJsonSet;
 
 import org.symphonyoss.s2.canon.runtime.Entity${modelJavaCardinality};
 
-<#include "Array.ftl">
+<#include "/template/java/Array/Array.ftl">
 <@setJavaType model.baseSchema/>
 @Immutable
 public class ${modelJavaClassName}EntityArray extends Entity${modelJavaCardinality}<${modelJavaElementClassName}>
@@ -118,4 +118,4 @@ public class ${modelJavaClassName}EntityArray extends Entity${modelJavaCardinali
     public abstract ${modelJavaClassName} build();
   }
 }
-<#include "../canon-template-java-Epilogue.ftl">
+<#include "/template/java/canon-template-java-Epilogue.ftl">
