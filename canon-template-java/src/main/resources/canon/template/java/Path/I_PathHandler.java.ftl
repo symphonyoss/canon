@@ -1,4 +1,4 @@
-<#include "../canon-template-java-Prologue.ftl">
+<#include "/template/java/canon-template-java-Prologue.ftl">
 <@setPrologueJavaType model/>
 import java.util.List;
 
@@ -50,4 +50,4 @@ public interface I${modelJavaClassName}PathHandler<T> extends IEntityHandler
     
 </#list>
 }
-<#include "../canon-template-java-Epilogue.ftl">
+<#include "/template/java/canon-template-java-Epilogue.ftl">

@@ -1,4 +1,4 @@
-<#include "../canon-template-java-Prologue.ftl">
+<#include "/template/java/canon-template-java-Prologue.ftl">
 <@setPrologueJavaType model/>
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -162,4 +162,4 @@ public abstract class ${modelJavaClassName}PathHandler<T> extends PathHandler<T>
 
 
 }
-<#include "../canon-template-java-Epilogue.ftl">
+<#include "/template/java/canon-template-java-Epilogue.ftl">

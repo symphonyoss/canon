@@ -1,4 +1,4 @@
-<#include "../canon-template-java-Prologue.ftl">
+<#include "/template/java/canon-template-java-Prologue.ftl">
 <@setPrologueJavaType model/>
 <@setJavaMethod model/>
 import javax.annotation.concurrent.Immutable;
@@ -36,4 +36,4 @@ public abstract class ${model.parent.camelCapitalizedName}${model.camelCapitaliz
   public abstract ${javaClassName} get${parameter.camelCapitalizedName}();
   </#list>
 }
-<#include "../canon-template-java-Epilogue.ftl">
+<#include "/template/java/canon-template-java-Epilogue.ftl">

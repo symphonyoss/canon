@@ -1,5 +1,5 @@
 <#if model.paths??>
-<#include "../canon-template-java-Prologue.ftl">
+<#include "/template/java/canon-template-java-Prologue.ftl">
 <@setPrologueJavaType model/>
 import java.net.URL;
 
@@ -67,5 +67,5 @@ public class ${modelJavaClassName}HttpModelClient extends HttpModelClient
   </#list>
 </#list>
 }
-<#include "../canon-template-java-Epilogue.ftl">
+<#include "/template/java/canon-template-java-Epilogue.ftl">
 </#if>

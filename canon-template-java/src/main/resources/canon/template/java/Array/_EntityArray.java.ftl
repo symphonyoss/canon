@@ -1,4 +1,4 @@
-<#include "../canon-template-java-Prologue.ftl">
+<#include "/template/java/canon-template-java-Prologue.ftl">
 <#assign model=model.type>
 <@setPrologueJavaType model/>
 import javax.annotation.concurrent.Immutable;
@@ -118,4 +118,4 @@ public class ${modelJavaClassName}EntityArray extends Entity${modelJavaCardinali
     public abstract ${modelJavaClassName} build();
   }
 }
-<#include "../canon-template-java-Epilogue.ftl">
+<#include "/template/java/canon-template-java-Epilogue.ftl">
