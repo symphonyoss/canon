@@ -10,7 +10,7 @@ import org.symphonyoss.s2.common.dom.json.ImmutableJsonSet;
 <@importFieldTypes model false/>
 <@importFacadePackages model/>
 
-<#include "../../../template/java/Array/Array.ftl">
-<#include "../../../proforma/java/Array/Facade.ftl">
+<#include "/template/java/Array/Array.ftl">
+<#include "/proforma/java/Array/Facade.ftl">
 <#include "/template/java/canon-template-java-Epilogue.ftl">
 </#if>

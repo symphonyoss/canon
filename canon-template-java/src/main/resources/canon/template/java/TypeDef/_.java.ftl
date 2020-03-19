@@ -2,7 +2,7 @@
   <#if model.enum??>
     <#include "/template/java/canon-template-java-Prologue.ftl">
     <@setPrologueJavaType model/>
-    <#include "../EnumTemplate.ftl">
+    <#include "/template/java/EnumTemplate.ftl">
     }
     
     <#include "/template/java/canon-template-java-Epilogue.ftl">
@@ -10,7 +10,7 @@
     <#if ! model.baseSchema.isGenerateFacade?? || ! model.baseSchema.isGenerateFacade>
       <#include "/template/java/canon-template-java-Prologue.ftl">
       <@setPrologueJavaType model/>
-      <#include "../../../proforma/java/TypeDefProforma.ftl">
+      <#include "/proforma/java/TypeDefProforma.ftl">
 }
   
       <#include "/template/java/canon-template-java-Epilogue.ftl">

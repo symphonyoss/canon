@@ -14,6 +14,6 @@ import org.symphonyoss.s2.canon.runtime.IModelRegistry;
 
 <@importFacadePackages model/>
 
-<#include "../../../proforma/java/Object/Facade.ftl">
+<#include "/proforma/java/Object/Facade.ftl">
 <#include "/template/java/canon-template-java-Epilogue.ftl">
 </#if>

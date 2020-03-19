@@ -1,5 +1,5 @@
 <@setJavaType model/>
-<#include "../../../template/java/Object/Object.ftl">
+<#include "/template/java/Object/Object.ftl">
 @Immutable
 @SuppressWarnings("unused")
 public class ${model.camelCapitalizedName} extends ${model.camelCapitalizedName}Entity implements I${model.camelCapitalizedName}

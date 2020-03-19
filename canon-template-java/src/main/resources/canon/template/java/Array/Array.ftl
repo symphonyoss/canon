@@ -1,4 +1,4 @@
-<#assign subTemplateName="${.current_template_name!''}"><#include "../canon-template-java-SubPrologue.ftl">
+<#assign subTemplateName="${.current_template_name!''}"><#include "/template/java/canon-template-java-SubPrologue.ftl">
 <#if templateDebug??>
 /*----------------------------------------------------------------------------------------------------
  * Generating for Array ${model}
@@ -14,4 +14,4 @@
 </#list>
 </#if>
  */
-<#assign subTemplateName="${.current_template_name!''}"><#include "../canon-template-java-SubEpilogue.ftl">
+<#assign subTemplateName="${.current_template_name!''}"><#include "/template/java/canon-template-java-SubEpilogue.ftl">

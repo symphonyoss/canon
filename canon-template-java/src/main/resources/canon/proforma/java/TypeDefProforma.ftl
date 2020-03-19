@@ -6,7 +6,7 @@ import org.symphonyoss.s2.common.immutable.ImmutableByteArray;
 
 import ${javaGenPackage}.${modelJavaClassName}TypeDef;
 
-<#include "../../template/java/TypeDefHeader.ftl">
+<#include "/template/java/TypeDefHeader.ftl">
 @Immutable
 @SuppressWarnings("unused")
 public class ${modelJavaClassName} extends ${modelJavaClassName}TypeDef
