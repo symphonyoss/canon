@@ -63,6 +63,7 @@ public abstract class AbstractPathHandler<T, C extends IRequestContext> implemen
 
   public boolean handle(C context) throws IOException
   {
+    context.getTrace().trace("START_HANDLE");
     List<String> variables = getVariablesIfCanHandle(context.getPathInfo());
 
     if (variables == null)
@@ -70,7 +71,10 @@ public abstract class AbstractPathHandler<T, C extends IRequestContext> implemen
 
     try
     {
-       handle(authenticator_==null ? null : authenticator_.authenticate(context), context, variables);
+      context.getTrace().trace("AUTH");
+      T auth = authenticator_==null ? null : authenticator_.authenticate(context);
+      context.getTrace().trace("ABOUT_TO_HANDLE");
+       handle(auth, context, variables);
     }
     catch (ServerErrorException e)
     {
