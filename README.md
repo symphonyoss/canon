@@ -188,3 +188,18 @@ The class hierarchy generated is:
 VersionedObject _extends_ VersionedObjectEntity _extends_ FundamentalObject _extends_ FundamentalObjectEntity
 
 Where VersionedObjectEntity is the generated super-class and VersionedObject is the developer maintained facade. This means that subclasses inherit the developer maintained additions to any super classes.
+
+## Contributing
+
+1. Fork it (<https://github.com/symphonyoss/canon/fork>)
+2. Create your feature branch (`git checkout -b feature/fooBar`)
+3. Read our [contribution guidelines](.github/CONTRIBUTING.md) and [Community Code of Conduct](https://www.finos.org/code-of-conduct)
+4. Commit your changes (`git commit -am 'Add some fooBar'`)
+5. Push to the branch (`git push origin feature/fooBar`)
+6. Create a new Pull Request
+
+## License
+
+The code in this repository is distributed under the [Apache License, Version 2.0](http://www.apache.org/licenses/LICENSE-2.0).
+
+Copyright 2017-2019 Symphony Communication Services, LLC.
