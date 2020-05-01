@@ -1,4 +1,4 @@
-<#include "../canon-template-java-Prologue.ftl">
+<#include "/template/java/canon-template-java-Prologue.ftl">
 <@setPrologueJavaType model/>
 import java.util.List;
 
@@ -13,7 +13,7 @@ import org.symphonyoss.s2.fugue.core.trace.ITraceContext;
 <@importFieldTypes model true/>
 <@importFacadePackages model/>
 
-<#include "Path.ftl">
+<#include "/template/java/Path/Path.ftl">
 public interface I${modelJavaClassName}PathHandler<T> extends IEntityHandler
 {
 <#list model.operations as operation>
@@ -50,4 +50,4 @@ public interface I${modelJavaClassName}PathHandler<T> extends IEntityHandler
     
 </#list>
 }
-<#include "../canon-template-java-Epilogue.ftl">
+<#include "/template/java/canon-template-java-Epilogue.ftl">

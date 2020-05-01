@@ -26,6 +26,9 @@ package org.symphonyoss.s2.canon.runtime.jjwt;
 import java.security.Key;
 import java.util.Date;
 
+import javax.servlet.http.HttpServletRequest;
+
+import org.symphonyoss.s2.canon.runtime.exception.CanonException;
 import org.symphonyoss.s2.canon.runtime.exception.NotAuthenticatedException;
 import org.symphonyoss.s2.canon.runtime.exception.PermissionDeniedException;
 import org.symphonyoss.s2.canon.runtime.http.IRequestAuthenticator;
@@ -56,6 +59,12 @@ public abstract class JwtAuthenticator<T> extends JwtBase implements IRequestAut
     return authenticate(getToken(context));
   }
   
+  @Override
+  public T authenticate(HttpServletRequest context) throws CanonException
+  {
+    return authenticate(getToken(context));
+  }
+
   protected T authenticate(String token) throws NotAuthenticatedException, PermissionDeniedException
   {  
     try

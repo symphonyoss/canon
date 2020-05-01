@@ -1,4 +1,4 @@
-<#include "../canon-template-java-Prologue.ftl">
+<#include "/template/java/canon-template-java-Prologue.ftl">
 <@setPrologueJavaType model/>
 <@setJavaMethod model/>
 import java.io.IOException;
@@ -243,16 +243,13 @@ public class ${model.parent.camelCapitalizedName}${model.camelCapitalizedName}Ht
         @Override
         protected void handle(String input)
         {
-          IEntity result = getCanonClient().getRegistry().parseOne(new StringReader(input), RESPONSE_TYPE_ID);
+          ${methodResponseElementType} result = getCanonClient().getRegistry().parseOne(new StringReader(input), RESPONSE_TYPE_ID, ${methodResponseElementType}.class);
           
-          if(result instanceof ${methodResponseElementType})
-          {
-            <#if model.response.isMultiple>
-            canonResult_.add((${methodResponseElementType}) result);
-            <#else>
-            canonResult_ = (${methodResponseElementType}) result;
-            </#if>
-          }
+          <#if model.response.isMultiple>
+          canonResult_.add(result);
+          <#else>
+          canonResult_ = result;
+          </#if>
         }
       };
       
@@ -315,4 +312,4 @@ public class ${model.parent.camelCapitalizedName}${model.camelCapitalizedName}Ht
   </#if>
   }
 }
-<#include "../canon-template-java-Epilogue.ftl">
+<#include "/template/java/canon-template-java-Epilogue.ftl">

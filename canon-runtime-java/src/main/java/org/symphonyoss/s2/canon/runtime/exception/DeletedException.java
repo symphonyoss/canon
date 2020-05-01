@@ -37,7 +37,7 @@ import org.apache.http.client.methods.CloseableHttpResponse;
  * @author Bruce Skingle
  *
  */
-public class DeletedException extends CanonException
+public class DeletedException extends NotFoundException
 {
   private static final long serialVersionUID = 1L;
   
@@ -110,6 +110,6 @@ public class DeletedException extends CanonException
    */
   public DeletedException(CloseableHttpResponse response)
   {
-    super(HTTP_STATUS_CODE, null, response);
+    super(HTTP_STATUS_CODE, response);
   }
 }

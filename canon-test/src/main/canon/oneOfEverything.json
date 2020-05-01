@@ -14,12 +14,20 @@
   },
   "components": {
     "schemas": {
+      "#SimpleComment": "This is a string comment",
+      "#ArrayComment": [
+        "This is an array comment",
+        "with 2 lines"
+      ],
       "DefInt": {
         "description": "A default integer.",
         "type": "integer"
       },
       "Int64": {
-        "description": "A 64 bit integer.",
+        "description": [
+          "A 64 bit integer.",
+          "With a two line description"
+        ],
         "type": "integer",
         "format": "int64"
       },

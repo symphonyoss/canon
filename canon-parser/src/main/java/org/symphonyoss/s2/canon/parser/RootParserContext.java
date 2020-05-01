@@ -29,7 +29,11 @@ import java.io.InputStreamReader;
 import java.io.Reader;
 import java.net.MalformedURLException;
 import java.net.URI;
+import java.net.URISyntaxException;
 import java.net.URL;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Map.Entry;
 
 import javax.annotation.Nullable;
 
@@ -53,10 +57,15 @@ public class RootParserContext extends BaseParserContext
   private URL                   url_;
   private ModelSetParserContext modelSetParserContext_;
   private Model                 model_;
+  private Map<String, String>   uriMap_ = new HashMap<>();
+  
+  
 
   public RootParserContext(ModelSetParserContext modelSetParserContext, URL url, boolean referencedModel) throws ParsingException
   {
     this(modelSetParserContext, url, openStream(url), referencedModel);
+    
+    //uriMap_.put("https://models.oss.symphony.com/", "../../../../");
   }
   
   private static Reader openStream(URL url) throws ParsingException
@@ -98,6 +107,13 @@ public class RootParserContext extends BaseParserContext
       
       inputSourceName_ = trim(path);
     }
+  }
+  
+
+
+  public void setUriMap(Map<String, String> uriMap)
+  {
+    uriMap_ = uriMap;
   }
   
   private String trim(String path)
@@ -220,31 +236,45 @@ public class RootParserContext extends BaseParserContext
   {
     try
     {
-      URL url = uri.isAbsolute()
-        ? uri.toURL()
-        : new URL(url_, uri.toString());
+      URL url = getReferencedUrl(uri);
         
-        return modelSetParserContext_.addReferencedModel(url);
+      return modelSetParserContext_.addReferencedModel(url);
     }
-    catch (IOException e)
+    catch (IOException | URISyntaxException e)
     {
       context.raise(new ParserError("Invalid URI \"%s\" (%s)", uri, e.getMessage()));
       return null;
     }
   }
   
+  private URL getReferencedUrl(URI uri) throws URISyntaxException, MalformedURLException
+  {
+    String uriString = uri.toString();
+    
+    for(Entry<String, String> entry : uriMap_.entrySet())
+    {
+      if(uriString.startsWith(entry.getKey()))
+      {
+        uri = new URI(entry.getValue() + uriString.substring(entry.getKey().length()));
+        break;
+      }
+    }
+    
+    return uri.isAbsolute()
+      ? uri.toURL()
+      : new URL(url_, uri.toString());
+  }
+
   public Model getModel(URI uri)
   {
     
     try
     {
-      URL url = uri.isAbsolute()
-        ? uri.toURL()
-        : new URL(url_, uri.toString());
+      URL url = getReferencedUrl(uri);
         
-        return modelSetParserContext_.getModel(url);
+      return modelSetParserContext_.getModel(url);
     }
-    catch (MalformedURLException e)
+    catch (MalformedURLException | URISyntaxException e)
     {
       throw new ProgramFault(e);
     }

@@ -1,7 +1,7 @@
 /*
  *
  *
- * Copyright 2018 Symphony Communication Services, LLC.
+ * Copyright 2018-2020 Symphony Communication Services, LLC.
  *
  * Licensed to The Symphony Software Foundation (SSF) under one
  * or more contributor license agreements.  See the NOTICE file
@@ -23,11 +23,12 @@
 
 package org.symphonyoss.s2.canon.runtime.http;
 
+import javax.servlet.http.HttpServletRequest;
+
 import org.symphonyoss.s2.canon.runtime.exception.CanonException;
 
 public interface IRequestAuthenticator<T>
 {
-
   T authenticate(IRequestContext context) throws CanonException;
-
+  T authenticate(HttpServletRequest context) throws CanonException;
 }

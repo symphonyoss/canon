@@ -40,7 +40,7 @@ public class PathItem extends ParameterContainer
 {
   private static Logger         log_        = LoggerFactory.getLogger(PathItem.class);
 
-  private final Set<String>     pathParamNames_;
+  private final List<String>    pathParamNames_;
   private final String          bindPath_;
   private final String          path_;
   private final String          pathFormat_;
@@ -48,7 +48,7 @@ public class PathItem extends ParameterContainer
   private final Set<HttpMethod> unsupportedOperations_ = EnumSet.allOf(HttpMethod.class);
   private List<String>          partList_;
   
-  public PathItem(Paths parent, ParserContext parserContext, String name, Set<String> pathParams,
+  private PathItem(Paths parent, ParserContext parserContext, String name, List<String> pathParams,
       List<String> partList, String bindPath, String path, String pathFormat)
   {
     super(parent, parserContext, "Path", name);
@@ -66,7 +66,7 @@ public class PathItem extends ParameterContainer
 
   public static PathItem create(Paths paths, String basePath, ParserContext parserContext)
   {
-    Set<String>   pathParams = new HashSet<>();
+    List<String>  pathParams = new ArrayList<>();
     StringBuilder lineBuf = new StringBuilder();
     StringBuilder paramBuf = new StringBuilder();
     StringBuilder bindBuf = new StringBuilder();
@@ -229,7 +229,7 @@ public class PathItem extends ParameterContainer
   }
 
 
-  public Set<String> getPathParamNames()
+  public List<String> getPathParamNames()
   {
     return pathParamNames_;
   }

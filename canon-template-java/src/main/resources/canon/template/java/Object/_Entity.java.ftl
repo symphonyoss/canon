@@ -1,5 +1,5 @@
 <#if ! model.isAbstract?? || ! model.isAbstract?c>
-<#include "ObjectHeader.ftl">
+<#include "/template/java/Object/ObjectHeader.ftl">
 
   private final ${"ImmutableSet<String>"?right_pad(25)}   unknownKeys_;
 <#list model.fields as field>
@@ -169,7 +169,7 @@
     
 </#list>
 
-<#include "ObjectBody.ftl">
+<#include "/template/java/Object/ObjectBody.ftl">
   
 
 <#------------------------------------------------------------------------------------------------------------------------------
@@ -181,15 +181,11 @@
   /**
    * Factory class for ${modelJavaClassName}.
    */
-  public static class Factory
-<#if model.superSchema??>
-  extends ${model.superSchema.baseSchema.camelCapitalizedName}.Factory
-<#else>
-  extends EntityFactory<I${modelJavaClassName}, I${modelJavaClassName}Entity, Builder>
-</#if>
+  public static class Factory extends EntityFactory<I${modelJavaClassName}, I${modelJavaClassName}Entity, Builder>
   {
     protected Factory()
     {
+      super(I${modelJavaClassName}.class, I${modelJavaClassName}Entity.class);
     }
     
     /**
@@ -546,7 +542,7 @@
   <#list model.fields as field>
     <@setJavaType field/>
   
-      if(_${field.camelName}_ != null)
+      if(get${field.camelCapitalizedName}() != null)
       {
         <@generateCreateJsonDomNodeFromField "          " field "jsonObject"/>
       }
@@ -598,5 +594,5 @@
   }
 }
 
-<#include "../canon-template-java-Epilogue.ftl">
+<#include "/template/java/canon-template-java-Epilogue.ftl">
 </#if>

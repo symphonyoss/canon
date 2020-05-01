@@ -115,10 +115,20 @@ public class GenerationContext
    * take precedence over earlier ones.
    * 
    * @param dir A template directory.
+   * @throws CanonException 
    */
-  public void addTemplateDirectory(File dir)
+  public void addTemplateDirectory(File dir) throws CanonException
   {
     addTemplateDirectory(dir, templateLoader_);
+    
+    try
+    {
+      config_.setDirectoryForTemplateLoading(dir);
+    }
+    catch (IOException e)
+    {
+      throw new CanonException(e);
+    }
   }
 
 

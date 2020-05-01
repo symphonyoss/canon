@@ -117,10 +117,11 @@ public class ModelSetParserContext
   
   /**
    * Parse, validate and generate for all source inputs.
+   * @param uriMap 
    * 
    * @throws ParsingException if there is a parsing error.
    */
-  public void process() throws ParsingException
+  public void process(Map<String, String> uriMap) throws ParsingException
   {
     Parser parser = new Parser();
     RootParserContext context;
@@ -128,9 +129,10 @@ public class ModelSetParserContext
     
     while((context = parseQueue_.pollFirst()) != null)
     {
-        model = parser.parse(context);
-        validateQueue_.add(model);
-        modelMap_.put(context.getUrl(), model);
+      context.setUriMap(uriMap);
+      model = parser.parse(context);
+      validateQueue_.add(model);
+      modelMap_.put(context.getUrl(), model);
     }
     
     while((model = validateQueue_.pollFirst()) != null)

@@ -23,7 +23,6 @@
 
 package org.symphonyoss.s2.canon.runtime;
 
-import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.Reader;
@@ -56,12 +55,17 @@ public interface IModelRegistry
    * has been written for the type.
    */
   IEntity newInstance(ImmutableJsonObject jsonObject);
-
+  
   /**
-   * Return a new entity instance of the given type, parsed from the given JSON object.
+   * Return a new entity instance of the given type, parsed from the given input.
+   * 
+   * The returned entity will be an instance of the given type, but may be a sub-class. The defaultTypeId is only used
+   * in cases where there is no type information in the serialised JSON. This enables canon generated client stubs
+   * to be used with non-canon server implementations. 
    * 
    * @param jsonObject A JSON object containing the serialized form of an entity.
-   * @param expectedTypeId The type ID of the expected type.
+   * @param defaultTypeId The type ID of the expected type.
+   * @param type The expected type of the entity.
    * 
    * @return The deserialized entity.
    * 
@@ -70,7 +74,7 @@ public interface IModelRegistry
    * This may be the case if the schema defines limits on the magnitude of the value, or if a facade
    * has been written for the type.
    */
-  IEntity newInstance(ImmutableJsonObject jsonObject, @Nullable String expectedTypeId);
+  <E extends IBaseEntity> E newInstance(ImmutableJsonObject jsonObject, String defaultTypeId, Class<E> type);
 
   /**
    * Return a new entity instance parsed from the given input.
@@ -86,20 +90,20 @@ public interface IModelRegistry
    */
   IEntity parseOne(Reader reader);
   
-  /**
-   * Return a new entity instance of the given type, parsed from the given input.
-   * 
-   * @param reader A Reader containing the serialized form of an entity.
-   * @param typeId The type ID of the expected type.
-   * 
-   * @return The deserialized entity.
-   * 
-   * @throws NullPointerException if the value is null.
-   * @throws IllegalArgumentException if the value is not of the expected type or is otherwise invalid.
-   * This may be the case if the schema defines limits on the magnitude of the value, or if a facade
-   * has been written for the type.
-   */
-  IEntity parseOne(Reader reader, String typeId);
+//  /**
+//   * Return a new entity instance of the given type, parsed from the given input.
+//   * 
+//   * @param reader A Reader containing the serialized form of an entity.
+//   * @param typeId The type ID of the expected type.
+//   * 
+//   * @return The deserialized entity.
+//   * 
+//   * @throws NullPointerException if the value is null.
+//   * @throws IllegalArgumentException if the value is not of the expected type or is otherwise invalid.
+//   * This may be the case if the schema defines limits on the magnitude of the value, or if a facade
+//   * has been written for the type.
+//   */
+//  IEntity parseOne(Reader reader, String typeId);
   
   /**
    * Parse a stream of entitied from the giben input and pass them to the given consumer.
@@ -128,25 +132,5 @@ public interface IModelRegistry
    * This may be the case if the schema defines limits on the magnitude of the value, or if a facade
    * has been written for the type.
    */
-  <E extends IEntity> E parseOne(Reader reader, String defaultTypeId, Class<E> type);
-  
-  /**
-   * Return a new entity instance of the given type, parsed from the given input.
-   * 
-   * The returned entity will be an instance of the given type, but may be a sub-class. The defaultTypeId is only used
-   * in cases where there is no type information in the serialised JSON. This enables canon generated client stubs
-   * to be used with non-canon server implementations. 
-   * 
-   * @param jsonObject A JSON object containing the serialized form of an entity.
-   * @param defaultTypeId The type ID of the expected type.
-   * @param type The expected type of the entity.
-   * 
-   * @return The deserialized entity.
-   * 
-   * @throws NullPointerException if the value is null.
-   * @throws IllegalArgumentException if the value is not of the expected type or is otherwise invalid.
-   * This may be the case if the schema defines limits on the magnitude of the value, or if a facade
-   * has been written for the type.
-   */
-  <E extends IEntity> E newInstance(ImmutableJsonObject jsonObject, String defaultTypeId, Class<E> type);
+  <E extends IBaseEntity> E parseOne(Reader reader, String defaultTypeId, Class<E> type);
 }

@@ -1,1 +1,1 @@
-<#include "../Object/I_.java.ftl">
+<#include "/proforma/java/Object/I_.java.ftl">

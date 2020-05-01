@@ -50,6 +50,16 @@ import com.google.common.collect.ImmutableSet;
 public abstract class EntityFactory<E extends IEntity, S extends IEntity, B extends IEntityBuilder>
 implements IEntityFactory<E,S,B>
 {
+  private final Class<E> type_;
+  private final Class<S> superType_;
+  
+  public EntityFactory(Class<E> type, Class<S> superType)
+  {
+    type_ = type;
+    superType_ = superType;
+  }
+
+  @SuppressWarnings("unchecked")
   @Override
   public List<E> newMutableList(JsonArray<?> jsonArray, IModelRegistry modelRegistry)
   {
@@ -58,7 +68,26 @@ implements IEntityFactory<E,S,B>
     for(IJsonDomNode node : jsonArray)
     {
       if(node instanceof JsonObject)
-        list.add(newInstance((ImmutableJsonObject) node, modelRegistry));
+      {
+        IEntity entity = modelRegistry.newInstance((ImmutableJsonObject) node, getCanonType(), type_);
+        
+        if(type_.isInstance(entity))
+        {
+          try
+          {
+            list.add((E) entity);
+          }
+          catch(ClassCastException e)
+          {
+            throw new IllegalArgumentException("Expected an array of JSON objectcs, but encountered a " + entity.getClass().getName(), e);
+          }
+        }
+        else
+        {
+          throw new IllegalArgumentException("Expected an array of JSON objectcs, but encountered a " + entity.getClass().getName());
+        }
+//        list.add(newInstance((ImmutableJsonObject) node, modelRegistry));
+      }
       else
         throw new IllegalArgumentException("Expected an array of JSON objectcs, but encountered a " + node.getClass().getName());
     }

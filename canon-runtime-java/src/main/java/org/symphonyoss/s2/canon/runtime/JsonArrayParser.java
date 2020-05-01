@@ -135,7 +135,8 @@ public abstract class JsonArrayParser implements Closeable
           
           String input = new String(inputBufferStream_.toByteArray(), StandardCharsets.UTF_8);
           
-          handle(input);
+          if(input.trim().length()>0)
+            handle(input);
           
           inputBufferStream_.reset();
           

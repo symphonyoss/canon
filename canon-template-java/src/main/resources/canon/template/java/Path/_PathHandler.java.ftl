@@ -1,4 +1,4 @@
-<#include "../canon-template-java-Prologue.ftl">
+<#include "/template/java/canon-template-java-Prologue.ftl">
 <@setPrologueJavaType model/>
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -23,25 +23,37 @@ import org.symphonyoss.s2.canon.runtime.http.IRequestContext;
 <@importFieldTypes model true/>
 <@importFacadePackages model/>
 
-<#include "Path.ftl">
+<#include "/template/java/Path/Path.ftl">
 @Immutable
 @SuppressWarnings("unused")
 public abstract class ${modelJavaClassName}PathHandler<T> extends PathHandler<T> implements I${modelJavaClassName}PathHandler<T>
 {
+  private final String path_;
+  
   public ${modelJavaClassName}PathHandler(@Nullable IRequestAuthenticator<T> authenticator)
   {
+    this(authenticator, "");
+  }
+  
+  public ${modelJavaClassName}PathHandler(@Nullable IRequestAuthenticator<T> authenticator, String basePath)
+  {
     super(authenticator, ${model.pathParamCnt}, new String[] {
+<#assign prefix="basePath + ">
 <#list model.partList as part>
-        "${part}"<#sep>,
+        ${prefix}"${part}"<#sep>,
+<#assign prefix="">
 </#list>
+
       }
     );
+    
+    path_ = basePath + "${model.absolutePath}";
   }
 
   @Override
   public String getPath()
   {
-    return "${model.absolutePath}";
+    return path_;
   }
 
   @Override
@@ -69,7 +81,7 @@ public abstract class ${modelJavaClassName}PathHandler<T> extends PathHandler<T>
 
   private void do${operation.camelCapitalizedName}(T auth, IRequestContext context, List<String> pathParams) throws IOException, CanonException
   {
-  <#include "GetParams.ftl">
+  <#include "/template/java/Path/GetParams.ftl">
   <#if operation.payload??>
   
     <@setJavaType operation.payload.schema/>
@@ -114,11 +126,7 @@ public abstract class ${modelJavaClassName}PathHandler<T> extends PathHandler<T>
           );
   <#if operation.response??>
     <@setJavaType operation.response.schema/>
-      <#if operation.response.isMultiple>
-        if(response == null || response.isEmpty())
-      <#else>
         if(response == null)
-      </#if>
         {
     <#if operation.response.isRequired>
           throw new ServerErrorException("Required return value is null");        
@@ -154,4 +162,4 @@ public abstract class ${modelJavaClassName}PathHandler<T> extends PathHandler<T>
 
 
 }
-<#include "../canon-template-java-Epilogue.ftl">
+<#include "/template/java/canon-template-java-Epilogue.ftl">

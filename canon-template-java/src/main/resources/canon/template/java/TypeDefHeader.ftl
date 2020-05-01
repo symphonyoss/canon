@@ -1,4 +1,4 @@
-<#assign subTemplateName="${.current_template_name!''}"><#include "canon-template-java-SubPrologue.ftl">
+<#assign subTemplateName="${.current_template_name!''}"><#include "/template/java/canon-template-java-SubPrologue.ftl">
 <#if templateDebug??>
 /*----------------------------------------------------------------------------------------------------
  * Generating for TypeDef ${model}
@@ -14,7 +14,10 @@
  * Facade for
 </#if>
 <#if model.description??>
- * ${model.description}
+<#list model.description as description>
+ * ${description}
+</#list>
+ *
 </#if>
 <#if formatDesc??>
  * ${formatDesc}
@@ -27,4 +30,4 @@
 </#if>
  * Generated from ${model} at ${model.context.path}
  */
-<#assign subTemplateName="${.current_template_name!''}"><#include "canon-template-java-SubEpilogue.ftl">
+<#assign subTemplateName="${.current_template_name!''}"><#include "/template/java/canon-template-java-SubEpilogue.ftl">

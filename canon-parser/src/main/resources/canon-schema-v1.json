@@ -92,7 +92,7 @@
 					"type": "string"
 				},
 				"description": {
-					"type": "string"
+					"$ref": "#/definitions/description"
 				},
 				"termsOfService": {
 					"type": "string"
@@ -173,7 +173,7 @@
 					"type": "string"
 				},
 				"description": {
-					"type": "string"
+					"$ref": "#/definitions/description"
 				},
 				"variables": {
 					"$ref": "#/definitions/serverVariables"
@@ -207,7 +207,7 @@
 					"type": "string"
 				},
 				"description": {
-					"type": "string"
+					"$ref": "#/definitions/description"
 				}
 			}
 		},
@@ -236,11 +236,32 @@
 		},
 		"comment": {
 		  "description": "A comment, ignored by canon.",
-		  "type": "array",
-        "items": {
+		  "oneOf": [
+        {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        {
           "type": "string"
         }
+      ]
 		},
+    "description": {
+      "description": "A description of the purpose of some schema item.",
+      "oneOf": [
+        {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        {
+          "type": "string"
+        }
+      ]
+    },
 		"components": {
 			"type": "object",
 			"description": "Holds a set of reusable objects for different aspects of the OAS. All objects defined within the components object will have no effect on the API unless they are explicitly referenced from properties outside the components object.",
@@ -314,7 +335,7 @@
 					"type": "string"
 				},
 				"description": {
-					"type": "string"
+					"$ref": "#/definitions/description"
 				},
 				"get": {
 					"$ref": "#/definitions/operation"
@@ -388,7 +409,7 @@
 					"type": "string"
 				},
 				"description": {
-					"type": "string"
+					"$ref": "#/definitions/description"
 				},
 				"externalDocs": {
 					"$ref": "#/definitions/externalDocs"
@@ -439,7 +460,7 @@
 			},
 			"properties": {
 				"description": {
-					"type": "string"
+					"$ref": "#/definitions/description"
 				},
 				"url": {
 					"type": "string"
@@ -466,7 +487,7 @@
 					"type": "string"
 				},
 				"description": {
-					"type": "string"
+					"$ref": "#/definitions/description"
 				},
 				"required": {
 					"type": "boolean"
@@ -658,7 +679,7 @@
 					"$ref": "#/definitions/defaultType"
 				},
 				"description": {
-					"type": "string"
+					"$ref": "#/definitions/description"
 				},
 				"format": {
 					"type": "string"

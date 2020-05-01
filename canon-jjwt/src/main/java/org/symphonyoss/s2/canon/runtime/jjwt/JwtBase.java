@@ -23,6 +23,8 @@
 
 package org.symphonyoss.s2.canon.runtime.jjwt;
 
+import javax.servlet.http.HttpServletRequest;
+
 import org.symphonyoss.s2.canon.runtime.exception.NotAuthenticatedException;
 import org.symphonyoss.s2.canon.runtime.http.ParameterLocation;
 import org.symphonyoss.s2.canon.runtime.http.IRequestContext;
@@ -36,6 +38,18 @@ public class JwtBase
   {
     String authHeader = context.getParameterAsString(AUTH_HEADER_KEY, ParameterLocation.Header, true);
     
+    return getToken(authHeader);
+  }
+  
+  protected String getToken(HttpServletRequest context)
+  {
+    String authHeader = context.getHeader(AUTH_HEADER_KEY);
+    
+    return getToken(authHeader);
+  }
+
+  private String getToken(String authHeader)
+  {
     if(authHeader == null)
       throw new NotAuthenticatedException("No auth header");
       
